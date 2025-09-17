@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  phone        String?        @unique
+  referralCode String         @unique
+  referredById String? 
+  referredBy   User?          @relation("Referrals", fields: [referredById], references: [id])
+  referrals    User[]         @relation("Referrals")
+  createdAt    DateTime       @default(now())
+  credits      CreditLedger[]
+}
+
+model CreditLedger {
+  id        String       @id @default(uuid())
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
+  type      CreditType
+  amount    Int
+  status    CreditStatus @default(ACTIVE)
+  referralId String?     // optional: link to referral/job
+  expiresAt DateTime?
+  createdAt DateTime     @default(now())
+}
+
+enum CreditType {
+  ISSUE
+  REVOKE
+  REFUND
+}
+
+enum CreditStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}

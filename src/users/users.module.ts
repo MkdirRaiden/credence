@@ -1,10 +1,12 @@
+// src/users/users.module.ts
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
+import { UsersRepository } from './users.repository';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService], // PrismaService is global, no need to provide
-  exports: [UsersService],   // export if other modules need UsersService
+  providers: [UsersService, UsersRepository], // include repository here
+  exports: [UsersService], // export service for other modules (e.g., ReferralsModule)
 })
 export class UsersModule {}

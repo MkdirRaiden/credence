@@ -37,10 +37,9 @@ lerna-debug.log*
 
 # dotenv environment variable files
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.env.development
+.env.staging
+.env.production
 
 # temp directory
 .temp
@@ -56,3 +55,6 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
+.env.development
+.env.staging
+.env.production

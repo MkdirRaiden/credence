@@ -26,7 +26,6 @@ lerna-debug.log*
 .c9/
 *.launch
 .settings/
-*.sublime-workspace
 
 # IDE - VSCode
 .vscode/*
@@ -41,7 +40,7 @@ lerna-debug.log*
 .env.staging
 .env.production
 
-# temp directory
+# temp directories
 .temp
 .tmp
 
@@ -51,10 +50,8 @@ pids
 *.seed
 *.pid.lock
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
+# Diagnostic reports
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# Prisma generated folder
 /generated/prisma
-.env.development
-.env.staging
-.env.production

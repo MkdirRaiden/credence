@@ -1,36 +1,42 @@
 // src/common/filters/prisma-exception.filter.ts
-import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
+import { Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { Response, Request } from 'express';
-import { buildResponse } from '../utils/response-builder';
+import { BaseExceptionFilter } from './base-exception.filter';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
-export class PrismaClientExceptionFilter implements ExceptionFilter {
-  catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 
+  catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Database error';
+    let criticalFailure = false;
 
     switch (exception.code) {
-      case 'P2002': {
+      case 'P2002': // Unique constraint
         status = HttpStatus.CONFLICT;
         const fields = exception.meta?.target as string[] | undefined;
-        message = `Unique constraint failed on fields: ${fields ? fields.join(', ') : 'unknown'}`;
+        message = `Unique constraint failed on fields: ${fields?.join(', ') ?? 'unknown'}`;
         break;
-      }
-      case 'P2025':
+      case 'P2025': // Record not found
         status = HttpStatus.NOT_FOUND;
         message = 'Record not found';
         break;
       default:
         message = exception.message;
+        criticalFailure = true; // unknown DB error → treat as critical
     }
 
-    console.error('[Prisma Exception]', exception);
+    // Centralized logging + JSON response
+    this.handleResponse(host, status, message, exception);
 
-    response.status(status).json(buildResponse(null, request.url, status, false, message));
+    // Shutdown only for critical DB failures
+    if (criticalFailure) {
+      this.logger.error(
+        'Critical database failure — shutting down application...',
+        undefined,
+        'Shutdown',
+      );
+      setTimeout(() => process.exit(1), 200);
+    }
   }
 }

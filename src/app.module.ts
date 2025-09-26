@@ -1,12 +1,19 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { AppController } from './app.controller';
+import { ConfigModule } from './config/config.module';
+import { DatabaseModule } from './database/database.module';
+import { UsersModule } from './features/users/users.module';
+import { HealthModule } from './health/health.module';
+import { LoggerModule } from './logger/logger.module';
+import { FiltersModule } from './common/filters/filters.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule],
-  controllers: [AppController],
-  providers: [],
+  imports: [
+    ConfigModule, //Global
+    DatabaseModule, //Global
+    LoggerModule, //Global
+    HealthModule,
+    FiltersModule,
+    UsersModule,
+  ],
 })
 export class AppModule {}
-

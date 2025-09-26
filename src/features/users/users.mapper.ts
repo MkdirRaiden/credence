@@ -1,4 +1,3 @@
-// src/users/users.mapper.ts
 import { Prisma, User } from '@prisma/client';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserResponseDto } from './dtos/user-response.dto';

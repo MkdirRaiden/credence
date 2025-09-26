@@ -1,21 +1,11 @@
 // src/common/filters/all-exceptions.filter.ts
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
-import { buildResponse } from '../utils/response-builder';
-import { Request, Response } from 'express';
+import { Catch, HttpException, HttpStatus, ArgumentsHost } from '@nestjs/common';
+import { BaseExceptionFilter } from './base-exception.filter';
 
 @Catch()
-export class AllExceptionsFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+export class AllExceptionsFilter extends BaseExceptionFilter {
 
+  catch(exception: unknown, host: ArgumentsHost) {
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal server error';
 
@@ -25,11 +15,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message = typeof res === 'string' ? res : (res as any).message || message;
     }
 
-    console.error('[Unhandled Exception]', exception);
-
-    // Use buildResponse for consistency
-    response.status(status).json(
-      buildResponse(null, request.url, status, false, message)
-    );
+    this.handleResponse(host, status, message, exception);
   }
 }

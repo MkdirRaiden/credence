@@ -16,7 +16,7 @@ export class HealthService implements OnApplicationShutdown {
     this.startPeriodicHealthCheck();
   }
 
-  /** Check if DB is reachable */
+  // Check if DB is reachable
   async checkDatabase(logOnFail = true): Promise<{ status: string; message?: string }> {
     try {
       await this.dbService.$queryRaw`SELECT 1`;
@@ -29,12 +29,12 @@ export class HealthService implements OnApplicationShutdown {
     }
   }
 
-  /** Liveness probe: Is app running? */
+  // Liveness probe: Is app running?
   async checkLiveness(): Promise<{ status: string }> {
     return { status: 'up' };
   }
 
-  /** Readiness probe: Are dependencies ready? */
+  // Readiness probe: Are dependencies ready?
   async checkReadiness(): Promise<{ status: string; details: any }> {
     const db = await this.checkDatabase(false); // suppress logs; exception filter handles critical logs
     return {
@@ -43,7 +43,7 @@ export class HealthService implements OnApplicationShutdown {
     };
   }
 
-  /** Periodically log health for monitoring */
+  // Periodically log health for monitoring 
   private startPeriodicHealthCheck() {
     this.healthInterval = setInterval(async () => {
       const health = await this.checkReadiness();
@@ -55,7 +55,7 @@ export class HealthService implements OnApplicationShutdown {
     }, this.intervalMs);
   }
 
-  /** Clear interval on shutdown */
+  // Clear interval on shutdown
   onApplicationShutdown(signal?: string) {
     if (this.healthInterval) {
       clearInterval(this.healthInterval);

@@ -6,9 +6,12 @@ import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '../common/constants'
 
 @Injectable()
 export class DatabasePrismaService extends PrismaClient implements OnModuleInit, OnApplicationShutdown {
+
+  // Retry configuration
   private readonly maxRetries = DATABASE_MAX_RETRIES;
   private readonly retryDelay = DATABASE_RETRY_DELAY;
 
+  // Initialize PrismaClient with database URL from ConfigService
   constructor(configService: ConfigService) {
     const dbUrl = configService.get<string>('database.url') ?? '';
     super({
@@ -16,6 +19,7 @@ export class DatabasePrismaService extends PrismaClient implements OnModuleInit,
     });
   }
 
+  // Connect to the database with retry logic on module initialization
   async onModuleInit() {
     await retry(() => this.$connect(), {
       retries: this.maxRetries,
@@ -24,6 +28,7 @@ export class DatabasePrismaService extends PrismaClient implements OnModuleInit,
     });
   }
 
+  // Disconnect from the database on application shutdown
   async onApplicationShutdown(signal?: string) {
     await this.$disconnect();
   }

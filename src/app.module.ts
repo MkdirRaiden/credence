@@ -5,15 +5,22 @@ import { UsersModule } from './features/users/users.module';
 import { HealthModule } from './health/health.module';
 import { LoggerModule } from './logger/logger.module';
 import { FiltersModule } from './common/filters/filters.module';
+import { InterceptorsModule } from './common/interceptors/response.module';
+import { AppController } from './app.controller';
+
 
 @Module({
   imports: [
+    //Base modules
     ConfigModule, //Global
     DatabaseModule, //Global
     LoggerModule, //Global
-    HealthModule,
     FiltersModule,
+    HealthModule,
+    InterceptorsModule,
+    //Feature modules
     UsersModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

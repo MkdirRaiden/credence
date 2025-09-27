@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { PrismaClientExceptionFilter } from './common/filters/prisma-exception.filter';
+import {DEFAULT_PORT} from './common/constants';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 
@@ -25,10 +26,10 @@ async function bootstrap() {
   app.useGlobalFilters
   (app.get(PrismaClientExceptionFilter), app.get(AllExceptionsFilter));
 
-  // Graceful shutdown
+  // Graceful shutdown on SIGTERM, SIGINT
   app.enableShutdownHooks();
 
-  const port = process.env.PORT || 5000;
+  const port = process.env.PORT || DEFAULT_PORT;
   await app.listen(port);
   console.log(`Server running on http://localhost:${port}/api`);
 }

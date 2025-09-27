@@ -15,8 +15,8 @@ import { AppController } from './app.controller';
     ConfigModule, //Global
     DatabaseModule, //Global
     LoggerModule, //Global
-    FiltersModule,
     HealthModule,
+    FiltersModule,
     InterceptorsModule,
     //Feature modules
     UsersModule,

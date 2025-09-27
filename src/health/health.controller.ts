@@ -6,13 +6,13 @@ import { HealthService } from './health.service';
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
-  /** Liveness endpoint: app running */
+  // Liveness endpoint: app running
   @Get('live')
   async live() {
     return this.healthService.checkLiveness();
   }
 
-  /** Readiness endpoint: dependencies ready */
+  // Readiness endpoint: dependencies ready
   @Get('ready')
   async ready() {
     const readiness = await this.healthService.checkReadiness();
@@ -25,7 +25,7 @@ export class HealthController {
     return readiness;
   }
 
-  /** Legacy /health endpoint (optional) */
+  // Legacy /health endpoint (optional) 
   @Get()
   async health() {
     return this.ready(); // alias for readiness

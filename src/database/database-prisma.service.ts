@@ -1,3 +1,4 @@
+//src/database/database-prisma.service.ts
 import { Injectable, OnModuleInit, OnApplicationShutdown } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { retry } from '../common/utils/retry.util';

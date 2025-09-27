@@ -19,13 +19,15 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, any> {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
 
+    // Optionally add API version header
+    response.setHeader('X-API-Version', '1.0.0');
+
     return next.handle().pipe(
       map((data) => {
-        const formattedResponse = buildResponse(data, request.url, response.statusCode);
+        const formattedResponse = buildResponse(data ?? null, request.url, response.statusCode);
         return formattedResponse;
       }),
       tap((formattedResponse) => {
-        // Log the response with status code and endpoint
         this.logger.debug(
           `Response sent for ${request.method} ${request.url}: ${JSON.stringify(formattedResponse)}`
         );
@@ -33,3 +35,4 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, any> {
     );
   }
 }
+

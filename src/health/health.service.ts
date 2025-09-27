@@ -3,12 +3,16 @@ import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DatabasePrismaService } from '../database/database-prisma.service';
 import { LoggerService } from '../logger/logger.service';
 import { HEALTH_CHECK_INTERVAL_MS } from '../common/constants';
+import { LivenessStatus, ReadinessStatus, DependencyStatus } 
+from './health.interface';
 
 @Injectable()
 export class HealthService implements OnApplicationShutdown {
+  //private properties
   private intervalMs = HEALTH_CHECK_INTERVAL_MS;
   private healthInterval: NodeJS.Timeout;
 
+  //dependency injections
   constructor(
     private readonly dbService: DatabasePrismaService,
     private readonly logger: LoggerService,
@@ -16,8 +20,20 @@ export class HealthService implements OnApplicationShutdown {
     this.startPeriodicHealthCheck();
   }
 
-  // Check if DB is reachable
-  async checkDatabase(logOnFail = true): Promise<{ status: string; message?: string }> {
+  // Periodically log health for observability (private method, cannot accessed outside)
+  private startPeriodicHealthCheck() {
+    this.healthInterval = setInterval(async () => {
+      const readiness = await this.checkReadiness();
+      if (readiness.status === 'ok') {
+        this.logger.log('Periodic health check passed', 'HealthService');
+      } else {
+        this.logger.warn(`Periodic health check failed: ${JSON.stringify(readiness.details)}`, 'HealthService');
+      }
+    }, this.intervalMs);
+  }
+
+  // Check DB health (private method cannot be accessed outside)
+  private async checkDatabase(logOnFail = true): Promise<DependencyStatus> {
     try {
       await this.dbService.$queryRaw`SELECT 1`;
       return { status: 'up' };
@@ -29,33 +45,24 @@ export class HealthService implements OnApplicationShutdown {
     }
   }
 
-  // Liveness probe: Is app running?
-  async checkLiveness(): Promise<{ status: string }> {
-    return { status: 'up' };
+  // Liveness probe
+  async checkLiveness(): Promise<LivenessStatus> {
+    return {
+      status: 'up',
+      uptimeMs: process.uptime() * 1000,
+    };
   }
 
-  // Readiness probe: Are dependencies ready?
-  async checkReadiness(): Promise<{ status: string; details: any }> {
-    const db = await this.checkDatabase(false); // suppress logs; exception filter handles critical logs
+  // Readiness probe
+  async checkReadiness(): Promise<ReadinessStatus> {
+    const db: DependencyStatus = await this.checkDatabase(false);
     return {
       status: db.status === 'up' ? 'ok' : 'error',
       details: { database: db },
     };
   }
 
-  // Periodically log health for monitoring 
-  private startPeriodicHealthCheck() {
-    this.healthInterval = setInterval(async () => {
-      const health = await this.checkReadiness();
-      if (health.status === 'ok') {
-        this.logger.log('Periodic health check passed', 'HealthService');
-      } else {
-        this.logger.warn(`Periodic health check failed: ${JSON.stringify(health.details)}`, 'HealthService');
-      }
-    }, this.intervalMs);
-  }
-
-  // Clear interval on shutdown
+  // Cleanup interval on shutdown
   onApplicationShutdown(signal?: string) {
     if (this.healthInterval) {
       clearInterval(this.healthInterval);

@@ -9,7 +9,7 @@ import { DEFAULT_ENV } from 'src/common/constants';
     NestConfigModule.forRoot({
       load: [configuration],
       isGlobal: true, // available everywhere
-      envFilePath: `.env.${process.env.NODE_ENV || DEFAULT_ENV}`, // dynamic per env
+      envFilePath: `.env/.env.${process.env.NODE_ENV || DEFAULT_ENV}`, // dynamic per env
     }),
   ],
 })

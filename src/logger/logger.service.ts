@@ -1,18 +1,21 @@
 // src/logger/logger.service.ts
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LogEntry, LogLevel } from '../common/interfaces/logger.interface';
+import { LogEntry, LogLevel } from './logger.interface';
 import { DEFAULT_CONTEXT, DEFAULT_ENV } from '../common/constants';
 
 @Injectable()
 export class LoggerService {
+  //properties
   private env: string;
 
+  //dependency injection
   constructor(private readonly configService: ConfigService) {
     // Dynamically get environment from config
     this.env = this.configService.get<string>('NODE_ENV', DEFAULT_ENV);
   }
 
+  //private method for formatting messages (cannot be accessed outside)
   private formatMessage(level: LogLevel, message: string, context?: string): LogEntry {
     return {
       timestamp: new Date().toISOString(),
@@ -23,6 +26,7 @@ export class LoggerService {
     };
   }
 
+  //public methods for different log levels
   log(message: string, context?: string) {
     console.log(JSON.stringify(this.formatMessage('INFO', message, context)));
   }

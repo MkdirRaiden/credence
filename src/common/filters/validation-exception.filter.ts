@@ -1,9 +1,14 @@
 // src/common/filters/validation-exception.filter.ts
-import { Catch, BadRequestException, ArgumentsHost } from '@nestjs/common';
+import { Catch, BadRequestException, ArgumentsHost, Injectable } from '@nestjs/common';
 import { BaseExceptionFilter } from './base-exception.filter';
+import { LoggerService } from '../../logger/logger.service';
 
+@Injectable()
 @Catch(BadRequestException)
 export class ValidationExceptionFilter extends BaseExceptionFilter {
+  constructor(protected readonly logger: LoggerService) {
+      super(logger);
+    }
   catch(exception: BadRequestException, host: ArgumentsHost) {
     const responseBody = exception.getResponse() as
       | string

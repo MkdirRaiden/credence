@@ -23,7 +23,7 @@ async function bootstrap() {
   // Start listening and log via logger service
   await app.listen(port);
   // Log server startup info
-  console.log(`Server running on http://localhost:${port}/api`, 'Bootstrap');
+  console.log(`Server running on http://localhost:${port}/api`);
 }
 
 bootstrap();

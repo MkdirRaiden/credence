@@ -1,11 +1,16 @@
 // src/common/filters/prisma-exception.filter.ts
-import { Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
+import { Catch, ArgumentsHost, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BaseExceptionFilter } from './base-exception.filter';
 import { gracefulShutdown } from '../utils/shutdown.util';
+import { LoggerService } from '../../logger/logger.service';
 
+@Injectable()
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter extends BaseExceptionFilter {
+  constructor(protected readonly logger: LoggerService) {
+      super(logger);
+    }
 
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
     let status = HttpStatus.INTERNAL_SERVER_ERROR;

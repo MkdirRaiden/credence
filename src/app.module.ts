@@ -6,7 +6,7 @@ import { HealthModule } from './health/health.module';
 import { LoggerModule } from './logger/logger.module';
 import { FiltersModule } from './common/filters/filters.module';
 import { InterceptorsModule } from './common/interceptors/response.module';
-import { AppController } from './app.controller';
+import { RootController } from './root.controller';
 
 
 @Module({
@@ -21,6 +21,6 @@ import { AppController } from './app.controller';
     //Feature modules
     UsersModule,
   ],
-  controllers: [AppController],
+  controllers: [RootController],
 })
 export class AppModule {}

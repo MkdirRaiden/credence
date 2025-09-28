@@ -1,11 +1,16 @@
-import { Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
+import { Catch, ArgumentsHost, HttpStatus, Injectable } from '@nestjs/common';
 import { ValidationError } from 'joi';
 import { BaseExceptionFilter } from './base-exception.filter';
 import { gracefulShutdown } from '../utils/shutdown.util';
+import { LoggerService } from '../../logger/logger.service';
 
+@Injectable()
 @Catch(ValidationError)
 export class ConfigValidationExceptionFilter extends BaseExceptionFilter<ValidationError> {
 
+  constructor(protected readonly logger: LoggerService) {
+      super(logger);
+    }
   catch(exception: ValidationError, host: ArgumentsHost) {
     this.handleResponse(
       host,

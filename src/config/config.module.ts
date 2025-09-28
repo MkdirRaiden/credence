@@ -2,15 +2,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import configuration from './configuration';
-import { getEnvFilePaths } from './config.helper';
+import { ConfigHelper } from './config.helper';
+import { configValidationSchema } from './config.schema';
 
 @Module({
   imports: [
     NestConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
-      envFilePath: getEnvFilePaths(), // dynamic
-      expandVariables: true,          // support ${VAR} inside env
+      envFilePath: ConfigHelper.getEnvFilePaths(),
+      expandVariables: true,
+      validationSchema: configValidationSchema,
+      validationOptions: { abortEarly: true }, // fail fast if missing env vars
     }),
   ],
 })

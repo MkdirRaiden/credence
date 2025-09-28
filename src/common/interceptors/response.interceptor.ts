@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { buildResponse } from '../utils/response-builder';
+import { buildResponse } from '../utils/response-builder.util';
 import { LoggerService } from '../../logger/logger.service';
 
 @Injectable()

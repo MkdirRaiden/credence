@@ -1,30 +1,33 @@
 // src/config/config.helper.ts
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'fs';
 import { DEFAULT_ENV } from 'src/common/constants';
+import { configValidationSchema } from './config.schema';
+import { gracefulShutdown } from '../common/utils/shutdown.util';
 
-export function getEnvFilePaths(): string[] {
-  const env = process.env.NODE_ENV || DEFAULT_ENV;
+export class ConfigHelper {
+  // Return the main and optional local env files that exist
+  static getEnvFilePaths(): string[] {
+    const env = process.env.NODE_ENV || DEFAULT_ENV;
+    const mainFile = path.resolve(process.cwd(), `env/.env.${env}`);
+    const localFile = path.resolve(process.cwd(), `env/.env.local`);
+    return [mainFile, localFile].filter((file) => fs.existsSync(file));
+  }
 
-  const possibleFiles = [
-    path.resolve(process.cwd(), `env/.env.${env}`),
-    path.resolve(process.cwd(), `env/.env.${env}.local`),
-    path.resolve(process.cwd(), `env/.env.${DEFAULT_ENV}`),
-  ];
+  // Validate critical environment variables before app bootstrap
+  static validatePreConfig() {
+    // Pick only the critical vars from the existing schema
+    const preSchema = configValidationSchema
+      .fork(['NODE_ENV', 'DATABASE_URL'], (s) => s.required())
+      .unknown(); // allow extra vars
 
-  // Filter only files
-  return possibleFiles.filter((filePath) => {
-    try {
-      return fs.existsSync(filePath) && fs.statSync(filePath).isFile();
-    } catch {
-      return false;
+    const { error, value } = preSchema.validate(process.env, { abortEarly: true });
+
+    if (error) {
+      const message = `Critical environment variables missing or invalid: ${error.message}`;
+      gracefulShutdown(undefined, message, 0);
     }
-  });
-}
 
-// Helper to ensure required env vars are set
-export function getEnvVar(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing environment variable: ${name}`);
-  return value;
+    return value;
+  }
 }

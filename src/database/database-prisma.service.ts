@@ -1,9 +1,11 @@
 //src/database/database-prisma.service.ts
-import { Injectable, OnModuleInit, OnApplicationShutdown } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnApplicationShutdown } 
+from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { retry } from '../common/utils/retry.util';
 import { ConfigService } from '@nestjs/config';
-import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '../common/constants';
+import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } 
+from '../common/constants';
 
 @Injectable()
 export class DatabasePrismaService extends PrismaClient implements OnModuleInit, OnApplicationShutdown {

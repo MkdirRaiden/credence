@@ -2,6 +2,7 @@
 import { Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BaseExceptionFilter } from './base-exception.filter';
+import { gracefulShutdown } from '../utils/shutdown.util';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter extends BaseExceptionFilter {
@@ -31,12 +32,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 
     // Shutdown only for critical DB failures
     if (criticalFailure) {
-      this.logger.error(
-        'Critical database failure — shutting down application...',
-        undefined,
-        'Shutdown',
-      );
-      setTimeout(() => process.exit(1), 200);
+       gracefulShutdown(this.logger, 'Critical database failure — shutting down application...');
     }
   }
 }

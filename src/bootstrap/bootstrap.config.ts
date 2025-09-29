@@ -7,8 +7,6 @@ import { PrismaClientExceptionFilter } from
 '../common/filters/prisma-exception.filter';
 import { ValidationExceptionFilter } from 
 '../common/filters/validation-exception.filter';
-import { ConfigValidationExceptionFilter } from 
-'../common/filters/config-validation-exception.filter';
 
 // Global Interceptors
 export const GLOBAL_INTERCEPTORS = [ResponseInterceptor];
@@ -20,7 +18,6 @@ export const GLOBAL_INTERCEPTORS = [ResponseInterceptor];
 // 3. ValidationExceptionFilter → handle request DTO validation errors
 // 4. AllExceptionsFilter → catch any remaining unhandled exceptions
 export const GLOBAL_FILTERS = [
-  ConfigValidationExceptionFilter,
   PrismaClientExceptionFilter,
   ValidationExceptionFilter,
   AllExceptionsFilter,

@@ -1,11 +1,13 @@
 // src/config/config.helper.ts
+import Joi from 'joi';
 import * as path from 'path';
 import * as fs from 'fs';
-import { DEFAULT_ENV } from 'src/common/constants';
+import { DEFAULT_ENV, CRITICAL_ENV_VARS } from 'src/common/constants';
 import { configValidationSchema } from './config.schema';
-import { gracefulShutdown } from '../common/utils/shutdown.util';
+import { formatMessage } from 'src/common/utils/logger.util';
 
 export class ConfigHelper {
+
   // Return the main and optional local env files that exist
   static getEnvFilePaths(): string[] {
     const env = process.env.NODE_ENV || DEFAULT_ENV;
@@ -14,20 +16,31 @@ export class ConfigHelper {
     return [mainFile, localFile].filter((file) => fs.existsSync(file));
   }
 
-  // Validate critical environment variables before app bootstrap
+  // Validate environment variables before app bootstrap
   static validatePreConfig() {
-    // Pick only the critical vars from the existing schema
-    const preSchema = configValidationSchema
-      .fork(['NODE_ENV', 'DATABASE_URL'], (s) => s.required())
-      .unknown(); // allow extra vars
+    // Create a pre-schema with only the critical vars marked as required
+    const criticalSchema = Joi.object(
+      Object.fromEntries(
+        CRITICAL_ENV_VARS.map((key) => [key, configValidationSchema.extract(key).required()])
+      )
+    ).unknown();
+    // Validate critical vars
+    const { error: criticalError } = criticalSchema.validate(process.env, { abortEarly: true });
 
-    const { error, value } = preSchema.validate(process.env, { abortEarly: true });
-
-    if (error) {
-      const message = `Critical environment variables missing or invalid: ${error.message}`;
-      gracefulShutdown(undefined, message, 0);
+    if (criticalError) {
+      console.error(
+        JSON.stringify(formatMessage('ERROR', `Critical environment variables missing or invalid: ${criticalError.message}`, 'ConfigHelper'))
+      );
+      process.exit(1); // immediate exit on critical config failure
     }
 
-    return value;
+    // Validate ALL vars (non-critical included)
+    const { error: fullError } = configValidationSchema.validate(process.env, { abortEarly: false });
+
+    if (fullError) {
+      console.warn(
+        JSON.stringify(formatMessage('WARN', `Non-critical config issues: ${fullError.message}`, 'ConfigHelper')),
+      );
+    }
   }
-}
+} 

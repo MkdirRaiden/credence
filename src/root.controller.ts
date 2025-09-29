@@ -8,16 +8,16 @@ export class RootController {
 
   @Get()
   getRoot() {
-    const appName = this.config.get<string>('APP_NAME') || 'Credence API';
-    const env = this.config.get<string>('NODE_ENV') || 'development';
-    const version = this.config.get<string>('APP_VERSION') || '1.0.0';
+    const appName = this.config.get<string>('appName');
+    const env = this.config.get<string>('nodeEnv');
+    const version = this.config.get<string>('appVersion');
 
     const data = {
         version,
         name: appName,
         message: `Welcome to ${appName}!`,
         environment: env,
-        uptime: `${process.uptime().toFixed(0)}s`,
+        uptime: `${process.uptime().toFixed(0)}ms`,
         docs: '/api/docs', // if you add Swagger later
         health: '/api/health',
       }

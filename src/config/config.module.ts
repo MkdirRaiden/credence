@@ -10,7 +10,7 @@ import { ConfigHelper } from './config.helper';
       load: [configuration],
       isGlobal: true,
       envFilePath: ConfigHelper.getEnvFilePaths(),
-      expandVariables: true
+      expandVariables: true,
     }),
   ],
 })

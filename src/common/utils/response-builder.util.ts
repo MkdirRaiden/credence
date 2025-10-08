@@ -1,6 +1,6 @@
-// src/common/utils/response-builder.ts
-export function buildResponse(
-  data: any,
+// src/common/utils/response-builder.util.ts
+export function buildResponse<T>(
+  data: T,
   path: string,
   statusCode: number,
   success = true,
@@ -11,7 +11,7 @@ export function buildResponse(
     statusCode,
     message:
       message ?? (success ? 'Request successful' : 'Internal server error'),
-    data: success ? data : undefined,
+    data: success ? data : (undefined as T | undefined),
     timestamp: new Date().toISOString(),
     path,
   };

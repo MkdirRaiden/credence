@@ -1,5 +1,9 @@
-// src/common/filters/validation-exception.filter.ts
-import { Catch, BadRequestException, ArgumentsHost, Injectable } from '@nestjs/common';
+import {
+  Catch,
+  BadRequestException,
+  ArgumentsHost,
+  Injectable,
+} from '@nestjs/common';
 import { BaseExceptionFilter } from './base-exception.filter';
 import { LoggerService } from '../../logger/logger.service';
 
@@ -7,29 +11,29 @@ import { LoggerService } from '../../logger/logger.service';
 @Catch(BadRequestException)
 export class ValidationExceptionFilter extends BaseExceptionFilter {
   constructor(protected readonly logger: LoggerService) {
-      super(logger);
-    }
-  catch(exception: BadRequestException, host: ArgumentsHost) {
-    const responseBody = exception.getResponse() as
-      | string
-      | { statusCode?: number; message?: string | string[] };
+    super(logger);
+  }
 
+  catch(exception: BadRequestException, host: ArgumentsHost) {
+    const responseBody = exception.getResponse();
     let messages: string[] = [];
 
+    // Safely extract messages
     if (typeof responseBody === 'string') {
       messages = [responseBody];
-    } else if (Array.isArray(responseBody?.message)) {
-      messages = responseBody.message;
-    } else if (typeof responseBody?.message === 'string') {
-      messages = [responseBody.message];
+    } else if (
+      responseBody &&
+      typeof responseBody === 'object' &&
+      'message' in responseBody
+    ) {
+      const msg = (responseBody as { message?: string | string[] }).message;
+      if (Array.isArray(msg)) {
+        messages = msg;
+      } else if (typeof msg === 'string') {
+        messages = [msg];
+      }
     }
 
-    // Use the centralized handleResponse to log and send standardized JSON
-    this.handleResponse(
-      host,
-      400,
-      'Validation failed',
-      { errors: messages }
-    );
+    this.handleResponse(host, 400, 'Validation failed', { errors: messages });
   }
 }

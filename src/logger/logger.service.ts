@@ -23,8 +23,12 @@ export class LoggerService {
   error(message: string, trace?: string, context?: string) {
     console.error(
       JSON.stringify(
-        formatMessage('ERROR', `${message}${trace ? ` | Trace: ${trace}` : ''}`, context)
-      )
+        formatMessage(
+          'ERROR',
+          `${message}${trace ? ` | Trace: ${trace}` : ''}`,
+          context,
+        ),
+      ),
     );
   }
 

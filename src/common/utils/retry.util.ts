@@ -9,7 +9,7 @@ export interface RetryOptions {
 
 export async function retry<T>(
   operation: () => Promise<T>,
-  options?: RetryOptions
+  options?: RetryOptions,
 ): Promise<T> {
   const retries = options?.retries ?? DATABASE_MAX_RETRIES;
   const delay = options?.delay ?? DATABASE_RETRY_DELAY;
@@ -24,7 +24,9 @@ export async function retry<T>(
         throw err;
       }
       // Optionally log to console for observability
-      console.warn(`[${context}] Retry attempt ${attempt + 1} failed. Retrying in ${delay}ms...`);
+      console.warn(
+        `[${context}] Retry attempt ${attempt + 1} failed. Retrying in ${delay}ms...`,
+      );
       await new Promise((res) => setTimeout(res, delay));
     }
   }

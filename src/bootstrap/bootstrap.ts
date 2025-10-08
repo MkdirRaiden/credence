@@ -1,49 +1,68 @@
 // src/bootstrap/bootstrap.ts
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  INestApplication,
+  ValidationPipe,
+  NestInterceptor,
+  ExceptionFilter,
+  Type,
+} from '@nestjs/common';
 import helmet from 'helmet';
 import { ModuleRef } from '@nestjs/core';
 import { GLOBAL_FILTERS, GLOBAL_INTERCEPTORS } from './bootstrap.config';
+import { ConfigService } from '@nestjs/config';
 
 export class Bootstrap {
   // Configure essential middlewares (security, etc.)
   private static configureMiddlewares(app: INestApplication) {
     app.use(helmet());
+
+    const configService = app.get(ConfigService);
+    const allowedOrigins = configService.get<string[]>('allowedOrigins');
+
+    app.enableCors({
+      origin: allowedOrigins,
+      credentials: true,
+    });
   }
 
   // Register global pipes, filters, and interceptors
   private static configureGlobals(app: INestApplication, moduleRef: ModuleRef) {
-    // Global API prefix
     app.setGlobalPrefix('api');
 
-    // Directly register global ValidationPipe
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, transform: true }),
+    );
 
-    // Helper to resolve and register DI-based providers
-    const resolveAndRegister = (providers: any[], registerFn: (instance: any) => void) => {
+    const resolveAndRegister = <T>(
+      providers: (Type<T> | T)[],
+      registerFn: (instance: T) => void,
+    ) => {
       providers.forEach((provider) => {
         if (typeof provider === 'object') {
-          registerFn(provider); // Already an instance
+          registerFn(provider as T);
         } else {
-          const instance = moduleRef.get(provider, { strict: false });
-          if (instance) registerFn(instance); // Resolve class from DI
+          const instance = moduleRef.get(provider as Type<T>, {
+            strict: false,
+          });
+          if (instance) registerFn(instance);
         }
       });
     };
 
-    // Interceptors
-    resolveAndRegister(GLOBAL_INTERCEPTORS, (i) => app.useGlobalInterceptors(i));
+    resolveAndRegister<NestInterceptor>(GLOBAL_INTERCEPTORS, (i) =>
+      app.useGlobalInterceptors(i),
+    );
 
-    // Filters
-    resolveAndRegister(GLOBAL_FILTERS, (f) => app.useGlobalFilters(f));
+    resolveAndRegister<ExceptionFilter>(GLOBAL_FILTERS, (f) =>
+      app.useGlobalFilters(f),
+    );
   }
 
-  // Configure graceful shutdown hooks
   private static configureShutdownHooks(app: INestApplication) {
     app.enableShutdownHooks();
   }
 
-  // Bootstrap initialization
-  public static async init(app: INestApplication) {
+  public static init(app: INestApplication) {
     const moduleRef = app.get(ModuleRef);
     this.configureMiddlewares(app);
     this.configureGlobals(app, moduleRef);

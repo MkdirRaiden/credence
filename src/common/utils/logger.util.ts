@@ -16,7 +16,7 @@ export function formatMessage(
   level: LogLevel,
   message: string,
   context?: string,
-  env?: string
+  env?: string,
 ): LogEntry {
   return {
     timestamp: new Date().toISOString(),

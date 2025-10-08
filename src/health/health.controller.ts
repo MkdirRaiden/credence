@@ -8,7 +8,7 @@ export class HealthController {
 
   // Liveness endpoint: app running
   @Get('live')
-  async live() {
+  live() {
     return this.healthService.checkLiveness();
   }
 
@@ -25,7 +25,7 @@ export class HealthController {
     return readiness;
   }
 
-  // Legacy /health endpoint (optional) 
+  // Legacy /health endpoint (optional)
   @Get()
   async health() {
     return this.ready(); // alias for readiness

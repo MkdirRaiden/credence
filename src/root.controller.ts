@@ -13,14 +13,14 @@ export class RootController {
     const version = this.config.get<string>('appVersion');
 
     const data = {
-        version,
-        name: appName,
-        message: `Welcome to ${appName}!`,
-        environment: env,
-        uptime: `${process.uptime().toFixed(0)}ms`,
-        docs: '/api/docs', // if you add Swagger later
-        health: '/api/health',
-      }
-      return data;
+      version,
+      name: appName,
+      message: `Welcome to ${appName}!`,
+      environment: env,
+      uptime: `${process.uptime().toFixed(0)}s`,
+      docs: '/api/docs', // if you add Swagger later
+      health: '/api/health',
+    };
+    return data;
   }
 }

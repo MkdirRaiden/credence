@@ -9,8 +9,8 @@ import { LoggerService } from '../../logger/logger.service';
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter extends BaseExceptionFilter {
   constructor(protected readonly logger: LoggerService) {
-      super(logger);
-    }
+    super(logger);
+  }
 
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -18,18 +18,25 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     let criticalFailure = false;
 
     switch (exception.code) {
-      case 'P2002': // Unique constraint
+      case 'P2002': {
+        // Unique constraint
         status = HttpStatus.CONFLICT;
-        const fields = exception.meta?.target as string[] | undefined;
+        const fields = Array.isArray(exception.meta?.target)
+          ? exception.meta.target
+          : undefined;
         message = `Unique constraint failed on fields: ${fields?.join(', ') ?? 'unknown'}`;
         break;
-      case 'P2025': // Record not found
+      }
+      case 'P2025': {
+        // Record not found
         status = HttpStatus.NOT_FOUND;
         message = 'Record not found';
         break;
-      default:
+      }
+      default: {
         message = exception.message;
         criticalFailure = true; // unknown DB error → treat as critical
+      }
     }
 
     // Centralized logging + JSON response
@@ -37,7 +44,10 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
 
     // Shutdown only for critical DB failures
     if (criticalFailure) {
-       gracefulShutdown(this.logger, 'Critical database failure — shutting down application...');
+      gracefulShutdown(
+        this.logger,
+        'Critical database failure — shutting down application...',
+      );
     }
   }
 }

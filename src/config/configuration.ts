@@ -1,6 +1,11 @@
 // src/config/configuration.ts
-import { APP_NAME, APP_VERSION, DEFAULT_ENV, DEFAULT_PORT } 
-from 'src/common/constants';
+import {
+  APP_NAME,
+  APP_VERSION,
+  DEFAULT_ENV,
+  DEFAULT_PORT,
+  DEFAULT_ALLOWED_ORIGINS,
+} from 'src/common/constants';
 
 // App config factory
 export default () => ({
@@ -10,6 +15,7 @@ export default () => ({
   appVersion: process.env.APP_VERSION || APP_VERSION,
   database: {
     url: process.env.DATABASE_URL!, // guaranteed by Joi validation
-    shadowUrl: process.env.SHADOW_DATABASE_URL || null,
   },
+  allowedOrigins:
+    process.env.ALLOWED_ORIGINS?.split(',') || DEFAULT_ALLOWED_ORIGINS,
 });

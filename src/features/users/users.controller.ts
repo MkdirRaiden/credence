@@ -19,7 +19,9 @@ export class UsersController {
   }
 
   @Get('email/:email')
-  async getUserByEmail(@Param('email') email: string): Promise<UserResponseDto> {
+  async getUserByEmail(
+    @Param('email') email: string,
+  ): Promise<UserResponseDto> {
     return this.usersService.findByEmail(email);
   }
 }

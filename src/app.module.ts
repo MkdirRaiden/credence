@@ -8,7 +8,6 @@ import { FiltersModule } from './common/filters/filters.module';
 import { InterceptorsModule } from './common/interceptors/response.module';
 import { RootController } from './root.controller';
 
-
 @Module({
   imports: [
     //Base modules

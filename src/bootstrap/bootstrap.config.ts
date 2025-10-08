@@ -1,12 +1,8 @@
 // src/bootstrap/bootstrap.config.ts
-import { ResponseInterceptor } from 
-'../common/interceptors/response.interceptor';
-import { AllExceptionsFilter } from 
-'../common/filters/all-exceptions.filter';
-import { PrismaClientExceptionFilter } from 
-'../common/filters/prisma-exception.filter';
-import { ValidationExceptionFilter } from 
-'../common/filters/validation-exception.filter';
+import { ResponseInterceptor } from '../common/interceptors/response.interceptor';
+import { AllExceptionsFilter } from '../common/filters/all-exceptions.filter';
+import { PrismaClientExceptionFilter } from '../common/filters/prisma-exception.filter';
+import { ValidationExceptionFilter } from '../common/filters/validation-exception.filter';
 
 // Global Interceptors
 export const GLOBAL_INTERCEPTORS = [ResponseInterceptor];

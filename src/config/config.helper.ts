@@ -1,13 +1,11 @@
-// src/config/config.helper.ts
 import Joi from 'joi';
 import * as path from 'path';
 import * as fs from 'fs';
 import { DEFAULT_ENV, CRITICAL_ENV_VARS } from 'src/common/constants';
 import { configValidationSchema } from './config.schema';
-import { formatMessage } from 'src/common/utils/logger.util';
+import { BootstrapLogger } from 'src/logger/bootstrap-logger';
 
 export class ConfigHelper {
-
   // Return the main and optional local env files that exist
   static getEnvFilePaths(): string[] {
     const env = process.env.NODE_ENV || DEFAULT_ENV;
@@ -21,26 +19,37 @@ export class ConfigHelper {
     // Create a pre-schema with only the critical vars marked as required
     const criticalSchema = Joi.object(
       Object.fromEntries(
-        CRITICAL_ENV_VARS.map((key) => [key, configValidationSchema.extract(key).required()])
-      )
+        CRITICAL_ENV_VARS.map((key) => [
+          key,
+          configValidationSchema.extract(key).required(),
+        ]),
+      ),
     ).unknown();
+
     // Validate critical vars
-    const { error: criticalError } = criticalSchema.validate(process.env, { abortEarly: true });
+    const { error: criticalError } = criticalSchema.validate(process.env, {
+      abortEarly: true,
+    });
 
     if (criticalError) {
-      console.error(
-        JSON.stringify(formatMessage('ERROR', `Critical environment variables missing or invalid: ${criticalError.message}`, 'ConfigHelper'))
+      BootstrapLogger.error(
+        `Critical environment variables missing or invalid: ${criticalError.message}`,
+        undefined,
+        'ConfigHelper',
       );
       process.exit(1); // immediate exit on critical config failure
     }
 
     // Validate ALL vars (non-critical included)
-    const { error: fullError } = configValidationSchema.validate(process.env, { abortEarly: false });
+    const { error: fullError } = configValidationSchema.validate(process.env, {
+      abortEarly: false,
+    });
 
     if (fullError) {
-      console.warn(
-        JSON.stringify(formatMessage('WARN', `Non-critical config issues: ${fullError.message}`, 'ConfigHelper')),
+      BootstrapLogger.warn(
+        `Non-critical config issues: ${fullError.message}`,
+        'ConfigHelper',
       );
     }
   }
-} 
+}

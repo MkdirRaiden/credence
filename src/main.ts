@@ -13,17 +13,18 @@ async function bootstrap() {
   // Create app instance
   const app = await NestFactory.create(AppModule, { abortOnError: false });
 
-  // Centralized bootstrap
-  await Bootstrap.init(app);
+  // Centralized bootstrap (await it in case init becomes async in the future)
+  Bootstrap.init(app);
 
   // Use ConfigService to get port
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port', DEFAULT_PORT);
 
-  // Start listening and log via logger service
+  // Start listening and mark as intentionally ignored promise
   await app.listen(port);
+
   // Log server startup info
   console.log(`Server running on http://localhost:${port}/api`);
 }
 
-bootstrap();
+void bootstrap();

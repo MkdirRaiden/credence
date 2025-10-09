@@ -40,14 +40,7 @@ export class ResponseInterceptor<T>
     const startTime = Date.now();
 
     return next.handle().pipe(
-      map((data: T) => {
-        const formattedResponse = buildResponse(
-          data,
-          request.url,
-          response.statusCode,
-        );
-        return formattedResponse;
-      }),
+      map((data: T) => buildResponse(data, request.url, response.statusCode)),
       tap((formattedResponse: StandardResponse<T>) => {
         const duration = Date.now() - startTime;
         this.logger.debug(

@@ -10,8 +10,7 @@ export class ConfigHelper {
   static getEnvFilePaths(): string[] {
     const env = process.env.NODE_ENV || DEFAULT_ENV;
     const mainFile = path.resolve(process.cwd(), `env/.env.${env}`);
-    const localFile = path.resolve(process.cwd(), `env/.env.local`);
-    return [mainFile, localFile].filter((file) => fs.existsSync(file));
+    return fs.existsSync(mainFile) ? [mainFile] : [];
   }
 
   // Validate environment variables before app bootstrap

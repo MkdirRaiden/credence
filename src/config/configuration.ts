@@ -14,7 +14,7 @@ export default () => ({
   appName: process.env.APP_NAME || APP_NAME,
   appVersion: process.env.APP_VERSION || APP_VERSION,
   database: {
-    url: process.env.DATABASE_URL!, // guaranteed by Joi validation
+    url: process.env.DATABASE_URL, // guaranteed by Joi validation
   },
   allowedOrigins:
     process.env.ALLOWED_ORIGINS?.split(',') || DEFAULT_ALLOWED_ORIGINS,

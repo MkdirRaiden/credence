@@ -26,8 +26,9 @@ const config: Config = {
   // Automatically clear mocks between tests
   clearMocks: true,
 
-  // No setup files yet
+  // jest.config.ts
   setupFiles: [],
+
 };
 
 export default config;

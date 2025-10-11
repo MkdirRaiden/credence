@@ -1,4 +1,3 @@
-// __tests__/unit/common/filters/prisma-exception.filter.spec.ts
 import { PrismaClientExceptionFilter } from '@/common/filters/prisma-exception.filter';
 import { LoggerService } from '@/logger/logger.service';
 import { Prisma } from '@prisma/client';

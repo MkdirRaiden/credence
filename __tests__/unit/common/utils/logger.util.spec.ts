@@ -1,4 +1,3 @@
-// __tests__/unit/common/utils/logger.util.spec.ts
 import { formatMessage } from '@/common/utils/logger.util';
 import { DEFAULT_ENV, DEFAULT_CONTEXT } from '@/common/constants';
 

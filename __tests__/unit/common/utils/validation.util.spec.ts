@@ -16,7 +16,7 @@ describe('commaSeparatedValidator', () => {
     const { error } = schema.validate('a,2,b$');
     expect(error).toBeDefined();
 
-    // ✅ Correct way to access custom message
+    // Correct way to access custom message
     const customMessage = error?.details[0]?.context?.message;
     expect(customMessage).toContain('Invalid word(s)');
   });

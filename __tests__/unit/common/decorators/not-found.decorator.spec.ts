@@ -1,4 +1,3 @@
-// __tests__/unit/common/decorators/not-found.decorator.spec.ts
 import { NotFound } from '@/common/decorators/not-found.decorator';
 import { NotFoundException } from '@nestjs/common';
 

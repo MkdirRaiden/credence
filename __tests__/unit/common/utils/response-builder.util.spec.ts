@@ -1,4 +1,3 @@
-// __tests__/unit/common/utils/response-builder.util.spec.ts
 import { buildResponse } from '@/common/utils/response-builder.util';
 
 describe('buildResponse', () => {

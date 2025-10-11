@@ -1,4 +1,3 @@
-// __tests__/unit/common/utils/shutdown.util.spec.ts
 import { LoggerService } from '@/logger/logger.service';
 import { gracefulShutdown } from '@/common/utils/shutdown.util';
 

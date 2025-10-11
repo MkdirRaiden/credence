@@ -1,4 +1,3 @@
-// __tests__/unit/common/filters/validation-exception.filter.spec.ts
 import { ValidationExceptionFilter } from '@/common/filters/validation-exception.filter';
 import { BadRequestException } from '@nestjs/common';
 

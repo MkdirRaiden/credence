@@ -16,6 +16,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:integration": "NODE_ENV=test jest --roots __tests__/integration",
     "test:e2e": "jest --config ./__tests__/jest-e2e.json",
     "prisma:reset:dev": "./scripts/prisma-reset.sh development",
     "prisma:migrate:dev": "./scripts/prisma-migrate.sh development",

@@ -1,9 +1,9 @@
-import { ConfigHelper } from 'src/config/config.helper';
-import { CRITICAL_ENV_VARS } from 'src/common/constants';
-import { BootstrapLogger } from 'src/logger/bootstrap-logger';
+import { ConfigHelper } from '@/config/config.helper';
+import { CRITICAL_ENV_VARS } from '@/common/constants';
+import { BootstrapLogger } from '@/logger/bootstrap-logger';
 
 // Mock BootstrapLogger
-jest.mock('src/logger/bootstrap-logger', () => ({
+jest.mock('@/logger/bootstrap-logger', () => ({
   BootstrapLogger: {
     error: jest.fn(),
     warn: jest.fn(),

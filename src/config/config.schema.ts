@@ -1,20 +1,20 @@
 // src/config/config.schema.ts
 import * as Joi from 'joi';
-import { commaSeparatedValidator } from 'src/common/utils/validation.util';
+import { commaSeparatedValidator } from '@/common/utils/validation.util';
 import {
   APP_NAME,
   APP_VERSION,
   DEFAULT_ALLOWED_ORIGINS,
-  DEFAULT_ENV,
-  DEFAULT_PORT,
+  NODE_ENV,
+  PORT,
   VALID_NODE_ENVS,
-} from 'src/common/constants';
+} from '@/common/constants';
 
 export const configValidationSchema = Joi.object({
   NODE_ENV: Joi.string()
     .valid(...VALID_NODE_ENVS)
-    .default(DEFAULT_ENV),
-  PORT: Joi.number().default(DEFAULT_PORT),
+    .default(NODE_ENV),
+  PORT: Joi.number().default(PORT),
   DATABASE_URL: Joi.string().uri().required(),
   APP_NAME: Joi.string().default(APP_NAME).optional(),
   APP_VERSION: Joi.string().default(APP_VERSION).optional(),

@@ -1,3 +1,4 @@
+// src/common/decorators/not-found.decorator.ts
 import { NotFoundException } from '@nestjs/common';
 
 type AsyncMethod<T = unknown, Args extends unknown[] = unknown[]> = (

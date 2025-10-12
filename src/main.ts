@@ -1,10 +1,10 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { Bootstrap } from './bootstrap/bootstrap';
-import { DEFAULT_PORT, GLOBAL_PREFIX } from './common/constants';
-import { ConfigHelper } from './config/config.helper';
-import { ConfigService } from '@nestjs/config';
-import { BootstrapLogger } from '@/logger/bootstrap-logger';
+import { AppModule } from '@/app.module';
+import { Bootstrap } from '@/bootstrap/bootstrap';
+import { ConfigHelper } from '@/config/config.helper';
+import { BootstrapHelpers } from '@/bootstrap/bootstrap.helpers';
+import { BootstrapLogger } from './logger/bootstrap-logger';
 
 // Pre-configuration validation
 ConfigHelper.validatePreConfig();
@@ -17,16 +17,13 @@ async function bootstrap() {
   // Centralized bootstrap
   Bootstrap.init(app);
 
-  // Use ConfigService to get port
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('port', DEFAULT_PORT);
-  const prefix = configService.get<string>('globalPrefix', GLOBAL_PREFIX);
-
-  // Start listening and mark as intentionally ignored promise
+  //start server
+  const { port, prefix } = await BootstrapHelpers.getServerInfo(app);
   await app.listen(port);
 
-  // Log server startup info
-  BootstrapLogger.log(`Server running on http://localhost:${port}/${prefix}`);
+  // Log server info
+  const message = `Server running on http://localhost:${port}/${prefix}`;
+  BootstrapLogger.log(message, 'Bootstrap');
 }
 
 void bootstrap();

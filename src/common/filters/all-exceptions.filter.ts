@@ -1,3 +1,4 @@
+// src/common/filters/all-exceptions.filter.ts
 import {
   Catch,
   HttpException,
@@ -5,8 +6,8 @@ import {
   ArgumentsHost,
   Injectable,
 } from '@nestjs/common';
-import { BaseExceptionFilter } from './base-exception.filter';
-import { LoggerService } from '../../logger/logger.service';
+import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
+import { LoggerService } from '@/logger/logger.service';
 import { Response, Request } from 'express';
 
 @Injectable()

@@ -8,8 +8,8 @@ import {
 import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { buildResponse } from '../utils/response-builder.util';
-import { LoggerService } from '../../logger/logger.service';
+import { buildResponse } from '@/common/utils/response-builder.util';
+import { LoggerService } from '@/logger/logger.service';
 
 export interface StandardResponse<T> {
   success: boolean;

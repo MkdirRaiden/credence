@@ -2,8 +2,8 @@ import configuration from '@/config/configuration';
 import {
   APP_NAME,
   APP_VERSION,
-  DEFAULT_ENV,
-  DEFAULT_PORT,
+  NODE_ENV,
+  PORT,
   DEFAULT_ALLOWED_ORIGINS,
 } from '@/common/constants';
 
@@ -46,8 +46,8 @@ describe('configuration factory', () => {
 
     const config = configuration();
 
-    expect(config.nodeEnv).toBe(DEFAULT_ENV);
-    expect(config.port).toBe(DEFAULT_PORT);
+    expect(config.nodeEnv).toBe(NODE_ENV);
+    expect(config.port).toBe(PORT);
     expect(config.appName).toBe(APP_NAME);
     expect(config.appVersion).toBe(APP_VERSION);
     expect(config.database.url).toBe('postgres://user:pass@localhost:5432/db');

@@ -1,7 +1,8 @@
+// src/common/filters/filters.module.ts
 import { Module } from '@nestjs/common';
-import { AllExceptionsFilter } from './all-exceptions.filter';
-import { PrismaClientExceptionFilter } from './prisma-exception.filter';
-import { ValidationExceptionFilter } from './validation-exception.filter';
+import { AllExceptionsFilter } from '@/common/filters/all-exceptions.filter';
+import { PrismaClientExceptionFilter } from '@/common/filters/prisma-exception.filter';
+import { ValidationExceptionFilter } from '@/common/filters/validation-exception.filter';
 
 @Module({
   providers: [

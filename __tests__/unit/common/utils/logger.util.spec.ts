@@ -1,5 +1,5 @@
 import { formatMessage } from '@/common/utils/logger.util';
-import { DEFAULT_ENV, DEFAULT_CONTEXT } from '@/common/constants';
+import { NODE_ENV, DEFAULT_CONTEXT } from '@/common/constants';
 
 describe('formatMessage', () => {
   it('should format a log message with all fields', () => {
@@ -16,7 +16,7 @@ describe('formatMessage', () => {
     const log = formatMessage('ERROR', 'Default test');
 
     expect(log.context).toBe(DEFAULT_CONTEXT);
-    expect(log.env).toBe(DEFAULT_ENV);
+    expect(log.env).toBe(NODE_ENV);
     expect(log.message).toBe('Default test');
     expect(log.level).toBe('ERROR');
   });

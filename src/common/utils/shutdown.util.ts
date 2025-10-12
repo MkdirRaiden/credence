@@ -1,6 +1,6 @@
 // src/common/utils/shutdown.util.ts
-import { LoggerService } from '../../logger/logger.service';
-import { SHUTDOWN_TIMEOUT_MS } from '../constants';
+import { LoggerService } from '@/logger/logger.service';
+import { SHUTDOWN_TIMEOUT_MS } from '@/common/constants';
 
 export function gracefulShutdown(
   logger: LoggerService,

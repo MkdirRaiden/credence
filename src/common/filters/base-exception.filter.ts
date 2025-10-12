@@ -1,7 +1,8 @@
+// src/common/filters/base-exception.filter.ts
 import { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { LoggerService } from '../../logger/logger.service';
-import { buildResponse } from '../utils/response-builder.util';
+import { LoggerService } from '@/logger/logger.service';
+import { buildResponse } from '@/common/utils/response-builder.util';
 
 export abstract class BaseExceptionFilter<T = unknown>
   implements ExceptionFilter

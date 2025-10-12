@@ -1,5 +1,5 @@
 // src/logger/logger.util.ts
-import { DEFAULT_CONTEXT, DEFAULT_ENV } from '../constants';
+import { DEFAULT_CONTEXT, NODE_ENV } from '@/common/constants';
 
 type LogLevel = 'INFO' | 'ERROR' | 'WARN' | 'DEBUG' | 'VERBOSE';
 
@@ -21,7 +21,7 @@ export function formatMessage(
   return {
     timestamp: new Date().toISOString(),
     level,
-    env: env || DEFAULT_ENV,
+    env: env || NODE_ENV,
     context: context || DEFAULT_CONTEXT,
     message,
   };

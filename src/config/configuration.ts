@@ -2,16 +2,16 @@
 import {
   APP_NAME,
   APP_VERSION,
-  DEFAULT_ENV,
-  DEFAULT_PORT,
+  NODE_ENV,
+  PORT,
   DEFAULT_ALLOWED_ORIGINS,
   GLOBAL_PREFIX,
-} from 'src/common/constants';
+} from '@/common/constants';
 
 // App config factory
 export default () => ({
-  nodeEnv: process.env.NODE_ENV || DEFAULT_ENV,
-  port: parseInt(process.env.PORT || String(DEFAULT_PORT), 10),
+  nodeEnv: process.env.NODE_ENV || NODE_ENV,
+  port: parseInt(process.env.PORT || String(PORT), 10),
   appName: process.env.APP_NAME || APP_NAME,
   appVersion: process.env.APP_VERSION || APP_VERSION,
   globalPrefix: process.env.GLOBAL_PREFIX || GLOBAL_PREFIX,

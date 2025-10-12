@@ -1,5 +1,5 @@
 import { ConfigHelper } from '@/config/config.helper';
-import { DEFAULT_ENV } from '@/common/constants';
+import { NODE_ENV } from '@/common/constants';
 import * as fs from 'node:fs';
 import * as path from 'path';
 
@@ -42,9 +42,9 @@ describe('ConfigHelper.getEnvFilePaths', () => {
     expect(files).toEqual([]);
   });
 
-  it('should use DEFAULT_ENV if NODE_ENV is not set', () => {
+  it('should use NODE_ENV if NODE_ENV is not set', () => {
     delete process.env.NODE_ENV;
-    const mainPath = path.resolve(process.cwd(), `env/.env.${DEFAULT_ENV}`);
+    const mainPath = path.resolve(process.cwd(), `env/.env.${NODE_ENV}`);
 
     (fs.existsSync as jest.Mock).mockImplementation(
       (filePath) => filePath === mainPath,

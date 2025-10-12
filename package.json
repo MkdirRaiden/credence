@@ -1,9 +1,20 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "credence",
   "version": "0.0.1",
-  "description": "Credence backend application with NestJS & Prisma",
+  "description": "Credence backend application — a professional, scalable NestJS & Prisma backend with structured modules, logging, and API documentation.",
+  "author": "Ahmed 1996raiden27@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MkdirRaiden/credence.git"
+  },
+  "license": "MIT",
   "private": true,
-  "license": "UNLICENSED",
+  "keywords": ["nestjs", "prisma", "typescript", "backend", "api"],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\"",

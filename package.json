@@ -23,6 +23,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -30,11 +31,16 @@
     "test:unit": "jest --roots __tests__/unit",
     "test:integration": "NODE_ENV=test jest --roots __tests__/integration",
     "test:e2e": "jest --config ./__tests__/jest-e2e.json",
-    "prisma:migrate": "bash ./scripts/prisma.sh migrate",
-    "prisma:reset": "bash ./scripts/prisma.sh reset",
-    "prisma:rebuild": "bash ./scripts/prisma.sh rebuild",
-    "prisma:generate": "npx prisma generate",
-    "prisma:studio": "npx prisma studio"
+
+    "prisma:fmt": "prisma format --schema ./prisma",
+    "prisma:validate:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma validate --schema ./prisma'",
+    "prisma:gen:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma generate --schema ./prisma'",
+    "prisma:studio": "prisma studio --schema ./prisma",
+
+    "prisma:migrate": "bash ./scripts/prisma/migrate.sh development",
+    "prisma:deploy": "bash ./scripts/prisma/deploy.sh production",
+    "prisma:reset": "bash ./scripts/prisma/reset.sh development",
+    "prisma:rebuild": "bash ./scripts/prisma/rebuild.sh development"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

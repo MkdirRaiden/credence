@@ -1,0 +1,30 @@
+//src/prisma/models/user.prisma
+model User {
+  // Core fields
+  id           String   @id @default(uuid())
+  email        String   @unique
+  phone        String?  @unique
+  passwordHash String?
+  role         UserRole @default(USER)
+
+  // Self-referral graph
+  referredById String?
+  referredBy   User?   @relation("Referrals", fields: [referredById], references: [id])
+  referrals    User[]  @relation("Referrals")
+
+  // Relations
+  referralCodes         ReferralCode[]
+  credits               CreditLedger[]
+  redemptionsAsReferrer ReferralRedemption[] @relation("Referrer")
+  redemptionsAsReferee  ReferralRedemption[] @relation("Referee")
+  otps                  OtpCode[]
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}

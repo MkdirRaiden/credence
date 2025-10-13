@@ -1,0 +1,47 @@
+{
+  // 1) Exclude generated Prisma artifacts from editor, search, and file watchers
+  "files.exclude": {
+    "**/node_modules/.prisma/**": true,
+    "**/node_modules/@prisma/**": true
+  },
+  "search.exclude": {
+    "**/node_modules/.prisma/**": true,
+    "**/node_modules/@prisma/**": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/.prisma/**": true,
+    "**/node_modules/@prisma/**": true
+  },
+
+  // 2) Prisma extension behavior
+  // If the Prisma extension still flags generated files, these reduce noise
+  "prisma.languageServer.trace.server": "off",
+  "prisma.openEditorsOnApply": false,
+  // Leave prismaFmt autodetected; set null only if a custom formatter path was set previously
+  "prisma.prismaFmtBinPath": null,
+
+  // 3) TypeScript: speed up by not indexing node_modules artifacts
+  "typescript.tsserver.watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority"
+  },
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  // 4) Formatting and lint integration (optional but recommended)
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.requireConfig": true,
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  // 5) Terminal/env consistency
+  // Ensures integrated terminal loads login shell for consistent PATH resolution
+  "terminal.integrated.defaultProfile.linux": "bash",
+
+  // 6) Files associations (optional)
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
+}

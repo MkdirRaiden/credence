@@ -1,0 +1,26 @@
+// prisma/models/otp.prisma
+model OtpCode {
+  // Core fields
+  id      String     @id @default(uuid())
+  user    User       @relation(fields: [userId], references: [id])
+  userId  String
+  channel OtpChannel
+
+  // Store only hash of OTP
+  codeHash   String
+  attempts   Int       @default(0)
+  expiresAt  DateTime
+  consumedAt DateTime?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+
+  // Indexes for efficient lookups
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+enum OtpChannel {
+  SMS
+  EMAIL
+}

@@ -1,0 +1,40 @@
+// src/prisma/models/ledger.prisma
+model CreditLedger {
+  // Core fields
+  id     String      @id @default(uuid())
+  user   User        @relation(fields: [userId], references: [id])
+  userId String
+  amount Int
+  event  CreditEvent
+
+  // Self-relation for compensations/expirations referencing an original entry
+  sourceLedgerId String?
+  sourceLedger   CreditLedger?  @relation("SourceLedger", fields: [sourceLedgerId], references: [id])
+  compensations  CreditLedger[] @relation("SourceLedger")
+
+  // Optional origin from a referral redemption (bidirectional relation)
+  referralRedemptionId String?
+  referralRedemption   ReferralRedemption? @relation("RedemptionLedger", fields: [referralRedemptionId], references: [id])
+
+  // Domain-level idempotency boundary
+  operationId String?
+  metadata    Json?
+
+  // Optional expiration for issued credits
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+
+  // Enforce per-user uniqueness of a domain operation
+  @@unique([userId, operationId], name: "uniq_user_operation")
+  // Indexes for efficient queries
+  @@index([userId, createdAt])
+  @@index([expiresAt])
+  @@index([referralRedemptionId])
+}
+
+enum CreditEvent {
+  ISSUE
+  REVOKE
+  REFUND
+  EXPIRE
+}

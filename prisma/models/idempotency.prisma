@@ -1,0 +1,35 @@
+//src/prisma/models/idempotency.prisma
+model IdempotencyRecord {
+  // Core fields
+  id             String            @id @default(uuid())
+  scope          IdempotencyScope
+  idempotencyKey String
+  status         IdempotencyStatus @default(STARTED)
+
+  // Optional fields for additional safety & debugging
+  fingerprint  String?
+  responseHash String?
+  lockedAt     DateTime?
+  expiresAt    DateTime?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Enforce uniqueness of (scope, idempotencyKey)
+  @@unique([scope, idempotencyKey], name: "uniq_scope_key")
+  // Indexes for efficient lookups
+  @@index([status, updatedAt])
+  @@index([expiresAt])
+}
+
+enum IdempotencyScope {
+  API
+  JOB
+}
+
+enum IdempotencyStatus {
+  STARTED
+  SUCCEEDED
+  FAILED
+}

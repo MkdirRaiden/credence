@@ -1,61 +1,61 @@
-// // prisma/models/referal.prisma
-// model ReferralCode {
-//   // Core fields
-//   id          String  @id @default(uuid())
-//   owner       User    @relation(fields: [ownerUserId], references: [id])
-//   ownerUserId String
-//   code        String  @unique
-//   active      Boolean @default(true)
+// prisma/models/referal.prisma
+model ReferralCode {
+  // Core fields
+  id          String  @id @default(uuid())
+  owner       User    @relation(fields: [ownerUserId], references: [id])
+  ownerUserId String
+  code        String  @unique
+  active      Boolean @default(true)
 
-//   // Optional fields for advanced features
-//   startsAt               DateTime?
-//   endsAt                 DateTime?
-//   maxRedemptionsPerMonth Int?
+  // Optional fields for advanced features
+  startsAt               DateTime?
+  endsAt                 DateTime?
+  maxRedemptionsPerMonth Int?
 
-//   // Timestamps
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   // Back-reference to all redemptions of this code
-//   redemptions ReferralRedemption[]
+  // Back-reference to all redemptions of this code
+  redemptions ReferralRedemption[]
 
-//   // Indexes for efficient queries
-//   @@index([ownerUserId])
-//   @@index([active, startsAt, endsAt])
-// }
+  // Indexes for efficient queries
+  @@index([ownerUserId])
+  @@index([active, startsAt, endsAt])
+}
 
-// // Each redemption represents a referee using a referral code
-// model ReferralRedemption {
-//   // Core fields
-//   id             String           @id @default(uuid())
-//   referrer       User             @relation("Referrer", fields: [referrerId], references: [id])
-//   referrerId     String
-//   referee        User             @relation("Referee", fields: [refereeId], references: [id])
-//   refereeId      String
-//   referralCode   ReferralCode     @relation(fields: [referralCodeId], references: [id])
-//   referralCodeId String
-//   status         RedemptionStatus @default(PENDING)
+// Each redemption represents a referee using a referral code
+model ReferralRedemption {
+  // Core fields
+  id             String           @id @default(uuid())
+  referrer       User             @relation("Referrer", fields: [referrerId], references: [id])
+  referrerId     String
+  referee        User             @relation("Referee", fields: [refereeId], references: [id])
+  refereeId      String
+  referralCode   ReferralCode     @relation(fields: [referralCodeId], references: [id])
+  referralCodeId String
+  status         RedemptionStatus @default(PENDING)
 
-//   // Optional admin fields for approved/rejected redemptions
-//   reason         String?
-//   idempotencyKey String?
+  // Optional admin fields for approved/rejected redemptions
+  reason         String?
+  idempotencyKey String?
 
-//   // Timestamps
-//   createdAt DateTime  @default(now())
-//   decidedAt DateTime?
+  // Timestamps
+  createdAt DateTime  @default(now())
+  decidedAt DateTime?
 
-//   // Back-reference to all ledger entries created from this redemption
-//   ledgerEntries CreditLedger[] @relation("RedemptionLedger")
+  // Back-reference to all ledger entries created from this redemption
+  ledgerEntries CreditLedger[] @relation("RedemptionLedger")
 
-//   // Each referee can redeem a specific code only once
-//   @@unique([referralCodeId, refereeId], name: "uniq_code_referee")
-//   // Indexes for efficient queries
-//   @@index([referrerId, createdAt])
-//   @@index([refereeId, createdAt])
-// }
+  // Each referee can redeem a specific code only once
+  @@unique([referralCodeId, refereeId], name: "uniq_code_referee")
+  // Indexes for efficient queries
+  @@index([referrerId, createdAt])
+  @@index([refereeId, createdAt])
+}
 
-// enum RedemptionStatus {
-//   PENDING
-//   APPROVED
-//   REJECTED
-// }
+enum RedemptionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

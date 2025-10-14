@@ -36,6 +36,7 @@
     "prisma:validate:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma validate --schema ./prisma'",
     "prisma:gen:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma generate --schema ./prisma'",
     "prisma:studio": "prisma studio --schema ./prisma",
+    "prisma:clean": "rm -rf node_modules/.prisma",
 
     "prisma:migrate": "bash ./scripts/prisma/migrate.sh development",
     "prisma:deploy": "bash ./scripts/prisma/deploy.sh production",

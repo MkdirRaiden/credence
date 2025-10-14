@@ -2,27 +2,27 @@
   "$schema": "https://json.schemastore.org/package.json",
   "name": "credence",
   "version": "0.0.1",
-  "description": "Credence backend application — a professional, scalable NestJS & Prisma backend with structured modules, logging, and API documentation.",
+  "private": true,
   "author": "Ahmed 1996raiden27@gmail.com",
+  "license": "MIT",
+  "keywords": ["nestjs", "prisma", "typescript", "backend", "api"],
+  "description": "Credence backend application — a professional, scalable NestJS & Prisma backend with structured modules, logging, and API documentation.",
   "repository": {
     "type": "git",
     "url": "https://github.com/MkdirRaiden/credence.git"
   },
-  "license": "MIT",
-  "private": true,
-  "keywords": ["nestjs", "prisma", "typescript", "backend", "api"],
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=9.0.0"
   },
   "scripts": {
-    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\"",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
 
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",

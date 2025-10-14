@@ -8,16 +8,16 @@ model User {
   role         UserRole @default(USER)
 
   // Self-referral graph
-  referredById String?
-  referredBy   User?   @relation("Referrals", fields: [referredById], references: [id])
-  referrals    User[]  @relation("Referrals")
+  // referredById String?
+  // referredBy   User?   @relation("Referrals", fields: [referredById], references: [id])
+  // referrals    User[]  @relation("Referrals")
 
-  // Relations
-  referralCodes         ReferralCode[]
-  credits               CreditLedger[]
-  redemptionsAsReferrer ReferralRedemption[] @relation("Referrer")
-  redemptionsAsReferee  ReferralRedemption[] @relation("Referee")
-  otps                  OtpCode[]
+  // // Relations
+  // referralCodes         ReferralCode[]
+  // credits               CreditLedger[]
+  // redemptionsAsReferrer ReferralRedemption[] @relation("Referrer")
+  // redemptionsAsReferee  ReferralRedemption[] @relation("Referee")
+  // otps                  OtpCode[]
 
   // Timestamps
   createdAt DateTime @default(now())

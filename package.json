@@ -5,7 +5,13 @@
   "private": true,
   "author": "Ahmed 1996raiden27@gmail.com",
   "license": "MIT",
-  "keywords": ["nestjs", "prisma", "typescript", "backend", "api"],
+  "keywords": [
+    "nestjs",
+    "prisma",
+    "typescript",
+    "backend",
+    "api"
+  ],
   "description": "Credence backend application — a professional, scalable NestJS & Prisma backend with structured modules, logging, and API documentation.",
   "repository": {
     "type": "git",
@@ -32,16 +38,16 @@
     "test:integration": "NODE_ENV=test jest --roots __tests__/integration",
     "test:e2e": "jest --config ./__tests__/jest-e2e.json",
 
-    "prisma:fmt": "prisma format --schema ./prisma",
-    "prisma:validate:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma validate --schema ./prisma'",
-    "prisma:gen:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma generate --schema ./prisma'",
-    "prisma:studio": "prisma studio --schema ./prisma",
-    "prisma:clean": "rm -rf node_modules/.prisma",
+    "prisma:fmt": "prisma format --schema ./prisma/schema.prisma",
+    "prisma:validate:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma validate --schema ./prisma/schema.prisma'",
+    "prisma:gen:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma generate --schema ./prisma/schema.prisma'",
+    "prisma:studio": "prisma studio --schema ./prisma/schema.prisma",
 
-    "prisma:migrate": "bash ./scripts/prisma/migrate.sh development",
-    "prisma:deploy": "bash ./scripts/prisma/deploy.sh production",
-    "prisma:reset": "bash ./scripts/prisma/reset.sh development",
-    "prisma:rebuild": "bash ./scripts/prisma/rebuild.sh development"
+    "prisma:clean": "rm -rf node_modules/.prisma",
+    "prisma:migrate": "bash ./scripts/prisma/migrate.sh \"$@\"",
+    "prisma:deploy": "bash ./scripts/prisma/deploy.sh \"$@\"",
+    "prisma:reset": "bash ./scripts/prisma/reset.sh \"$@\"",
+    "prisma:rebuild": "bash ./scripts/prisma/rebuild.sh \"$@\""
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -49,7 +55,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/terminus": "^11.0.0",
-    "@prisma/client": "^6.16.1",
+    "@prisma/client": "^6.17.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "helmet": "^8.1.0",
@@ -80,7 +86,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.20.0"
   }
 }

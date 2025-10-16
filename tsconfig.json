@@ -1,28 +1,36 @@
 {
-  "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "resolvePackageJsonExports": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
-  }
+"compilerOptions": {
+"module": "nodenext",
+"moduleResolution": "nodenext",
+"resolvePackageJsonExports": true,
+"target": "ES2023",
+"outDir": "./dist",
+"baseUrl": "./",
+"paths": {
+  "@/*": ["src/*"]
+},
+"esModuleInterop": true,
+"allowSyntheticDefaultImports": true,
+"isolatedModules": true,
+"declaration": true,
+"removeComments": true,
+"emitDecoratorMetadata": true,
+"experimentalDecorators": true,
+"sourceMap": true,
+"incremental": true,
+"skipLibCheck": true,
+"strictNullChecks": true,
+"forceConsistentCasingInFileNames": true,
+"noImplicitAny": false,
+"strictBindCallApply": false,
+"noFallthroughCasesInSwitch": false
+},
+"include": [
+"src/**/*", "prisma/prisma.config.ts", "prisma/**/*.prisma"
+],
+"exclude": [
+"node_modules",
+"node_modules/.prisma",
+"dist"
+]
 }

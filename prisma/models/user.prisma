@@ -1,4 +1,3 @@
-//src/prisma/models/user.prisma
 model User {
   // Core fields
   id           String   @id @default(uuid())
@@ -8,25 +7,24 @@ model User {
   role         UserRole @default(USER)
 
   // Self-referral graph
-  referredById          String?
-  referredBy            User?                @relation("Referrals", fields: [referredById], references: [id])
-  referrals             User[]               @relation("Referrals")
+  referredById String?
+  referredBy   User?   @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  referrals    User[]  @relation("Referrals")
+
+  // Redemptions
   redemptionsAsReferrer ReferralRedemption[] @relation("Referrer")
   redemptionsAsReferee  ReferralRedemption[] @relation("Referee")
-  referralCodes         ReferralCode[]
+
+  // Referral codes owned by this user
+  referralCodes ReferralCode[]
 
   // OTPs
   otps OtpCode[]
 
-  // Relations
+  // Ledger
   credits CreditLedger[]
 
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-enum UserRole {
-  USER
-  ADMIN
 }

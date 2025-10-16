@@ -1,8 +1,7 @@
-// prisma/models/otp.prisma
 model OtpCode {
   // Core fields
   id      String     @id @default(uuid())
-  user    User       @relation(fields: [userId], references: [id])
+  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId  String
   channel OtpChannel
 
@@ -15,12 +14,7 @@ model OtpCode {
   // Timestamps
   createdAt DateTime @default(now())
 
-  // Indexes for efficient lookups
+  // Indexes for efficient lookups and cleanup
   @@index([userId, expiresAt])
   @@index([expiresAt])
-}
-
-enum OtpChannel {
-  SMS
-  EMAIL
 }

@@ -1,0 +1,33 @@
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum RedemptionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OtpChannel {
+  SMS
+  EMAIL
+}
+
+enum CreditEvent {
+  ISSUE
+  REVOKE
+  REFUND
+  EXPIRE
+}
+
+enum IdempotencyScope {
+  API
+  JOB
+}
+
+enum IdempotencyStatus {
+  STARTED
+  SUCCEEDED
+  FAILED
+}

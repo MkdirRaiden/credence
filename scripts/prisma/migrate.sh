@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
-# Usage: ./migrate.sh <environment> [migration_name]
 set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENVIRONMENT="${1:-}"; MIGRATION_NAME="${2:-}"
+ENV="${1:-}"; NAME="${2:-}"
 
-source "$DIR/env-load.sh" "$ENVIRONMENT"
-"$DIR/format-validate-generate.sh" "$ENVIRONMENT"
+source "$DIR/../helpers/env-load.sh" "$ENV"
+source "$DIR/../helpers/env-validate.sh" "dev-migrate"
+source "$DIR/../helpers/schema-paths.sh"
+"$DIR/format-validate-generate.sh" "$ENV"
 
-if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
-  echo "❌ Refusing to run 'migrate dev' in production"; exit 2;
+if [[ "$NODE_ENV" == "production" ]]; then
+  echo "❌ Refusing to run 'prisma migrate dev' in production. Use deploy."; exit 2
 fi
 
-if [[ -n "$MIGRATION_NAME" ]]; then
-  run npx prisma migrate dev --name "$MIGRATION_NAME" --schema "$SCHEMA_DIR"
+if [[ -n "$NAME" ]]; then
+  run npx prisma migrate dev --name "$NAME" --schema "$SCHEMA_FILE"
 else
-  run npx prisma migrate dev --schema "$SCHEMA_DIR"
+  run npx prisma migrate dev --schema "$SCHEMA_FILE"
 fi
-echo "✅ Prisma migrate completed successfully."
+echo "✅ Prisma migrate completed."

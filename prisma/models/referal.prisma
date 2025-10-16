@@ -1,8 +1,7 @@
-// prisma/models/referal.prisma
 model ReferralCode {
   // Core fields
   id          String  @id @default(uuid())
-  owner       User    @relation(fields: [ownerUserId], references: [id])
+  owner       User    @relation(fields: [ownerUserId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   ownerUserId String
   code        String  @unique
   active      Boolean @default(true)
@@ -24,17 +23,20 @@ model ReferralCode {
   @@index([active, startsAt, endsAt])
 }
 
-// Each redemption represents a referee using a referral code
 model ReferralRedemption {
   // Core fields
-  id             String           @id @default(uuid())
-  referrer       User             @relation("Referrer", fields: [referrerId], references: [id])
-  referrerId     String
-  referee        User             @relation("Referee", fields: [refereeId], references: [id])
-  refereeId      String
-  referralCode   ReferralCode     @relation(fields: [referralCodeId], references: [id])
+  id String @id @default(uuid())
+
+  referrer   User   @relation("Referrer", fields: [referrerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  referrerId String
+
+  referee   User   @relation("Referee", fields: [refereeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  refereeId String
+
+  referralCode   ReferralCode @relation(fields: [referralCodeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   referralCodeId String
-  status         RedemptionStatus @default(PENDING)
+
+  status RedemptionStatus @default(PENDING)
 
   // Optional admin fields for approved/rejected redemptions
   reason         String?
@@ -47,15 +49,12 @@ model ReferralRedemption {
   // Back-reference to all ledger entries created from this redemption
   ledgerEntries CreditLedger[] @relation("RedemptionLedger")
 
+  // Optional idempotency scoping to referee if you generate per-referee keys (uncomment if desired)
+  // @@unique([refereeId, idempotencyKey])
+
   // Each referee can redeem a specific code only once
   @@unique([referralCodeId, refereeId], name: "uniq_code_referee")
   // Indexes for efficient queries
   @@index([referrerId, createdAt])
   @@index([refereeId, createdAt])
-}
-
-enum RedemptionStatus {
-  PENDING
-  APPROVED
-  REJECTED
 }

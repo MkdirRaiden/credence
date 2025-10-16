@@ -1,4 +1,3 @@
-//src/prisma/models/idempotency.prisma
 model IdempotencyRecord {
   // Core fields
   id             String            @id @default(uuid())
@@ -18,18 +17,7 @@ model IdempotencyRecord {
 
   // Enforce uniqueness of (scope, idempotencyKey)
   @@unique([scope, idempotencyKey], name: "uniq_scope_key")
-  // Indexes for efficient lookups
+  // Indexes for efficient lookups and cleanups
   @@index([status, updatedAt])
   @@index([expiresAt])
-}
-
-enum IdempotencyScope {
-  API
-  JOB
-}
-
-enum IdempotencyStatus {
-  STARTED
-  SUCCEEDED
-  FAILED
 }

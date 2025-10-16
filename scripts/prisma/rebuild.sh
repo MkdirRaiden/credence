@@ -4,19 +4,22 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENVIRONMENT="${1:-}"; MIGRATION_NAME="${2:-}"
 
+# shellcheck disable=SC1090
 source "$DIR/env-load.sh" "$ENVIRONMENT"
 "$DIR/format-validate-generate.sh" "$ENVIRONMENT"
 
-if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
+if [[ "$NODE_ENV" == "production" ]]; then
   echo "ℹ️ Production rebuild: running deploy only."
-  run npx prisma migrate deploy --schema "$SCHEMA_DIR"
+  run npx prisma migrate deploy --schema "$SCHEMA_FILE"
   exit 0
 fi
 
-run npx prisma migrate reset --force --skip-generate --schema "$SCHEMA_DIR"
+run npx prisma migrate reset --force --skip-generate --schema "$SCHEMA_FILE"
 
 if [[ -n "$MIGRATION_NAME" ]]; then
-  run npx prisma migrate dev --name "$MIGRATION_NAME" --schema "$SCHEMA_DIR"
+  run npx prisma migrate dev --name "$MIGRATION_NAME" --schema "$SCHEMA_FILE"
 else
-  run npx prisma migrate dev --schema "$SCHEMA_DIR"
+  run npx prisma migrate dev --schema "$SCHEMA_FILE"
 fi
+
+echo "✅ Rebuild completed for environment: $ENVIRONMENT"

@@ -3,9 +3,8 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV="${1:-}"; NAME="${2:-}"
 
-source "$DIR/../helpers/env-load.sh" "$ENV"
-source "$DIR/../helpers/env-validate.sh" "dev-migrate"
-source "$DIR/../helpers/schema-paths.sh"
+# dev-migrate: needs shadow DB checks
+source "$DIR/../guards/prisma-guard.sh" "$ENV" "dev-migrate"
 "$DIR/format-validate-generate.sh" "$ENV"
 
 if [[ "$NODE_ENV" == "production" ]]; then

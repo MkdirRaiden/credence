@@ -1,25 +1,21 @@
 #!/usr/bin/env bash
-# Usage: ./rebuild.sh <environment> [migration_name]
 set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENVIRONMENT="${1:-}"; MIGRATION_NAME="${2:-}"
+ENV="${1:-}"; NAME="${2:-}"
 
-# shellcheck disable=SC1090
-source "$DIR/env-load.sh" "$ENVIRONMENT"
-"$DIR/format-validate-generate.sh" "$ENVIRONMENT"
+source "$DIR/../guards/prisma-guard.sh" "$ENV" "dev-migrate"
+"$DIR/format-validate-generate.sh" "$ENV"
 
 if [[ "$NODE_ENV" == "production" ]]; then
-  echo "ℹ️ Production rebuild: running deploy only."
+  echo "ℹ️ Production rebuild: deploy only."
   run npx prisma migrate deploy --schema "$SCHEMA_FILE"
   exit 0
 fi
 
 run npx prisma migrate reset --force --skip-generate --schema "$SCHEMA_FILE"
-
-if [[ -n "$MIGRATION_NAME" ]]; then
-  run npx prisma migrate dev --name "$MIGRATION_NAME" --schema "$SCHEMA_FILE"
+if [[ -n "$NAME" ]]; then
+  run npx prisma migrate dev --name "$NAME" --schema "$SCHEMA_FILE"
 else
   run npx prisma migrate dev --schema "$SCHEMA_FILE"
 fi
-
-echo "✅ Rebuild completed for environment: $ENVIRONMENT"
+echo "✅ Rebuild completed for: $ENV"

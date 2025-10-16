@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Usage: ./deploy.sh <environment>
 set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENVIRONMENT="${1:-}"
+ENV="${1:-}"
 
-# shellcheck disable=SC1090
-source "$DIR/env-load.sh" "$ENVIRONMENT"
-"$DIR/format-validate-generate.sh" "$ENVIRONMENT"
+# deploy: only core DB presence, no shadow
+source "$DIR/../guards/prisma-guard.sh" "$ENV" "deploy"
+"$DIR/format-validate-generate.sh" "$ENV"
 
 run npx prisma migrate deploy --schema "$SCHEMA_FILE"
-echo "✅ Prisma deploy completed successfully."
+echo "✅ Prisma deploy completed."

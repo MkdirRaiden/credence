@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: source scripts/helpers/env-validate.sh [mode]
+# Usage: source scripts/guards/env-validate.sh [mode]
 # mode: "dev-migrate" enforces shadow DB; default enforces core DB only
 set -euo pipefail
 
@@ -17,3 +17,4 @@ if [[ "$MODE" == "dev-migrate" ]]; then
     echo "❌ SHADOW_DATABASE_URL must differ from DATABASE_URL"; return 1
   fi
 fi
+echo "✅ Environment validation passed for mode: ${MODE:-core}"

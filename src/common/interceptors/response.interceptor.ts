@@ -8,7 +8,7 @@ import {
 import { Request, Response } from 'express';
   import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { buildResponse } from '@/common/utils/response.builder';
+import { buildResponse } from '@/common/utils';
 import { LoggerService } from '@/logger/logger.service';
 
 export interface StandardResponse<T> {

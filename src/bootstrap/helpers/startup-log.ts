@@ -1,4 +1,4 @@
-// src/bootstrap/helpers/startup.log.ts
+// src/bootstrap/helpers/startup-log.ts
 import { INestApplication } from '@nestjs/common';
 import { LoggerService } from '@/logger/logger.service';
 

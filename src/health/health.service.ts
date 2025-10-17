@@ -1,6 +1,6 @@
 // src/health/health.service.ts
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { buildResponse } from '@/common/utils/response.builder';
+import { buildResponse } from '@/common/utils/response-builder';
 import { DatabaseProbe } from '@/health/probes/database.probe';
 import { HealthScheduler } from '@/health/health.scheduler';
 import { getLiveness, getReadiness } from '@/health/helpers';

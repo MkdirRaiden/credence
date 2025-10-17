@@ -2,7 +2,7 @@
 import { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { LoggerService } from '@/logger/logger.service';
-import { buildResponse } from '@/common/utils/response.builder';
+import { buildResponse } from '@/common/utils';
 
 export abstract class BaseExceptionFilter<T = unknown> implements ExceptionFilter {
   constructor(protected readonly logger: LoggerService) {}

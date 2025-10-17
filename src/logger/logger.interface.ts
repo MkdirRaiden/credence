@@ -1,4 +1,4 @@
-// src/logger/logger.interfaces.ts
+// src/logger/logger.interface.ts
 export type LogLevel = 'INFO' | 'ERROR' | 'WARN' | 'DEBUG' | 'VERBOSE';
 
 export type MetaFn = () => Record<string, unknown> | undefined;

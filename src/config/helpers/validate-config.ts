@@ -1,7 +1,7 @@
-// src/config/helpers/validate.config.ts
+// src/config/helpers/validate-config.ts
 import { configValidationSchema } from '@/config/config.schema';
-import { BootstrapLogger } from '@/logger/logger.bootstrap';
-import { getCriticalSchema } from '@/config/helpers/critical.schema';
+import { BootstrapLogger } from '@/logger/bootstrap-logger';
+import { getCriticalSchema } from '@/config/helpers/critical-schema';
 
 const preBootLogger = new BootstrapLogger();
 

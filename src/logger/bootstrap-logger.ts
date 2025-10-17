@@ -1,5 +1,5 @@
-// src/logger/logger.bootstrap.ts
-import { BaseLogger } from '@/logger/logger.base';
+// src/logger/bootstrap-logger.ts
+import { BaseLogger } from '@/logger/base-logger';
 
 export class BootstrapLogger extends BaseLogger {
   constructor() {

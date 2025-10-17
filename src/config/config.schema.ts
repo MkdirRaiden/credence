@@ -1,6 +1,6 @@
 // src/config/config.schema.ts
 import * as Joi from 'joi';
-import { commaSeparatedValidator } from '@/common/utils/validation.util';
+import { commaSeparatedValidator } from '@/common/utils';
 import {
   APP_NAME,
   APP_VERSION,

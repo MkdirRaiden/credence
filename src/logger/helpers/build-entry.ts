@@ -1,6 +1,6 @@
-// src/logger/helpers/build.entry.ts
-import { safeSerialize } from '@/logger/helpers/safe.serialize';
-import { LogEntry, LogLevel, BuildOptions } from '@/logger/logger.interfaces';
+// src/logger/helpers/build-entry.ts
+import { safeSerialize } from '@/logger/helpers/safe-serialize';
+import { LogEntry, LogLevel, BuildOptions } from '@/logger/logger.interface';
 import { DEFAULT_CONTEXT, NODE_ENV, RESERVED_LOG_FIELDS } from '@/common/constants';
 
 const RESERVED = new Set(RESERVED_LOG_FIELDS);

@@ -1,4 +1,4 @@
-// src/bootstrap/helpers/readiness.check.ts
+// src/bootstrap/helpers/readiness-check.ts
 import { INestApplication } from '@nestjs/common';
 import { HealthService } from '@/health/health.service';
 

@@ -1,7 +1,7 @@
-// src/bootstrap/helpers/resolve.register.ts
+// src/bootstrap/helpers/resolve-register.ts
 import { Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { BootstrapLogger } from '@/logger/logger.bootstrap';
+import { BootstrapLogger } from '@/logger/bootstrap-logger';
 
 const bootstrapLogger = new BootstrapLogger();
 

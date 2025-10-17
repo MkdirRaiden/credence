@@ -1,4 +1,4 @@
-// src/bootstrap/helpers/redirect.root.ts
+// src/bootstrap/helpers/redirect-root.ts
 import type { Request, Response, NextFunction } from 'express';
 
 export function redirectToRoot(prefix: string) {

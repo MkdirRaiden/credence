@@ -1,5 +1,5 @@
-// src/common/utils/retry.database.ts
-import { BootstrapLogger } from '@/logger/logger.bootstrap';
+// src/common/utils/retry-database.ts
+import { BootstrapLogger } from '@/logger/bootstrap-logger';
 
 const logger = new BootstrapLogger();
 

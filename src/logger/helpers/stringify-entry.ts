@@ -1,5 +1,5 @@
-// src/logger/helpers/stringify.entry.ts
-import type { LogEntry } from '@/logger/logger.interfaces';
+// src/logger/helpers/stringify-entry.ts
+import type { LogEntry } from '@/logger/logger.interface';
 
 export function stringifyEntry(entry: LogEntry): string {
   try {

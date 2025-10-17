@@ -5,8 +5,8 @@ import {
   ArgumentsHost,
   Injectable,
 } from '@nestjs/common';
-import { BaseExceptionFilter } from './base-exception.filter';
-import { LoggerService } from '../../logger/logger.service';
+import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
+import { LoggerService } from '@/logger/logger.service';
 
 @Injectable()
 @Catch(BadRequestException)

@@ -1,5 +1,5 @@
-//src/logger/helpers/error.meta.ts
-import { safeSerialize } from '@/logger/helpers/safe.serialize';
+//src/logger/helpers/error-meta.ts
+import { safeSerialize } from '@/logger/helpers/safe-serialize';
 
 export function errorMeta(err?: unknown): Record<string, unknown> | undefined {
   if (!err) return undefined;

@@ -5,7 +5,7 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { retry } from '@/common/utils/retry.database';
+import { retry } from '@/common/utils';
 import {
   DATABASE_MAX_RETRIES,
   DATABASE_RETRY_DELAY,

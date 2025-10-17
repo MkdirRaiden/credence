@@ -1,4 +1,4 @@
-// src/common/utils/response.builder.ts
+// src/common/utils/response-builder.ts
 export function buildResponse<T>(
   data: T,
   path: string,

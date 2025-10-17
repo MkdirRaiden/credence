@@ -2,7 +2,7 @@
 import { Catch, ArgumentsHost, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
-import { gracefulShutdown } from '@/common/utils/shutdown.util';
+import { gracefulShutdown } from '@/common/utils';
 import { LoggerService } from '@/logger/logger.service';
 
 @Injectable()

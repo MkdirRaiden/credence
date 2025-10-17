@@ -2,7 +2,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '@/app.module';
 import { Bootstrap } from '@/bootstrap/bootstrap';
-import { BootstrapLogger } from '@/logger/logger.bootstrap';
+import { BootstrapLogger } from '@/logger/bootstrap-logger';
 import { LoggerService } from '@/logger/logger.service';
 import { validatePreConfig } from '@/config/helpers';
 import { runReadinessChecks , getServerInfo, logStartup } from '@/bootstrap/helpers';

@@ -1,8 +1,8 @@
 // src/logger/helpers/index.ts
-import type { LogLevel, BuildOptions } from '../logger.interfaces';
-import { stringifyEntry } from './stringify-entry';
-import { buildEntry } from './build-entry';
-import { errorMeta } from './error-meta';
+import type { LogLevel, BuildOptions } from '../logger.interface';
+import { stringifyEntry } from './stringify.entry';
+import { buildEntry } from './build.entry';
+import { errorMeta } from './error.meta';
 
 export type { LogLevel, BuildOptions };
 

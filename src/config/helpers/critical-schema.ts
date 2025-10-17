@@ -1,4 +1,4 @@
-// src/config/helpers/critical.schema.ts
+// src/config/helpers/critical-schema.ts
 import Joi from 'joi';
 import {  CRITICAL_ENV_VARS } from '@/common/constants';
 import { configValidationSchema } from '@/config/config.schema';

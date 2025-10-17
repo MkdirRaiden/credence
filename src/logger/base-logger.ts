@@ -1,7 +1,7 @@
-// src/logger/logger.base.ts
+// src/logger/base-logger.ts
 import { LoggerService as NestLogger } from '@nestjs/common';
 import { formatLogJson } from '@/logger/helpers';
-import { MetaFn } from '@/logger/logger.interfaces';
+import { MetaFn } from '@/logger/logger.interface';
 
 export class BaseLogger implements NestLogger {
   constructor(

@@ -1,4 +1,4 @@
-//src/bootstrap/helpers/server.info.ts
+//src/bootstrap/helpers/server-info.ts
 import { ConfigService } from '@nestjs/config';
 import { INestApplication } from '@nestjs/common';
 import { GLOBAL_PREFIX, PORT, HOST } from '@/common/constants';

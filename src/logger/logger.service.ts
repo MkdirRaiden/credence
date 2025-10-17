@@ -1,7 +1,7 @@
 // src/logger/logger.service.ts
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { BaseLogger } from '@/logger/logger.base';
+import { BaseLogger } from '@/logger/base-logger';
 import { NODE_ENV } from '@/common/constants';
 
 @Injectable()

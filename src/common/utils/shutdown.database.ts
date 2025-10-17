@@ -1,4 +1,4 @@
-// src/common/utils/shutdown.util.ts
+// src/common/utils/shutdown.database.ts
 import { LoggerService } from '@/logger/logger.service';
 import { SHUTDOWN_TIMEOUT_MS } from '@/common/constants';
 

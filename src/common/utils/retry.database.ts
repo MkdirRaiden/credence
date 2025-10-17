@@ -1,5 +1,7 @@
-// src/common/utils/retry.util.ts
-import { BootstrapLogger } from '@/logger/bootstrap-logger';
+// src/common/utils/retry.database.ts
+import { BootstrapLogger } from '@/logger/logger.bootstrap';
+
+const logger = new BootstrapLogger();
 
 export async function retry<T>(
   operation: () => Promise<T> | T,
@@ -22,7 +24,7 @@ export async function retry<T>(
       lastError = err;
       if (attempt < retries) {
         if (context)
-          BootstrapLogger.warn(
+          logger.warn(
             `[${context}] Retry attempt ${attempt + 1} failed. Retrying in ${delay}ms...`,
           );
         await wait(delay);

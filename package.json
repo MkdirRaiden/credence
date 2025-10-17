@@ -29,7 +29,6 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -37,12 +36,10 @@
     "test:unit": "jest --roots __tests__/unit",
     "test:integration": "NODE_ENV=test jest --roots __tests__/integration",
     "test:e2e": "jest --config ./__tests__/jest-e2e.json",
-
     "prisma:fmt": "prisma format --schema ./prisma/schema.prisma",
     "prisma:validate:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma validate --schema ./prisma/schema.prisma'",
     "prisma:gen:dev": "bash -lc 'set -a; source ./env/.env.development; set +a; prisma generate --schema ./prisma/schema.prisma'",
     "prisma:studio": "prisma studio --schema ./prisma/schema.prisma",
-
     "prisma:clean": "rm -rf node_modules/.prisma",
     "prisma:migrate": "bash ./scripts/prisma/migrate.sh \"$@\"",
     "prisma:deploy": "bash ./scripts/prisma/deploy.sh \"$@\"",
@@ -58,6 +55,7 @@
     "@prisma/client": "^6.17.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "compression": "^1.8.1",
     "helmet": "^8.1.0",
     "joi": "^18.0.1",
     "reflect-metadata": "^0.2.2",
@@ -69,6 +67,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/compression": "^1.8.1",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",

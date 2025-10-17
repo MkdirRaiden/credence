@@ -1,89 +1,40 @@
 // src/health/health.service.ts
-import { Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { DatabasePrismaService } from '../database/database-prisma.service';
-import { LoggerService } from '../logger/logger.service';
-import { HEALTH_CHECK_INTERVAL_MS } from '../common/constants';
-import {
-  LivenessStatus,
-  ReadinessStatus,
-  DependencyStatus,
-} from './health.interface';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { buildResponse } from '@/common/utils/response.builder';
+import { DatabaseProbe } from '@/health/probes/database.probe';
+import { HealthScheduler } from '@/health/health.scheduler';
+import { getLiveness, getReadiness } from '@/health/helpers';
 
 @Injectable()
-export class HealthService implements OnApplicationShutdown {
-  private readonly intervalMs = HEALTH_CHECK_INTERVAL_MS;
-  private healthInterval?: NodeJS.Timeout;
-
+export class HealthService {
   constructor(
-    private readonly dbService: DatabasePrismaService,
-    private readonly logger: LoggerService,
+    private readonly dbProbe: DatabaseProbe,
+    private readonly scheduler: HealthScheduler,
   ) {
-    this.startPeriodicHealthCheck();
+    // Start periodic background checks (logs only on failure inside scheduler)
+    this.scheduler.start();
   }
 
-  private startPeriodicHealthCheck(): void {
-    // Wrap async in void to satisfy ESLint no-misused-promises
-    this.healthInterval = setInterval(
-      () => void this.performHealthCheck(),
-      this.intervalMs,
-    );
+  // Public: controller uses this for /health/live
+  liveEnvelope() {
+    const data = getLiveness();
+    return buildResponse(data, '/health/live', HttpStatus.OK, true, 'Liveness OK');
   }
 
-  private async performHealthCheck(): Promise<void> {
-    const readiness = await this.checkReadiness();
-    if (readiness.status === 'ok') {
-      this.logger.log('Periodic health check passed', 'HealthService');
-    } else {
-      this.logger.warn(
-        `Periodic health check failed: ${JSON.stringify(readiness.details)}`,
-        'HealthService',
-      );
+  // Public: controller uses this for /health/ready
+  async readyEnvelopeOrThrow() {
+    const readiness = await getReadiness(this.dbProbe);
+    if (readiness.status === 'error') {
+      throw new HttpException(readiness, HttpStatus.SERVICE_UNAVAILABLE);
     }
+    return buildResponse(readiness, '/health/ready', HttpStatus.OK, true, 'Readiness OK');
   }
 
-  private async checkDatabase(logOnFail = true): Promise<DependencyStatus> {
-    try {
-      await this.dbService.$queryRaw`SELECT 1`;
-      return { status: 'up' };
-    } catch (err: unknown) {
-      // Safely narrow unknown to Error
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-
-      if (logOnFail) {
-        this.logger.warn(
-          `Database health check failed: ${errorMessage}`,
-          'HealthService',
-        );
-      }
-
-      return { status: 'down', message: errorMessage };
-    }
-  }
-
-  // Liveness probe
-  checkLiveness(): LivenessStatus {
-    return {
-      status: 'up',
-      uptimeMs: process.uptime() * 1000,
-    };
-  }
-
-  // Readiness probe
-  async checkReadiness(): Promise<ReadinessStatus> {
-    const db: DependencyStatus = await this.checkDatabase(false);
-    return {
-      status: db.status === 'up' ? 'ok' : 'error',
-      details: { database: db },
-    };
-  }
-
-  onApplicationShutdown(signal?: string): void {
-    if (this.healthInterval) {
-      clearInterval(this.healthInterval);
-      this.logger.log(
-        `HealthService shutdown, cleared periodic health check interval. Signal: ${signal}`,
-        'HealthService',
-      );
+  // Public: bootstrap helper uses this before listen()
+  async assertReadiness(): Promise<void> {
+    const readiness = await getReadiness(this.dbProbe);
+    if (readiness.status !== 'ok') {
+      throw new Error(`Readiness failed: ${JSON.stringify(readiness.details)}`);
     }
   }
 }

@@ -2,14 +2,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import configuration from '@/config/configuration';
-import { ConfigHelper } from '@/config/config.helper';
+import { getEnvFilePaths } from '@/config/helpers';
 
 @Module({
   imports: [
     NestConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
-      envFilePath: ConfigHelper.getEnvFilePaths(),
+      envFilePath: getEnvFilePaths(),
       expandVariables: true,
     }),
   ],

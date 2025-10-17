@@ -1,4 +1,4 @@
-// src/common/utils/validation.util.ts
+// src/common/utils/validation.schema.ts
 import * as Joi from 'joi';
 
 // Generic comma-separated validator factory.

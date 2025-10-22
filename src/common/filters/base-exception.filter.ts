@@ -4,7 +4,9 @@ import { Response, Request } from 'express';
 import { LoggerService } from '@/logger/logger.service';
 import { buildResponse } from '@/common/utils';
 
-export abstract class BaseExceptionFilter<T = unknown> implements ExceptionFilter {
+export abstract class BaseExceptionFilter<T = unknown>
+  implements ExceptionFilter
+{
   constructor(protected readonly logger: LoggerService) {}
 
   abstract catch(exception: T, host: ArgumentsHost): void;

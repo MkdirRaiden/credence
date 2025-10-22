@@ -16,8 +16,6 @@ model IdempotencyRecord {
   updatedAt DateTime @updatedAt
 
   // Enforce uniqueness of (scope, idempotencyKey)
-  @@unique([scope, idempotencyKey], name: "uniq_scope_key")
-  // Indexes for efficient lookups and cleanups
-  @@index([status, updatedAt])
-  @@index([expiresAt])
+  @@unique([idempotencyKey], name: "uniq_idempotency_key")
+  @@index([updatedAt])
 }

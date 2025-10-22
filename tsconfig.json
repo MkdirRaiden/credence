@@ -1,36 +1,17 @@
 {
-"compilerOptions": {
-"module": "nodenext",
-"moduleResolution": "nodenext",
-"resolvePackageJsonExports": true,
-"target": "ES2023",
-"outDir": "./dist",
-"baseUrl": "./",
-"paths": {
-  "@/*": ["src/*"]
-},
-"esModuleInterop": true,
-"allowSyntheticDefaultImports": true,
-"isolatedModules": true,
-"declaration": true,
-"removeComments": true,
-"emitDecoratorMetadata": true,
-"experimentalDecorators": true,
-"sourceMap": true,
-"incremental": true,
-"skipLibCheck": true,
-"strictNullChecks": true,
-"forceConsistentCasingInFileNames": true,
-"noImplicitAny": false,
-"strictBindCallApply": false,
-"noFallthroughCasesInSwitch": false
-},
-"include": [
-"src/**/*", "prisma/prisma.config.ts", "prisma/**/*.prisma"
-],
-"exclude": [
-"node_modules",
-"node_modules/.prisma",
-"dist"
-]
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "module": "ESNext",
+    "target": "ES2022",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "rootDir": "."
+  },
+  "include": ["src", "__tests__"]
 }

@@ -1,8 +1,8 @@
 // src/logger/helpers/index.ts
 import type { LogLevel, BuildOptions } from '../logger.interface';
-import { stringifyEntry } from './stringify.entry';
-import { buildEntry } from './build.entry';
-import { errorMeta } from './error.meta';
+import { stringifyEntry } from './stringify-entry';
+import { buildEntry } from './build-entry';
+import { errorMeta } from './error-meta';
 
 export type { LogLevel, BuildOptions };
 
@@ -15,7 +15,7 @@ export function formatLogJson(
 ): string {
   const meta = {
     ...(opts?.meta ?? {}),
-    ...(opts?.error ? errorMeta(opts.error) ?? {} : {}),
+    ...(opts?.error ? (errorMeta(opts.error) ?? {}) : {}),
   };
   return stringifyEntry(
     buildEntry(level, message, {

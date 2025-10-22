@@ -13,4 +13,10 @@ export const SHUTDOWN_TIMEOUT_MS = 200; // 200 ms
 export const VALID_NODE_ENVS = ['development', 'test', 'production'];
 export const CRITICAL_ENV_VARS = ['NODE_ENV', 'DATABASE_URL'];
 export const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000'];
-export const RESERVED_LOG_FIELDS = ['timestamp', 'level', 'env', 'context', 'message'];
+export const RESERVED_LOG_FIELDS = [
+  'timestamp',
+  'level',
+  'env',
+  'context',
+  'message',
+];

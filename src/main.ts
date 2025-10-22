@@ -5,7 +5,11 @@ import { Bootstrap } from '@/bootstrap/bootstrap';
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
 import { LoggerService } from '@/logger/logger.service';
 import { validatePreConfig } from '@/config/helpers';
-import { runReadinessChecks , getServerInfo, logStartup } from '@/bootstrap/helpers';
+import {
+  runReadinessChecks,
+  getServerInfo,
+  logStartup,
+} from '@/bootstrap/helpers';
 
 async function bootstrap() {
   // 1) Validate essential pre-configuration (e.g. env vars) before app starts

@@ -1,4 +1,17 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "__tests__"]
 }

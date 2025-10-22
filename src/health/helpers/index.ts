@@ -1,9 +1,14 @@
 // src/health/helpers/readiness.ts
-import type { ReadinessStatus, DependencyStatus } from '@/health/health.interface';
+import type {
+  ReadinessStatus,
+  DependencyStatus,
+} from '@/health/health.interface';
 import type { DatabaseProbe } from '@/health/probes/database.probe';
 
 // Pure helper: aggregates probe results into a readiness domain object
-export async function getReadiness(dbProbe: DatabaseProbe): Promise<ReadinessStatus> {
+export async function getReadiness(
+  dbProbe: DatabaseProbe,
+): Promise<ReadinessStatus> {
   const db = await dbProbe.check();
   const status: ReadinessStatus['status'] = db.status === 'up' ? 'ok' : 'error';
   return {
@@ -18,6 +23,11 @@ export function getLiveness() {
 }
 
 // Internal mapping helper
-function mapProbe(p: { status: 'up' | 'down'; message?: string }): DependencyStatus {
-  return p.status === 'up' ? { status: 'up' } : { status: 'down', message: p.message };
+function mapProbe(p: {
+  status: 'up' | 'down';
+  message?: string;
+}): DependencyStatus {
+  return p.status === 'up'
+    ? { status: 'up' }
+    : { status: 'down', message: p.message };
 }

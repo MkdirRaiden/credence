@@ -53,5 +53,5 @@ pids
 # Diagnostic reports
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# Prisma generated folder
-/generated/prisma
+# Prisma generated schema
+/prisma/schema.prisma

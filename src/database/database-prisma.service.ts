@@ -6,10 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { retry } from '@/common/utils';
-import {
-  DATABASE_MAX_RETRIES,
-  DATABASE_RETRY_DELAY,
-} from '@/common/constants';
+import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '@/common/constants';
 
 @Injectable()
 export class DatabasePrismaService

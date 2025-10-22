@@ -3,8 +3,8 @@ import { ResponseInterceptor } from '@/common/interceptors';
 import {
   AllExceptionsFilter,
   PrismaClientExceptionFilter,
-  ValidationExceptionFilter
-} from '@/common/filters'
+  ValidationExceptionFilter,
+} from '@/common/filters';
 
 // Global Interceptors (ordered)
 export const GLOBAL_INTERCEPTORS = [ResponseInterceptor];

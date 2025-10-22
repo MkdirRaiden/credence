@@ -1,3 +1,3 @@
-import { ResponseInterceptor } from "./response.interceptor";
+import { ResponseInterceptor } from './response.interceptor';
 
-export {ResponseInterceptor}
+export { ResponseInterceptor };

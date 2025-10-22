@@ -18,7 +18,13 @@ export class HealthService {
   // Public: controller uses this for /health/live
   liveEnvelope() {
     const data = getLiveness();
-    return buildResponse(data, '/health/live', HttpStatus.OK, true, 'Liveness OK');
+    return buildResponse(
+      data,
+      '/health/live',
+      HttpStatus.OK,
+      true,
+      'Liveness OK',
+    );
   }
 
   // Public: controller uses this for /health/ready
@@ -27,7 +33,13 @@ export class HealthService {
     if (readiness.status === 'error') {
       throw new HttpException(readiness, HttpStatus.SERVICE_UNAVAILABLE);
     }
-    return buildResponse(readiness, '/health/ready', HttpStatus.OK, true, 'Readiness OK');
+    return buildResponse(
+      readiness,
+      '/health/ready',
+      HttpStatus.OK,
+      true,
+      'Readiness OK',
+    );
   }
 
   // Public: bootstrap helper uses this before listen()

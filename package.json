@@ -41,7 +41,7 @@
   
   "prisma:gen": "bash ./scripts/prisma/commands/merge-generate.sh",
   "prisma:fmt": "bash ./scripts/prisma/commands/format-validate.sh",
-  "prisma:clean": "bash -c 'rm -rf node_modules/.prisma; [ -d prisma/.generated ] && rm -rf prisma/schema.prisma'",
+  "prisma:clean": "bash -c 'rm -rf node_modules/.prisma prisma/schema.prisma'",
   "prisma:studio": "bash ./scripts/prisma/commands/studio.sh",
 
   "prisma:migrate": "bash ./scripts/prisma/commands/migrate.sh",

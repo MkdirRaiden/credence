@@ -11,17 +11,17 @@ model User {
   referredBy   User?   @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull, onUpdate: Cascade)
   referrals    User[]  @relation("Referrals")
 
-  // Redemptions
+  // // Redemptions
   redemptionsAsReferrer ReferralRedemption[] @relation("Referrer")
   redemptionsAsReferee  ReferralRedemption[] @relation("Referee")
 
-  // Referral codes owned by this user
+  // // Referral codes owned by this user
   referralCodes ReferralCode[]
 
-  // OTPs
+  // // OTPs
   otps OtpCode[]
 
-  // Ledger
+  // // Ledger
   credits CreditLedger[]
 
   // Timestamps

@@ -21,10 +21,7 @@ CREATE TABLE "IdempotencyRecord" (
 );
 
 -- CreateIndex
-CREATE INDEX "IdempotencyRecord_status_updatedAt_idx" ON "IdempotencyRecord"("status", "updatedAt");
+CREATE INDEX "IdempotencyRecord_updatedAt_idx" ON "IdempotencyRecord"("updatedAt");
 
 -- CreateIndex
-CREATE INDEX "IdempotencyRecord_expiresAt_idx" ON "IdempotencyRecord"("expiresAt");
-
--- CreateIndex
-CREATE UNIQUE INDEX "IdempotencyRecord_scope_idempotencyKey_key" ON "IdempotencyRecord"("scope", "idempotencyKey");
+CREATE UNIQUE INDEX "IdempotencyRecord_idempotencyKey_key" ON "IdempotencyRecord"("idempotencyKey");

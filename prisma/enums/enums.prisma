@@ -3,15 +3,15 @@ enum UserRole {
   ADMIN
 }
 
+enum OtpChannel {
+  SMS
+  EMAIL
+}
+
 enum RedemptionStatus {
   PENDING
   APPROVED
   REJECTED
-}
-
-enum OtpChannel {
-  SMS
-  EMAIL
 }
 
 enum CreditEvent {

@@ -1,3 +1,4 @@
+// __tests__/unit/config/critical-schema.spec.ts
 import { getCriticalSchema } from '@/config/helpers/critical-schema';
 import { CRITICAL_ENV_VARS } from '@/common/constants';
 import { configValidationSchema } from '@/config/config.schema';

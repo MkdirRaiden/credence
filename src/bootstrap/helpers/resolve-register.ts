@@ -3,13 +3,14 @@ import { Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
 
-const bootstrapLogger = new BootstrapLogger();
-
 export function resolveAndRegister<T>(
   moduleRef: ModuleRef,
   providers: (Type<T> | T)[],
-  registerFn: (instance: T) => void, // <-- keep this, now TS understands type
+  registerFn: (instance: T) => void,
+  logger?: BootstrapLogger, // optional param
 ) {
+  const log = logger ?? new BootstrapLogger(); // default to bootstrapLogger
+
   providers.forEach((provider) => {
     if (typeof provider === 'object') {
       registerFn(provider as T);
@@ -20,7 +21,7 @@ export function resolveAndRegister<T>(
     if (instance) {
       registerFn(instance);
     } else {
-      bootstrapLogger.warn(
+      log.warn(
         'Global provider not found for registration',
         (provider as Type<T>)?.name ?? String(provider),
       );

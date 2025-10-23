@@ -1,3 +1,4 @@
+// __tests__/jest.setup.ts
 // Ensure .env files are loaded before tests
 process.env.NODE_ENV = process.env.NODE_ENV || 'test';
 

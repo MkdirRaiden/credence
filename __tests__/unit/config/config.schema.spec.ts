@@ -1,3 +1,4 @@
+// __tests__/unit/config/config.schema.spec.ts
 import { configValidationSchema } from '@/config/config.schema';
 import { validEnv, invalidEnv, partialEnv } from './__fixtures__/env.fixtures';
 

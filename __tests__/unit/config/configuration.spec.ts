@@ -1,3 +1,4 @@
+// __tests__/unit/config/configuration.schema.spec.ts
 import configuration from '@/config/configuration';
 
 describe('configuration.ts', () => {

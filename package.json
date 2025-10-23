@@ -35,7 +35,7 @@
   "test:watch": "jest --watch",
   "test:cov": "jest --coverage",
   "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-  "test:unit": "jest --roots __tests__/unit",
+  "test:unit": "jest --roots __tests__/unit --runInBand",
   "test:integration": "NODE_ENV=test jest --roots __tests__/integration",
   "test:e2e": "jest --config ./__tests__/jest-e2e.json",
   

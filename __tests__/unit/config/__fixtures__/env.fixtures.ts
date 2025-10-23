@@ -1,3 +1,4 @@
+//__tests__/unit/config/__fixtures__
 export const validEnv = {
   NODE_ENV: 'development',
   PORT: '4000',

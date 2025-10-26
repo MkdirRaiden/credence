@@ -1,25 +1,25 @@
-//__tests__/unit/logger/safe-serialize.spec.ts
+// __tests__/unit/logger/safe-serialize.spec.ts
 import { safeSerialize } from '@/logger/helpers/safe-serialize';
 
 describe('safeSerialize', () => {
-  it('✅ returns the string unchanged', () => {
-    const input = 'hello world';
-    expect(safeSerialize(input)).toBe('hello world');
+  it('✅ returns string unchanged', () => {
+    expect(safeSerialize('hello')).toBe('hello');
   });
 
-  it('✅ converts Error instances to their message', () => {
-    const error = new Error('something went wrong');
-    expect(safeSerialize(error)).toBe('something went wrong');
+  it('✅ converts Error to message', () => {
+    const err = new Error('oops');
+    expect(safeSerialize(err)).toBe('oops');
   });
 
-  it('✅ serializes plain objects to JSON string', () => {
-    const obj = { foo: 'bar', count: 2 };
+  it('✅ serializes objects to JSON', () => {
+    const obj = { foo: 1 };
     expect(safeSerialize(obj)).toBe(JSON.stringify(obj));
   });
 
-  it('✅ returns string for unserializable objects', () => {
+  it('✅ returns fallback for circular objects', () => {
     const circular: any = {};
     circular.self = circular;
-    expect(typeof safeSerialize(circular)).toBe('string'); // fallback
+    const result = safeSerialize(circular);
+    expect(result).toBe('[Unserializable Object]');
   });
 });

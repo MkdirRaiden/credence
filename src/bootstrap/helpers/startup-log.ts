@@ -7,12 +7,13 @@ export function logStartup(
   app: INestApplication,
   host: string,
   port: number,
-  prefix?: string,
+  globalPrefix?: string,
+  NODE_ENV?:string
 ) {
-  const normPrefix = String(prefix ?? '').replace(/^\/+|\/+$/g, '');
+  const normPrefix = String(globalPrefix ?? '').replace(/^\/+|\/+$/g, '');
   const baseUrl = normPrefix
     ? `http://${host}:${port}/${normPrefix}`
     : `http://${host}:${port}`;
   const logger = app.get(LoggerService);
-  logger.log(`Server running on ${baseUrl}`, 'Bootstrap');
+  logger.log(`🚀 Server running on ${baseUrl} [${NODE_ENV}]`, 'Bootstrap');
 }

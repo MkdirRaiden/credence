@@ -1,4 +1,4 @@
-// __tests__/unit/health/helpers/readiness.spec.ts
+// __tests__/unit/health/helpers/health-status.spec.ts
 import { getLiveness, getReadiness } from '@/health/helpers';
 import type { DatabaseProbe } from '@/health/probes/database.probe';
 

@@ -2,16 +2,16 @@
 import { Global, Module } from '@nestjs/common';
 import { DatabasePrismaService } from '@/database/database-prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '@/common/interfaces/app-config.interface';
 
 @Global()
 @Module({
   providers: [
     {
       provide: DatabasePrismaService,
-      useFactory: (configService: ConfigService) => {
-        return new DatabasePrismaService(
-          configService.get<string>('database.url')!,
-        );
+      useFactory: (configService: ConfigService<AppConfig>) => {
+        const db = configService.getOrThrow('database');
+        return new DatabasePrismaService(db.url);
       },
       inject: [ConfigService],
     },
@@ -19,3 +19,4 @@ import { ConfigService } from '@nestjs/config';
   exports: [DatabasePrismaService],
 })
 export class DatabaseModule {}
+

@@ -9,12 +9,13 @@ import { RootController } from '@/root.controller';
 
 @Module({
   imports: [
-    //Base modules
-    ConfigModule, //Global
-    DatabaseModule, //Global
-    LoggerModule, //Global
+    // Global Core Modules (loaded once)
+    ConfigModule, 
+    DatabaseModule, 
+    LoggerModule,
+    // System Modules
     HealthModule,
-    //Feature modules
+    // Domain Feature Modules
     UsersModule,
   ],
   controllers: [RootController],

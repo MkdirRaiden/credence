@@ -1,9 +1,10 @@
+// __tests__/integration/database.integration.spec.ts
 import { Test } from '@nestjs/testing';
 import { DatabaseModule } from '@/database/database.module';
 import { ConfigModule } from '@/config/config.module';
 import { DatabasePrismaService } from '@/database/database-prisma.service';
 
-jest.setTimeout(20000); // Increase timeout for DB retries
+jest.setTimeout(20000); // Ensure enough time for DB retries
 
 describe('DatabasePrismaService (Integration)', () => {
   let db: DatabasePrismaService;
@@ -15,7 +16,7 @@ describe('DatabasePrismaService (Integration)', () => {
 
     db = moduleRef.get(DatabasePrismaService);
 
-    // Connect to DB
+    // Ensure connection is established
     await db.onModuleInit?.();
   });
 
@@ -30,16 +31,21 @@ describe('DatabasePrismaService (Integration)', () => {
     expect(res).toBeDefined();
   });
 
-  it('creates, inserts, and queries a temp table', async () => {
-    await db.$executeRaw`CREATE TABLE IF NOT EXISTS integration_test (id SERIAL PRIMARY KEY, name TEXT)`;
-    await db.$executeRaw`INSERT INTO integration_test (name) VALUES ('credence_test')`;
+  it('creates, inserts, and queries a temp table inside a transaction', async () => {
+    await db.$transaction(async (prisma) => {
+      // Create temp table
+      await prisma.$executeRaw`CREATE TEMP TABLE IF NOT EXISTS integration_test (id SERIAL PRIMARY KEY, name TEXT)`;
 
-    const rows = await db.$queryRaw<{ id: number; name: string }[]>`
-      SELECT * FROM integration_test WHERE name='credence_test'
-    `;
+      // Insert a test row
+      await prisma.$executeRaw`INSERT INTO integration_test (name) VALUES ('credence_test')`;
 
-    expect(rows.length).toBeGreaterThan(0);
+      // Query
+      const rows = await prisma.$queryRaw<{ id: number; name: string }[]>`
+        SELECT * FROM integration_test WHERE name='credence_test'
+      `;
+      expect(rows.length).toBeGreaterThan(0);
 
-    await db.$executeRaw`TRUNCATE TABLE integration_test`;
+      // Temp tables are automatically dropped after transaction ends
+    });
   });
 });

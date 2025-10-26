@@ -1,4 +1,4 @@
-// src/health/helpers/readiness.ts
+// src/health/helpers/index.ts
 import type {
   ReadinessStatus,
   DependencyStatus,

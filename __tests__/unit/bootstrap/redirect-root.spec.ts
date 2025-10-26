@@ -20,6 +20,14 @@ describe('redirectToRoot', () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  it('✅ does NOT redirect when prefix is "/"', () => {
+    const middleware = redirectToRoot('/');
+    middleware(req, res, next);
+
+    expect(res.redirect).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalled();
+  });
+
   it('✅ calls next() if path is not root', () => {
     req.path = '/other';
     const middleware = redirectToRoot('api');
@@ -29,11 +37,12 @@ describe('redirectToRoot', () => {
     expect(next).toHaveBeenCalled();
   });
 
-  it('✅ handles empty prefix correctly', () => {
+  it('✅ handles empty prefix correctly (does not redirect)', () => {
     const middleware = redirectToRoot('');
     middleware(req, res, next);
 
-    expect(res.redirect).toHaveBeenCalledWith('/');
+    expect(res.redirect).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalled();
   });
 
   it('✅ trims leading/trailing slashes in prefix', () => {

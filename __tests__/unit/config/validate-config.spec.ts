@@ -1,3 +1,4 @@
+// __tests__/unit/config/validate-config.spec.ts
 import { validatePreConfig } from '@/config/helpers/validate-config';
 import { validEnv, invalidEnv } from './__fixtures__/env.fixtures';
 

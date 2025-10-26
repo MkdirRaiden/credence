@@ -15,26 +15,34 @@ describe('logStartup', () => {
   });
 
   it('✅ logs full base URL when prefix is provided', () => {
-    logStartup(mockApp, 'localhost', 3000, 'api/v1');
+    logStartup(mockApp, 'localhost', 3000, 'api/v1', 'development');
     expect(mockApp.get).toHaveBeenCalledWith(LoggerService);
     expect(mockLogger.log).toHaveBeenCalledWith(
-      'Server running on http://localhost:3000/api/v1',
+      '🚀 Server running on http://localhost:3000/api/v1 [development]',
       'Bootstrap',
     );
   });
 
   it('✅ logs without prefix when none provided', () => {
-    logStartup(mockApp, '127.0.0.1', 4000);
+    logStartup(mockApp, '127.0.0.1', 4000, undefined, 'test');
     expect(mockLogger.log).toHaveBeenCalledWith(
-      'Server running on http://127.0.0.1:4000',
+      '🚀 Server running on http://127.0.0.1:4000 [test]',
       'Bootstrap',
     );
   });
 
   it('✅ trims slashes in prefix', () => {
-    logStartup(mockApp, 'localhost', 8080, '/v2/');
+    logStartup(mockApp, 'localhost', 8080, '/v2/', 'production');
     expect(mockLogger.log).toHaveBeenCalledWith(
-      'Server running on http://localhost:8080/v2',
+      '🚀 Server running on http://localhost:8080/v2 [production]',
+      'Bootstrap',
+    );
+  });
+
+  it('✅ omits env if not provided', () => {
+    logStartup(mockApp, 'localhost', 8080, '/v3/');
+    expect(mockLogger.log).toHaveBeenCalledWith(
+      '🚀 Server running on http://localhost:8080/v3 [undefined]',
       'Bootstrap',
     );
   });

@@ -5,48 +5,52 @@ import {
   NestInterceptor,
   ExceptionFilter,
 } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import {
   GLOBAL_FILTERS,
   GLOBAL_INTERCEPTORS,
 } from '@/bootstrap/bootstrap.config';
-import { ConfigService } from '@nestjs/config';
+import { 
+  redirectToRoot,
+  resolveAndRegister,
+  getServerConfig 
+}  from '@/bootstrap/helpers';
+import { ModuleRef } from '@nestjs/core';
 import helmet from 'helmet';
 import compression from 'compression';
-import { redirectToRoot, resolveAndRegister } from '@/bootstrap/helpers';
-import { GLOBAL_PREFIX } from '@/common/constants';
 import { Express } from 'express';
 
 export class Bootstrap {
-  // Application middlewares
-  private static configureMiddlewares(app: INestApplication) {
-    // Access ConfigService
-    const configService = app.get(ConfigService);
+  // Configure global middlewares such as helmet, compression, CORS, prefix, etc.
+  private static configureMiddlewares(app: INestApplication): void {
+    // get required config
+    const { allowedOrigins, globalPrefix } = getServerConfig(app);
+
     // Security middleware
     app.use(helmet());
-    // This configuration is safe and supported by Express under the hood.
-    // Properly typed Express app without generics
-    const expressApp = app.getHttpAdapter()?.getInstance() as
-      | Express
-      | undefined;
+
+    // Trust reverse proxy headers if behind a proxy
+    const expressApp = app.getHttpAdapter()?.getInstance() as Express | undefined;
     expressApp?.set('trust proxy', 1);
+
     // Response compression
     app.use(compression());
-    // CORS setup - allow list from config or disable if none specified
-    const allowedOrigins = configService.get<string[]>('allowedOrigins') ?? [];
+
+    // CORS setup
     app.enableCors({
       origin: allowedOrigins.length > 0 ? allowedOrigins : false,
       credentials: true,
     });
-    // Global API prefix from config (default 'api')
-    const prefix = configService.get<string>('globalPrefix', GLOBAL_PREFIX);
-    app.setGlobalPrefix(prefix);
-    // Redirect root requests to the API prefix
-    app.use(redirectToRoot(prefix));
+
+    // Global API prefix
+    app.setGlobalPrefix(globalPrefix);
+
+    // Redirect `/` → `/api`
+    app.use(redirectToRoot(globalPrefix));
   }
 
-  private static configureGlobals(app: INestApplication, moduleRef: ModuleRef) {
-    // Global validation pipe
+  // Configure global pipes, interceptors, and filters.
+  private static configureGlobals(app: INestApplication, moduleRef: ModuleRef): void {
+    // Validation pipe
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -55,23 +59,25 @@ export class Bootstrap {
         transformOptions: { enableImplicitConversion: true },
       }),
     );
+
     // Global interceptors
     resolveAndRegister<NestInterceptor>(moduleRef, GLOBAL_INTERCEPTORS, (i) =>
       app.useGlobalInterceptors(i),
     );
+
     // Global exception filters
     resolveAndRegister<ExceptionFilter>(moduleRef, GLOBAL_FILTERS, (f) =>
       app.useGlobalFilters(f),
     );
   }
 
-  // Graceful shutdown hooks
-  private static configureShutdownHooks(app: INestApplication) {
+  // Enable graceful shutdown hooks.
+  private static configureShutdownHooks(app: INestApplication): void {
     app.enableShutdownHooks();
   }
 
-  // Application initialization
-  static init(app: INestApplication) {
+  // Initialize all bootstrap steps
+  static init(app: INestApplication): void {
     const moduleRef = app.get(ModuleRef);
     this.configureMiddlewares(app);
     this.configureGlobals(app, moduleRef);

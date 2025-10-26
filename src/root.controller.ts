@@ -1,23 +1,24 @@
 // src/root.controller.ts
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '@/common/interfaces/app-config.interface';
 
 @Controller()
 export class RootController {
-  constructor(private readonly config: ConfigService) {}
+  constructor(private readonly config: ConfigService<AppConfig>) {}
 
-  // root endpoint
   @Get()
   getRoot() {
-    const appName = this.config.get<string>('appName');
-    const env = this.config.get<string>('nodeEnv');
-    const version = this.config.get<string>('appVersion');
+    // type-safe access, throws if missing
+    const appName = this.config.getOrThrow('appName');
+    const appVersion = this.config.getOrThrow('appVersion');
+    const nodeEnv = this.config.getOrThrow('nodeEnv');
 
     return {
-      version,
+      version: appVersion,
       name: appName,
       message: `Welcome to ${appName}!`,
-      environment: env,
+      environment: nodeEnv,
       uptime: `${process.uptime().toFixed(0)}s`,
       docs: '/api/docs',
       health: '/api/health',

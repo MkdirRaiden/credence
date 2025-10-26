@@ -1,43 +1,64 @@
 // __tests__/unit/logger/format-log-json.spec.ts
-import { formatLogJson } from '@/logger/helpers';
-import { LogLevel } from '@/logger/logger.interface';
+import { formatLogJson } from '@/logger/helpers/format-log-json';
+import { RESERVED_LOG_FIELDS } from '@/common/constants';
 
 describe('formatLogJson', () => {
-  const message = 'Test log message';
-
-  it('✅ returns a valid JSON string with required fields', () => {
-    const level: LogLevel = 'INFO';
-    const result = formatLogJson(level, message);
-
-    const parsed = JSON.parse(result);
-    expect(parsed.level).toBe(level);
-    expect(parsed.message).toBe(message);
+  it('basic fields', () => {
+    const parsed = JSON.parse(formatLogJson('INFO', 'msg'));
+    expect(parsed.level).toBe('INFO');
+    expect(parsed.message).toBe('msg');
     expect(parsed.context).toBeDefined();
     expect(parsed.env).toBeDefined();
     expect(parsed.timestamp).toBeDefined();
   });
 
-  it('✅ merges meta and error metadata if provided', () => {
-    const level: LogLevel = 'ERROR';
-    const error = new Error('Something broke');
-    const meta = { requestId: 'abc123' };
-
-    const result = formatLogJson(level, message, { meta, error });
-    const parsed = JSON.parse(result);
-
-    expect(parsed.requestId).toBe('abc123');       // meta merged
-    expect(parsed.trace).toContain('Something broke'); // errorMeta merged
-    expect(parsed.name).toBe('Error');             // errorMeta name
+  it('merges meta correctly and ignores reserved', () => {
+    const meta = { requestId: '123', [RESERVED_LOG_FIELDS[0]]: 'ignore' };
+    const parsed = JSON.parse(formatLogJson('INFO', 'msg', { meta }));
+    expect(parsed.requestId).toBe('123');
+    expect(parsed[RESERVED_LOG_FIELDS[0]]).not.toBe(meta[RESERVED_LOG_FIELDS[0]]);
   });
 
-  it('✅ handles absence of meta and error gracefully', () => {
-    const level: LogLevel = 'WARN';
-    const result = formatLogJson(level, message);
-    const parsed = JSON.parse(result);
+  it('includes error metadata', () => {
+    const err = new Error('fail');
+    const parsed = JSON.parse(formatLogJson('ERROR', 'msg', { error: err }));
+    expect(parsed.trace).toContain('fail');
+    expect(parsed.name).toBe('Error');
+  });
 
-    expect(parsed.level).toBe(level);
-    expect(parsed.message).toBe(message);
-    expect(parsed.trace).toBeUndefined();
-    expect(parsed.name).toBeUndefined();
+  it('serializes string, object, and Error correctly', () => {
+    const obj = { a: 1 };
+    const parsedObj = JSON.parse(formatLogJson('DEBUG', obj));
+    expect(parsedObj.message).toBe(JSON.stringify(obj));
+
+    const error = new Error('oops');
+    const parsedErr = JSON.parse(formatLogJson('ERROR', error));
+    expect(parsedErr.message).toBe('oops');
+  });
+
+  it('handles circular references gracefully', () => {
+    const circular: any = {};
+    circular.self = circular;
+    const parsed = JSON.parse(formatLogJson('DEBUG', circular));
+
+    // fallback message used
+    expect(parsed.message).toBe('[Unserializable Object]');
+    expect(parsed.timestamp).toBeDefined();
+    expect(parsed.level).toBe('DEBUG');
+  });
+
+  it('allows custom context/env', () => {
+    const parsed = JSON.parse(formatLogJson('WARN', 'msg', {
+      context: 'MyCTX',
+      env: 'test-env',
+    }));
+    expect(parsed.context).toBe('MyCTX');
+    expect(parsed.env).toBe('test-env');
+  });
+
+  it('uses default context/env if not provided', () => {
+    const parsed = JSON.parse(formatLogJson('INFO', 'msg'));
+    expect(parsed.context).toBeDefined();
+    expect(parsed.env).toBeDefined();
   });
 });

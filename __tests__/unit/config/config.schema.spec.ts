@@ -18,6 +18,17 @@ describe('configValidationSchema', () => {
     expect(error?.message).toContain('NODE_ENV');
   });
 
+  // 🆕 NEW TEST — ensures non-PostgreSQL URLs fail validation
+  it('🚫 rejects non-PostgreSQL database URLs', () => {
+    const { error } = configValidationSchema.validate({
+      ...validEnv,
+      DATABASE_URL: 'mysql://localhost:3306/db',
+    });
+    expect(error).toBeDefined();
+    // Optionally assert for the pattern label you defined
+    expect(error?.message).toContain('PostgreSQL connection string');
+  });
+
   it('🧩 applies default values when not provided', () => {
     const { value } = configValidationSchema.validate(partialEnv);
     expect(value.PORT).toBeDefined();

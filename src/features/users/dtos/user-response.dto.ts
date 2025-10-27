@@ -2,11 +2,7 @@
 import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UserResponseDto {
-  @IsUUID()
-  id: string;
 
-  @IsEmail()
-  email: string;
 
   @IsOptional()
   @IsString()
@@ -16,5 +12,4 @@ export class UserResponseDto {
   @IsString()
   referralCode?: string;
 
-  createdAt: Date;
 }

@@ -7,7 +7,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "module": "ESNext",
+    "module": "CommonJS",
     "target": "ES2022",
     "moduleResolution": "Node",
     "strict": true,

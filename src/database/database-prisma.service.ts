@@ -7,6 +7,8 @@ import {
 import { PrismaClient } from '@prisma/client';
 import { retry } from '@/common/utils';
 import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '@/common/constants';
+import { LoggerService } from '@/logger/logger.service';
+import { BootstrapLogger } from '@/logger/bootstrap-logger';
 
 @Injectable()
 export class DatabasePrismaService
@@ -16,12 +18,12 @@ export class DatabasePrismaService
   // Retry settings
   private readonly maxRetries = DATABASE_MAX_RETRIES;
   private readonly retryDelay = DATABASE_RETRY_DELAY;
+  private readonly logger: LoggerService | BootstrapLogger;
 
   // Dependency injection of the database URL
-  constructor(dbUrl: string) {
-    super({
-      datasources: { db: { url: dbUrl } }, // initialize with the correct URL
-    });
+  constructor(dbUrl: string, logger?: LoggerService) {
+    super({ datasources: { db: { url: dbUrl } }});
+    this.logger = logger ?? new BootstrapLogger();
   }
 
   // Lifecycle hook - connect with retries
@@ -30,6 +32,7 @@ export class DatabasePrismaService
       retries: this.maxRetries,
       delay: this.retryDelay,
       context: 'DatabasePrismaService.$connect',
+      logger: this.logger
     });
   }
 

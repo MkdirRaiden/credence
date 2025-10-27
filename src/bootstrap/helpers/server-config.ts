@@ -10,11 +10,12 @@ import { AppConfig } from '@/common/interfaces/app-config.interface';
  */
 export function getServerConfig(app: INestApplication): Pick<
   Required<AppConfig>,
-  'port' | 'host' | 'globalPrefix' | 'allowedOrigins'
+  'nodeEnv' |  'port' | 'host' | 'globalPrefix' | 'allowedOrigins'
 > {
   const configService = app.get<ConfigService<AppConfig>>(ConfigService);
 
   return {
+    nodeEnv: configService.getOrThrow('nodeEnv'),
     port: configService.getOrThrow('port'),
     host: configService.getOrThrow('host'),
     globalPrefix: configService.getOrThrow('globalPrefix'),

@@ -2,21 +2,23 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@/config/config.module';
 import { DatabaseModule } from '@/database/database.module';
-import { UsersModule } from '@/features/users/users.module';
+// import { UsersModule } from '@/features/users/users.module';
 import { HealthModule } from '@/health/health.module';
 import { LoggerModule } from '@/logger/logger.module';
 import { RootController } from '@/root.controller';
+import { CommonModule } from '@/common/common.module';
 
 @Module({
   imports: [
     // Global Core Modules (loaded once)
+    CommonModule,
     ConfigModule, 
-    DatabaseModule, 
     LoggerModule,
+    DatabaseModule, 
     // System Modules
     HealthModule,
     // Domain Feature Modules
-    UsersModule,
+    // UsersModule,
   ],
   controllers: [RootController],
 })

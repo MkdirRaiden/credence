@@ -1,17 +1,18 @@
 // src/health/health.service.ts
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, OnModuleInit } from '@nestjs/common';
 import { buildResponse } from '@/common/utils/response-builder';
 import { DatabaseProbe } from '@/health/probes/database.probe';
 import { HealthScheduler } from '@/health/health.scheduler';
 import { getLiveness, getReadiness } from '@/health/helpers';
 
 @Injectable()
-export class HealthService {
+export class HealthService implements OnModuleInit {
   constructor(
     private readonly dbProbe: DatabaseProbe,
     private readonly scheduler: HealthScheduler,
-  ) {
-    // Start periodic background checks (logs only on failure inside scheduler)
+  ) {}
+
+  onModuleInit() {
     this.scheduler.start();
   }
 

@@ -1,12 +1,12 @@
 // __tests__/unit/bootstrap/resolve-register.spec.ts
 import { resolveAndRegister } from '@/bootstrap/helpers/resolve-register';
 import { ModuleRef } from '@nestjs/core';
-import { BootstrapLogger } from '@/logger/bootstrap-logger';
+import { LoggerService } from '@/logger/logger.service';
 
 describe('resolveAndRegister', () => {
   let moduleRef: Partial<ModuleRef>;
   let registerFn: jest.Mock;
-  let mockLogger: Partial<BootstrapLogger>;
+  let mockLogger: Partial<LoggerService>;
 
   beforeEach(() => {
     registerFn = jest.fn();

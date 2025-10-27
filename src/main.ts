@@ -5,38 +5,37 @@ import { Bootstrap } from '@/bootstrap/bootstrap';
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
 import { LoggerService } from '@/logger/logger.service';
 import { validatePreConfig } from '@/config/helpers';
-import { getServerConfig, logStartup, runReadinessChecks } from '@/bootstrap/helpers';
+import { startServer, runReadinessChecks } from '@/bootstrap/helpers';
 
-const NODE_ENV = process.env.NODE_ENV;
+const nodeEnv = process.env.NODE_ENV;
 const bootstrapLogger = new BootstrapLogger();
 
 async function bootstrap() {
-  // 1) Validate essential pre-configuration (e.g. env vars) before app starts
+  // 1) Validate essential pre-configuration env vars
   validatePreConfig();
 
-  bootstrapLogger.log(`Bootstrapping app, Env: ${NODE_ENV}...`, "Bootstrap.app");
+  bootstrapLogger.log(`Bootstrapping app, Env: ${nodeEnv}...`, "Bootstrap.app");
 
   // 2) Create Nest app with a stateless bootstrap logger for early logs
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
-    abortOnError: NODE_ENV == "production",
+    abortOnError: nodeEnv == "production",
     logger: bootstrapLogger,
   });
 
-  // 3) Centralized global setup (security, CORS, prefix, pipes, filters, interceptors, shutdown
-  Bootstrap.init(app);
+  // 3) Swap to DI-backed logger 
+  const logger = app.get(LoggerService);
+  app.useLogger(logger);
 
-  // 4) Swap to DI-backed logger so all runtime logs include env and optional correlation meta
-  app.useLogger(app.get(LoggerService));
+  // 4) Centralized global setup (security, CORS, prefix, pipes, filters, interceptors, shutdown)
+  Bootstrap.init(app);
 
   // 5) Optional readiness checks before accepting traffic
   await runReadinessChecks(app);
 
-  // 6) Start server and listen on configured port
-  const { port, globalPrefix, host } = getServerConfig(app);
-  await app.listen(port);
-  // Log startup via DI logger
-  logStartup(app, host, port, globalPrefix, NODE_ENV);
+  // 6) Start server, listen and log on configured port
+  await startServer(app, logger);
+
 }
 
 void bootstrap().catch((err) => {

@@ -1,5 +1,6 @@
 // src/common/utils/retry-database.ts
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
+import { LoggerService } from '@/logger/logger.service';
 
 export async function retry<T>(
   operation: () => Promise<T> | T,
@@ -8,7 +9,7 @@ export async function retry<T>(
     delay: number;
     context?: string;
     delayFn?: (ms: number) => Promise<void>;
-    logger?: { warn: (...args: any[]) => void }; // optional logger
+    logger?: LoggerService | BootstrapLogger;
   },
 ): Promise<T> {
   const { retries, delay, context, delayFn, logger = new BootstrapLogger() } = options;

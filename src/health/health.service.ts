@@ -13,6 +13,7 @@ export class HealthService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
+    console.log('[HealthService] onModuleInit called');
     this.scheduler.start();
   }
 

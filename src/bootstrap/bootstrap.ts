@@ -8,7 +8,7 @@ import {
 import {
   GLOBAL_FILTERS,
   GLOBAL_INTERCEPTORS,
-} from '@/bootstrap/bootstrap.config';
+} from '@/common/common.config';
 import { 
   redirectToRoot,
   resolveAndRegister,

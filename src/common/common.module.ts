@@ -1,20 +1,12 @@
 // src/common/common.module.ts
 import { Module, Global } from '@nestjs/common';
-import { ResponseInterceptor } from '@/common/interceptors';
-import {
-  AllExceptionsFilter,
-  PrismaClientExceptionFilter,
-  ValidationExceptionFilter,
-} from '@/common/filters';
+import { GLOBAL_INTERCEPTORS, GLOBAL_FILTERS } from '@/common/common.config';
 
 @Global()
 @Module({
   providers: [
-    // Register global interceptors and filters for DI
-    ResponseInterceptor,
-    PrismaClientExceptionFilter,
-    ValidationExceptionFilter,
-    AllExceptionsFilter,
+    ...GLOBAL_INTERCEPTORS,
+    ...GLOBAL_FILTERS,
   ]
 })
 export class CommonModule {}

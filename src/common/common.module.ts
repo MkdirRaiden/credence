@@ -4,9 +4,6 @@ import { GLOBAL_INTERCEPTORS, GLOBAL_FILTERS } from '@/common/common.config';
 
 @Global()
 @Module({
-  providers: [
-    ...GLOBAL_INTERCEPTORS,
-    ...GLOBAL_FILTERS,
-  ]
+  providers: [...GLOBAL_INTERCEPTORS, ...GLOBAL_FILTERS],
 })
 export class CommonModule {}

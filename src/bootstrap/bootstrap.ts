@@ -5,49 +5,35 @@ import {
   NestInterceptor,
   ExceptionFilter,
 } from '@nestjs/common';
-import {
-  GLOBAL_FILTERS,
-  GLOBAL_INTERCEPTORS,
-} from '@/common/common.config';
-import { 
-  redirectToRoot,
-  resolveAndRegister,
-  getServerConfig 
-}  from '@/bootstrap/helpers';
+import { GLOBAL_FILTERS, GLOBAL_INTERCEPTORS } from '@/common/common.config';
+import { resolveAndRegister, getServerConfig } from '@/bootstrap/helpers';
 import { ModuleRef } from '@nestjs/core';
 import helmet from 'helmet';
 import compression from 'compression';
-import { Express } from 'express';
 import { LoggerService } from '@/logger/logger.service';
 
 export class Bootstrap {
 
-  // Configure global middlewares such as helmet, compression, CORS, prefix, etc.
   private static configureMiddlewares(app: INestApplication): void {
-    // get required config
     const { allowedOrigins, globalPrefix } = getServerConfig(app);
-    // Security middleware
+    // Security middlewares
     app.use(helmet());
-    // Trust reverse proxy headers if behind a proxy
-    const expressApp = app.getHttpAdapter()?.getInstance() as Express | undefined;
-    expressApp?.set('trust proxy', 1);
-    // Response compression
+    // Compression middleware for optimal response sizes
     app.use(compression());
-    // CORS setup
+    // CORS configuration
     app.enableCors({
       origin: allowedOrigins.length > 0 ? allowedOrigins : false,
       credentials: true,
     });
-    // Global API prefix
+    // Global prefix for all routes
     app.setGlobalPrefix(globalPrefix);
-    // Redirect 
-    app.use(redirectToRoot(globalPrefix));
-
   }
 
-  // Configure global pipes, interceptors, and filters.
-  private static configureGlobals(app: INestApplication, moduleRef: ModuleRef): void {
-    // Validation pipe
+  private static configureGlobals(
+    app: INestApplication,
+    moduleRef: ModuleRef,
+  ): void {
+    // Global validation pipe
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -56,23 +42,28 @@ export class Bootstrap {
         transformOptions: { enableImplicitConversion: true },
       }),
     );
+
     const logger = app.get(LoggerService);
-    // Global interceptors
-    resolveAndRegister<NestInterceptor>(moduleRef, GLOBAL_INTERCEPTORS, (i) =>
-      app.useGlobalInterceptors(i), logger
+    // Global interceptors registration 
+    resolveAndRegister<NestInterceptor>(
+      moduleRef,
+      GLOBAL_INTERCEPTORS,
+      (i) => app.useGlobalInterceptors(i),
+      logger,
     );
-    // Global exception filters
-    resolveAndRegister<ExceptionFilter>(moduleRef, GLOBAL_FILTERS, (f) =>
-      app.useGlobalFilters(f), logger
+    // Global filters registration
+    resolveAndRegister<ExceptionFilter>(
+      moduleRef,
+      GLOBAL_FILTERS,
+      (f) => app.useGlobalFilters(f),
+      logger,
     );
   }
 
-  // Enable graceful shutdown hooks.
   private static configureShutdownHooks(app: INestApplication): void {
     app.enableShutdownHooks();
   }
 
-  // Initialize all bootstrap steps
   static init(app: INestApplication): void {
     const moduleRef = app.get(ModuleRef);
     this.configureMiddlewares(app);

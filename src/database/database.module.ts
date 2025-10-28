@@ -1,6 +1,6 @@
 // src/database/database.module.ts
 import { Global, Module } from '@nestjs/common';
-import { DatabasePrismaService } from '@/database/database-prisma.service';
+import { PrismaService } from '@/database/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '@/common/interfaces/app-config.interface';
 import { LoggerService } from '@/logger/logger.service';
@@ -9,17 +9,17 @@ import { LoggerService } from '@/logger/logger.service';
 @Module({
   providers: [
     {
-      provide: DatabasePrismaService,
-      useFactory: (configService: ConfigService<AppConfig>,
-      logger: LoggerService
+      provide: PrismaService,
+      useFactory: (
+        config: ConfigService<AppConfig>,
+        logger: LoggerService,
       ) => {
-        const db = configService.getOrThrow('database');
-        return new DatabasePrismaService(db.url, logger);
+        const dbUrl = config.getOrThrow('database').url;
+        return new PrismaService(dbUrl, logger);
       },
-      inject: [ConfigService],
+      inject: [ConfigService, LoggerService],
     },
   ],
-  exports: [DatabasePrismaService],
+  exports: [PrismaService],
 })
 export class DatabaseModule {}
-

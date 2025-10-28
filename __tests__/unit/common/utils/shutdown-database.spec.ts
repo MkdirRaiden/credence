@@ -21,20 +21,28 @@ describe('gracefulShutdown', () => {
     exitSpy.mockRestore();
   });
 
-  it('✅ logs the shutdown message and calls process.exit after default delay', () => {
+  it('logs the shutdown message and calls process.exit after default delay', () => {
     gracefulShutdown(logger);
 
-    expect(logger.error).toHaveBeenCalledWith('Critical shutdown', undefined, 'Shutdown');
+    expect(logger.error).toHaveBeenCalledWith(
+      'Critical shutdown',
+      undefined,
+      'Shutdown',
+    );
 
     // Fast-forward timers
     jest.advanceTimersByTime(5000); // default SHUTDOWN_TIMEOUT_MS
     expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
-  it('✅ logs custom message and respects custom delay', () => {
+  it('logs custom message and respects custom delay', () => {
     gracefulShutdown(logger, 'Custom message', 100);
 
-    expect(logger.error).toHaveBeenCalledWith('Custom message', undefined, 'Shutdown');
+    expect(logger.error).toHaveBeenCalledWith(
+      'Custom message',
+      undefined,
+      'Shutdown',
+    );
 
     jest.advanceTimersByTime(100);
     expect(exitSpy).toHaveBeenCalledWith(1);

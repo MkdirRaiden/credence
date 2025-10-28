@@ -6,7 +6,7 @@ export class UsersMapper {
   // DTO -> Prisma input
   static toPrismaCreate(dto: CreateUserDto): Prisma.UserCreateInput {
     return {
-      email: "",
+      email: '',
       phone: dto.phone,
     };
   }
@@ -14,9 +14,7 @@ export class UsersMapper {
   // Prisma entity -> API response DTO
   static toResponse(user: User): UserResponseDto {
     return {
-  
       phone: user.phone ?? undefined,
-  
     };
   }
 }

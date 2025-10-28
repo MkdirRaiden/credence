@@ -4,6 +4,7 @@ import {
   BadRequestException,
   ArgumentsHost,
   Injectable,
+  HttpStatus,
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
 import { LoggerService } from '@/logger/logger.service';
@@ -19,7 +20,7 @@ export class ValidationExceptionFilter extends BaseExceptionFilter {
     const responseBody = exception.getResponse();
     let messages: string[] = [];
 
-    // Safely extract messages
+    // Extract validation messages
     if (typeof responseBody === 'string') {
       messages = [responseBody];
     } else if (
@@ -35,6 +36,15 @@ export class ValidationExceptionFilter extends BaseExceptionFilter {
       }
     }
 
-    this.handleResponse(host, 400, 'Validation failed', { errors: messages });
+    const errorMessage = messages.length > 0 
+      ? messages.join(', ') 
+      : 'Validation failed';
+
+    this.handleResponse(
+      host, 
+      HttpStatus.BAD_REQUEST, 
+      errorMessage,
+      exception
+    );
   }
 }

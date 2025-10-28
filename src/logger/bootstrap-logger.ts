@@ -3,6 +3,6 @@ import { BaseLogger } from '@/logger/base-logger';
 
 export class BootstrapLogger extends BaseLogger {
   constructor() {
-    super(undefined, undefined); // no env, no meta during bootstrap
+    super(process.env.NODE_ENV); // Pass the current environment
   }
 }

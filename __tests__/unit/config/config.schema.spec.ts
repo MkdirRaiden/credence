@@ -4,7 +4,7 @@ import { validEnv, invalidEnv, partialEnv } from './__fixtures__/env.fixtures';
 import { DEFAULT_ALLOWED_ORIGINS } from '@/common/constants';
 
 describe('configValidationSchema', () => {
-  it('✅ validates valid environment variables', () => {
+  it('validates valid environment variables', () => {
     const { error, value } = configValidationSchema.validate(validEnv);
     expect(error).toBeUndefined();
     expect(value.PORT).toBe(4000);
@@ -12,14 +12,14 @@ describe('configValidationSchema', () => {
     expect(value.ALLOWED_ORIGINS).toBe(validEnv.ALLOWED_ORIGINS); // still string here
   });
 
-  it('🚫 rejects invalid environment variables', () => {
+  it('rejects invalid environment variables', () => {
     const { error } = configValidationSchema.validate(invalidEnv);
     expect(error).toBeDefined();
     expect(error?.message).toContain('NODE_ENV');
   });
 
-  // 🆕 NEW TEST — ensures non-PostgreSQL URLs fail validation
-  it('🚫 rejects non-PostgreSQL database URLs', () => {
+  // Test ensures non-PostgreSQL URLs fail validation
+  it('rejects non-PostgreSQL database URLs', () => {
     const { error } = configValidationSchema.validate({
       ...validEnv,
       DATABASE_URL: 'mysql://localhost:3306/db',
@@ -29,7 +29,7 @@ describe('configValidationSchema', () => {
     expect(error?.message).toContain('PostgreSQL connection string');
   });
 
-  it('🧩 applies default values when not provided', () => {
+  it('applies default values when not provided', () => {
     const { value } = configValidationSchema.validate(partialEnv);
     expect(value.PORT).toBeDefined();
     expect(value.NODE_ENV).toBeDefined();

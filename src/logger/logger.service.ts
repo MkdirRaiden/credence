@@ -6,9 +6,8 @@ import { AppConfig } from '@/common/interfaces/app-config.interface';
 
 @Injectable()
 export class LoggerService extends BaseLogger {
-  constructor(private readonly config: ConfigService<AppConfig>) {
-    // Resolve env once; optionally pass a meta provider if you add ALS later
-    const env = config.get('nodeEnv');
-    super(env, undefined);
+  constructor(config: ConfigService<AppConfig>) {
+    const env = config.get('nodeEnv', { infer: true });
+    super(env);
   }
 }

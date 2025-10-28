@@ -1,37 +1,39 @@
 // src/health/health.service.ts
-import { Injectable, HttpException, HttpStatus, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  OnModuleInit,
+} from '@nestjs/common';
 import { buildResponse } from '@/common/utils/response-builder';
-import { DatabaseProbe } from '@/health/probes/database.probe';
+import { PrismaProbe } from '@/health/probes/prisma.probe';
 import { HealthScheduler } from '@/health/health.scheduler';
 import { getLiveness, getReadiness } from '@/health/helpers';
 
 @Injectable()
 export class HealthService implements OnModuleInit {
   constructor(
-    private readonly dbProbe: DatabaseProbe,
+    private readonly prismaProbe: PrismaProbe,
     private readonly scheduler: HealthScheduler,
   ) {}
 
   onModuleInit() {
-    console.log('[HealthService] onModuleInit called');
     this.scheduler.start();
   }
 
-  // Public: controller uses this for /health/live
   liveEnvelope() {
     const data = getLiveness();
     return buildResponse(
       data,
-      '/health/live',
+      '/health/live', 
       HttpStatus.OK,
       true,
       'Liveness OK',
     );
   }
 
-  // Public: controller uses this for /health/ready
   async readyEnvelopeOrThrow() {
-    const readiness = await getReadiness(this.dbProbe);
+    const readiness = await getReadiness(this.prismaProbe);
     if (readiness.status === 'error') {
       throw new HttpException(readiness, HttpStatus.SERVICE_UNAVAILABLE);
     }
@@ -44,11 +46,10 @@ export class HealthService implements OnModuleInit {
     );
   }
 
-  // Public: bootstrap helper uses this before listen()
   async assertReadiness(): Promise<void> {
-    const readiness = await getReadiness(this.dbProbe);
+    const readiness = await getReadiness(this.prismaProbe);
     if (readiness.status !== 'ok') {
-      throw new Error(`Readiness failed: ${JSON.stringify(readiness.details)}`);
+      throw new Error(`Readiness check failed: ${JSON.stringify(readiness.details)}`);
     }
   }
 }

@@ -19,5 +19,8 @@ export default (): AppConfig => ({
   appVersion: process.env.APP_VERSION || APP_VERSION,
   globalPrefix: process.env.GLOBAL_PREFIX || GLOBAL_PREFIX,
   database: { url: process.env.DATABASE_URL! }, // guaranteed by pre-validation
-  allowedOrigins: splitStringToArray(process.env.ALLOWED_ORIGINS, DEFAULT_ALLOWED_ORIGINS),
+  allowedOrigins: splitStringToArray(
+    process.env.ALLOWED_ORIGINS,
+    DEFAULT_ALLOWED_ORIGINS,
+  ),
 });

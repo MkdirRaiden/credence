@@ -1,9 +1,16 @@
 // src/logger/helpers/error-meta.ts
 import { safeSerialize } from './safe-serialize';
 
-/** Generate metadata for errors */
 export function errorMeta(err?: unknown): Record<string, unknown> | undefined {
   if (!err) return undefined;
-  if (err instanceof Error) return { trace: err.stack, name: err.name ?? 'Error' };
+  
+  if (err instanceof Error) {
+    return {
+      name: err.name,
+      trace: err.stack,
+      // Removed 'message' to avoid overwriting the log entry's message
+    };
+  }
+  
   return { trace: safeSerialize(err) };
 }

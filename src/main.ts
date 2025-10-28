@@ -11,35 +11,35 @@ const nodeEnv = process.env.NODE_ENV;
 const bootstrapLogger = new BootstrapLogger();
 
 async function bootstrap() {
-  // 1) Validate essential pre-configuration env vars
-  validatePreConfig();
 
-  bootstrapLogger.log(`Bootstrapping app, Env: ${nodeEnv}...`, "Bootstrap.app");
+  bootstrapLogger.log(`Bootstrapping app, Env: ${nodeEnv}...`, 'Bootstrap.app');
+
+  // 1) Validate essential pre-configuration env vars
+  validatePreConfig(bootstrapLogger);
 
   // 2) Create Nest app with a stateless bootstrap logger for early logs
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
-    abortOnError: nodeEnv == "production",
+    abortOnError: nodeEnv === 'production',
     logger: bootstrapLogger,
   });
 
-  // 3) Swap to DI-backed logger 
+  // 3) Swap to DI-backed logger
   const logger = app.get(LoggerService);
   app.useLogger(logger);
 
-  // 4) Centralized global setup (security, CORS, prefix, pipes, filters, interceptors, shutdown)
+  // 4) Centralized global setup security, pipes, filters, interceptors, etc.
   Bootstrap.init(app);
 
-  // 5) Optional readiness checks before accepting traffic
+  // 5) Readiness checks before accepting traffic
   await runReadinessChecks(app);
 
   // 6) Start server, listen and log on configured port
   await startServer(app, logger);
-
 }
 
 void bootstrap().catch((err) => {
   const message = `Bootstrap failed, err: ${err?.message}`;
-  bootstrapLogger.error( message, err?.stack, "Bootstrap.error");
+  bootstrapLogger.error(message, err?.stack, 'Bootstrap.error');
   process.exit(1);
 });

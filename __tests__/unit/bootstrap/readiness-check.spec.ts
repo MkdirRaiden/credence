@@ -14,20 +14,20 @@ describe('runReadinessChecks', () => {
     } as any;
   });
 
-  it('✅ calls assertReadiness successfully', async () => {
+  it('calls assertReadiness successfully', async () => {
     await runReadinessChecks(mockApp);
     expect(mockApp.get).toHaveBeenCalledWith(HealthService, { strict: false });
     expect(mockHealth.assertReadiness).toHaveBeenCalled();
   });
 
-  it('🚫 throws if HealthService is missing', async () => {
+  it('throws if HealthService is missing', async () => {
     mockApp.get.mockReturnValueOnce(undefined);
     await expect(runReadinessChecks(mockApp)).rejects.toThrow(
       'Readiness check unavailable: HealthService not found',
     );
   });
 
-  it('🚫 throws if assertReadiness is not a function', async () => {
+  it('throws if assertReadiness is not a function', async () => {
     mockApp.get.mockReturnValueOnce({});
     await expect(runReadinessChecks(mockApp)).rejects.toThrow(
       'Readiness check unavailable: HealthService.assertReadiness not found',

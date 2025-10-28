@@ -13,7 +13,7 @@ describe('retry utility', () => {
     verbose: jest.fn(),
   });
 
-  it('✅ retries failed operation and eventually succeeds', async () => {
+  it('retries failed operation and eventually succeeds', async () => {
     const operation = jest
       .fn()
       .mockRejectedValueOnce(new Error('fail'))
@@ -25,7 +25,7 @@ describe('retry utility', () => {
       retries: 2,
       delay: 10,
       delayFn: async () => Promise.resolve(),
-      // 👇 safe cast through unknown avoids TS2352 warning
+      // safe cast through unknown avoids TS2352 warning
       logger: mockLogger as unknown as LoggerService,
       context: 'DB',
     });
@@ -33,11 +33,11 @@ describe('retry utility', () => {
     expect(result).toBe('OK');
     expect(operation).toHaveBeenCalledTimes(2);
     expect(mockLogger.warn).toHaveBeenCalledWith(
-      '[DB] Retry attempt 1 failed. Retrying in 10ms...'
+      '[DB] Retry attempt 1 failed. Retrying in 10ms...',
     );
   });
 
-  it('🚫 throws after all retries fail', async () => {
+  it('throws after all retries fail', async () => {
     const operation = jest.fn().mockRejectedValue(new Error('fail'));
     const mockLogger = createMockLogger();
 
@@ -53,11 +53,11 @@ describe('retry utility', () => {
 
     expect(operation).toHaveBeenCalledTimes(2);
     expect(mockLogger.warn).toHaveBeenCalledWith(
-      '[DB] Retry attempt 1 failed. Retrying in 10ms...'
+      '[DB] Retry attempt 1 failed. Retrying in 10ms...',
     );
   });
 
-  it('🧩 uses BootstrapLogger fallback if no logger provided', async () => {
+  it('uses BootstrapLogger fallback if no logger provided', async () => {
     const operation = jest.fn().mockResolvedValue('OK');
     const spy = jest
       .spyOn(BootstrapLogger.prototype, 'warn')

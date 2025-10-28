@@ -11,10 +11,10 @@ import { CommonModule } from '@/common/common.module';
 @Module({
   imports: [
     // Global Core Modules (loaded once)
-    CommonModule,
-    ConfigModule, 
+    ConfigModule,
     LoggerModule,
-    DatabaseModule, 
+    CommonModule,
+    DatabaseModule,
     // System Modules
     HealthModule,
     // Domain Feature Modules

@@ -2,8 +2,6 @@
 import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UserResponseDto {
-
-
   @IsOptional()
   @IsString()
   phone?: string;
@@ -11,5 +9,4 @@ export class UserResponseDto {
   @IsOptional()
   @IsString()
   referralCode?: string;
-
 }

@@ -8,9 +8,11 @@ import { AppConfig } from '@/common/interfaces/app-config.interface';
  * required during bootstrap and server info logging.
  * Assumes all values are already validated at startup.
  */
-export function getServerConfig(app: INestApplication): Pick<
+export function getServerConfig(
+  app: INestApplication,
+): Pick<
   Required<AppConfig>,
-  'nodeEnv' |  'port' | 'host' | 'globalPrefix' | 'allowedOrigins'
+  'nodeEnv' | 'port' | 'host' | 'globalPrefix' | 'allowedOrigins'
 > {
   const configService = app.get<ConfigService<AppConfig>>(ConfigService);
 

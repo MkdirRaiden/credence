@@ -1,6 +1,6 @@
-// src/health/probes/database.probe.ts
+// src/health/probes/prisma.probe.ts
 import { Injectable } from '@nestjs/common';
-import { DatabasePrismaService } from '@/database/database-prisma.service';
+import { PrismaService } from '@/database/prisma.service';
 
 export interface ProbeResult {
   name: string;
@@ -9,10 +9,10 @@ export interface ProbeResult {
 }
 
 @Injectable()
-export class DatabaseProbe {
-  readonly name = 'database';
+export class PrismaProbe {
+  readonly name = 'prisma';
 
-  constructor(private readonly db: DatabasePrismaService) {}
+  constructor(private readonly db: PrismaService) {}
 
   async check(): Promise<ProbeResult> {
     try {

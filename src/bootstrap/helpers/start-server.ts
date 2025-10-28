@@ -4,8 +4,11 @@ import { INestApplication } from '@nestjs/common';
 import { getServerConfig } from './server-config';
 
 // Build a normalized base URL and log it via the DI logger
-export async function startServer( app: INestApplication, logger: LoggerService) {
-  const { port, globalPrefix, nodeEnv, host} = getServerConfig(app);
+export async function startServer(
+  app: INestApplication,
+  logger: LoggerService,
+) {
+  const { port, globalPrefix, nodeEnv, host } = getServerConfig(app);
   await app.listen(port);
 
   const normPrefix = String(globalPrefix ?? '').replace(/^\/+|\/+$/g, '');

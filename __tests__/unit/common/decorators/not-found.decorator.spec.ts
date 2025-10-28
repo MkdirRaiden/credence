@@ -26,17 +26,17 @@ describe('NotFound Decorator', () => {
     service = new TestService();
   });
 
-  it('✅ should return result if method returns valid value', async () => {
+  it('should return result if method returns valid value', async () => {
     const result = await service.findOneSuccess();
     expect(result).toEqual({ id: 1, name: 'Test' });
   });
 
-  it('🚫 should throw NotFoundException if method returns null', async () => {
+  it('should throw NotFoundException if method returns null', async () => {
     await expect(service.findOneFail()).rejects.toThrow(NotFoundException);
     await expect(service.findOneFail()).rejects.toThrow('Item not found');
   });
 
-  it('🚫 should throw NotFoundException if method returns undefined', async () => {
+  it('should throw NotFoundException if method returns undefined', async () => {
     await expect(service.findOneUndefined()).rejects.toThrow(NotFoundException);
     await expect(service.findOneUndefined()).rejects.toThrow('Item undefined');
   });

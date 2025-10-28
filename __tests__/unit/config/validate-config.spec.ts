@@ -31,7 +31,7 @@ describe('validatePreConfig', () => {
     mockExit.mockRestore();
   });
 
-  it('✅ does nothing when all env vars are valid', () => {
+  it('does nothing when all env vars are valid', () => {
     process.env = { ...validEnv };
 
     expect(() => validatePreConfig(mockLogger)).not.toThrow();
@@ -41,7 +41,7 @@ describe('validatePreConfig', () => {
     expect(mockExit).not.toHaveBeenCalled();
   });
 
-  it('✅ logs warning for non-critical issues only', () => {
+  it('logs warning for non-critical issues only', () => {
     // Non-critical failure: ALLOWED_ORIGINS invalid but NODE_ENV is valid
     process.env = { ...validEnv, ALLOWED_ORIGINS: 'invalid_url' };
 
@@ -52,7 +52,7 @@ describe('validatePreConfig', () => {
     expect(mockExit).not.toHaveBeenCalled();
   });
 
-  it('🚫 exits process on critical error', () => {
+  it('exits process on critical error', () => {
     // Critical failure: invalid NODE_ENV & DATABASE_URL
     process.env = { ...invalidEnv };
 

@@ -13,41 +13,42 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
   }
 
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
-    let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Database error';
-    let criticalFailure = false;
+    const { status, message, critical } = this.mapPrismaError(exception);
 
-    switch (exception.code) {
-      case 'P2002': {
-        // Unique constraint
-        status = HttpStatus.CONFLICT;
-        const fields = Array.isArray(exception.meta?.target)
-          ? exception.meta.target
-          : undefined;
-        message = `Unique constraint failed on fields: ${fields?.join(', ') ?? 'unknown'}`;
-        break;
-      }
-      case 'P2025': {
-        // Record not found
-        status = HttpStatus.NOT_FOUND;
-        message = 'Record not found';
-        break;
-      }
-      default: {
-        message = exception.message;
-        criticalFailure = true; // unknown DB error → treat as critical
-      }
-    }
-
-    // Centralized logging + JSON response
     this.handleResponse(host, status, message, exception);
 
-    // Shutdown only for critical DB failures
-    if (criticalFailure) {
+    if (critical) {
       gracefulShutdown(
         this.logger,
-        'Critical database failure — shutting down application...',
+        'Critical database failure — shutting down application',
       );
+    }
+  }
+
+  private mapPrismaError(exception: Prisma.PrismaClientKnownRequestError) {
+    switch (exception.code) {
+      case 'P2002': {
+        const fields = Array.isArray(exception.meta?.target)
+          ? exception.meta.target.join(', ')
+          : 'unknown';
+        return {
+          status: HttpStatus.CONFLICT,
+          message: `Unique constraint failed on fields: ${fields}`,
+          critical: false,
+        };
+      }
+      case 'P2025':
+        return {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Record not found',
+          critical: false,
+        };
+      default:
+        return {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: exception.message,
+          critical: true,
+        };
     }
   }
 }

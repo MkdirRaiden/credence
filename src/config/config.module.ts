@@ -12,7 +12,7 @@ import { configValidationSchema } from '@/config/config.schema';
       isGlobal: true,
       envFilePath: getEnvFilePaths(),
       expandVariables: true,
-      validationSchema: configValidationSchema  //runtime validation
+      validationSchema: configValidationSchema, //runtime validation
     }),
   ],
 })

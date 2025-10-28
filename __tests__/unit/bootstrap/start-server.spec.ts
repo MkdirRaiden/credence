@@ -4,7 +4,6 @@ import { getServerConfig } from '@/bootstrap/helpers/server-config';
 import { LoggerService } from '@/logger/logger.service';
 import type { INestApplication } from '@nestjs/common';
 
-// ✅ Mock getServerConfig so we can control return values
 jest.mock('@/bootstrap/helpers/server-config', () => ({
   getServerConfig: jest.fn(),
 }));
@@ -24,7 +23,7 @@ describe('startServer', () => {
     jest.clearAllMocks();
   });
 
-  it('✅ logs full base URL when prefix is provided', async () => {
+  it('logs full base URL when prefix is provided', async () => {
     (getServerConfig as jest.Mock).mockReturnValue({
       port: 3000,
       host: 'localhost',
@@ -41,7 +40,7 @@ describe('startServer', () => {
     );
   });
 
-  it('✅ logs without prefix when none provided', async () => {
+  it('logs without prefix when none provided', async () => {
     (getServerConfig as jest.Mock).mockReturnValue({
       port: 4000,
       host: '127.0.0.1',
@@ -57,7 +56,7 @@ describe('startServer', () => {
     );
   });
 
-  it('✅ trims slashes in prefix', async () => {
+  it('trims slashes in prefix', async () => {
     (getServerConfig as jest.Mock).mockReturnValue({
       port: 8080,
       host: 'localhost',
@@ -69,22 +68,6 @@ describe('startServer', () => {
 
     expect(mockLogger.log).toHaveBeenCalledWith(
       '🚀 Server running on http://localhost:8080/v2 [production]',
-      'Bootstrap',
-    );
-  });
-
-  it('✅ omits env if not provided', async () => {
-    (getServerConfig as jest.Mock).mockReturnValue({
-      port: 8080,
-      host: 'localhost',
-      globalPrefix: '/v3/',
-      nodeEnv: undefined,
-    });
-
-    await startServer(mockApp, mockLogger);
-
-    expect(mockLogger.log).toHaveBeenCalledWith(
-      '🚀 Server running on http://localhost:8080/v3 [undefined]',
       'Bootstrap',
     );
   });

@@ -1,14 +1,23 @@
 // src/config/config.schema.ts
 import * as Joi from 'joi';
-import { DEFAULT_ALLOWED_ORIGINS, NODE_ENV, PORT, VALID_NODE_ENVS, APP_NAME, APP_VERSION } from '@/common/constants';
+import {
+  DEFAULT_ALLOWED_ORIGINS,
+  NODE_ENV,
+  PORT,
+  VALID_NODE_ENVS,
+  APP_NAME,
+  APP_VERSION,
+} from '@/common/constants';
 
 export const configValidationSchema = Joi.object({
-  NODE_ENV: Joi.string().valid(...VALID_NODE_ENVS).default(NODE_ENV),
+  NODE_ENV: Joi.string()
+    .valid(...VALID_NODE_ENVS)
+    .default(NODE_ENV),
   PORT: Joi.number().default(PORT),
   DATABASE_URL: Joi.string()
-  .uri()
-  .pattern(/^postgres(ql)?:\/\/.+$/, 'PostgreSQL connection string')
-  .required(),
+    .uri()
+    .pattern(/^postgres(ql)?:\/\/.+$/, 'PostgreSQL connection string')
+    .required(),
   APP_NAME: Joi.string().trim().default(APP_NAME),
   APP_VERSION: Joi.string().trim().default(APP_VERSION),
   // Only validate that ALLOWED_ORIGINS is a string (comma-separated URLs)

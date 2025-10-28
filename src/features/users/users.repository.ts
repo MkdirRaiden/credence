@@ -1,6 +1,6 @@
 // src/features/users/users.repository.ts
 import { Injectable } from '@nestjs/common';
-import { DatabasePrismaService } from '../../database/database-prisma.service';
+import { DatabasePrismaService } from '../../database/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import { NotFound } from '../../common/decorators/not-found.decorator';
 

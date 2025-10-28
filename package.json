@@ -35,7 +35,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:unit": "jest --roots __tests__/unit --runInBand",
     "test:integration": "NODE_ENV=test jest --roots __tests__/integration --runInBand",
-    "test:e2e": "jest --config ./__tests__/jest-e2e.json --runInBand",
+    "test:e2e": "NODE_ENV=test jest --config ./__tests__/jest-e2e.json --runInBand",
     "prisma:gen": "bash ./scripts/prisma/commands/merge-generate.sh",
     "prisma:fmt": "bash ./scripts/prisma/commands/format-validate.sh",
     "prisma:clean": "bash -c 'rm -rf node_modules/.prisma prisma/schema.prisma'",

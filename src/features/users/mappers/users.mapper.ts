@@ -13,10 +13,10 @@ export const toCreateInput = (dto: CreateUserDto): Prisma.UserCreateInput => ({
   // referralCode handling will be done in service layer
 });
 
-// Map UpdateUserDto to Prisma update input
+// Map UpdateUserDto to Prisma update input (functional approach)
 export const toUpdateInput = (dto: UpdateUserDto): Prisma.UserUpdateInput => {
   return Object.fromEntries(
-    Object.entries(dto).filter(([_, value]) => value !== undefined),
+    Object.entries(dto).filter(([, value]) => value !== undefined),
   ) as Prisma.UserUpdateInput;
 };
 

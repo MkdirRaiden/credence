@@ -1,12 +1,14 @@
-// src/users/dtos/user-response.dto.ts
-import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
-
+// src/features/users/dtos/user-response.dto.ts
 export class UserResponseDto {
-  @IsOptional()
-  @IsString()
+  id: string;
+  email: string;
   phone?: string;
-
-  @IsOptional()
-  @IsString()
-  referralCode?: string;
+  name?: string;
+  avatarUrl?: string;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  role: string;
+  referredById?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

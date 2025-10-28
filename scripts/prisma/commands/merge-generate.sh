@@ -6,23 +6,23 @@ set -euo pipefail
 ENVIRONMENT="${1:-development}"
 
 # ──────────────────────────────────────────────
-# 1️⃣ Load bootstrap (loads core + logging)
+# 1 Load bootstrap (loads core + logging)
 # ──────────────────────────────────────────────
 source "$(dirname "$0")/../../bootstrap.sh"
 
 # ──────────────────────────────────────────────
-# 2️⃣ Guard Prisma environment (env + validation + schema paths)
+# 2 Guard Prisma environment (env + validation + schema paths)
 # ──────────────────────────────────────────────
 source "$REPO_ROOT/scripts/prisma/utils/prisma-guard.sh" "$ENVIRONMENT"
 
 # ──────────────────────────────────────────────
-# 3️⃣ Load Prisma helpers
+# 3 Load Prisma helpers
 # ──────────────────────────────────────────────
 source "$REPO_ROOT/scripts/prisma/utils/prisma-utils.sh"
 source "$REPO_ROOT/scripts/prisma/utils/schema-merge.sh"
 
 # ──────────────────────────────────────────────
-# 4️⃣ Prepare schema merge list
+# 4 Prepare schema merge list
 # ──────────────────────────────────────────────
 SCHEMA_SRC_DIR="$REPO_ROOT/prisma"
 
@@ -40,7 +40,7 @@ done
 check_files "$SCHEMA_SRC_DIR/base.prisma"
 
 # ──────────────────────────────────────────────
-# 5️⃣ Merge, format, validate, generate
+# 5 Merge, format, validate, generate
 # ──────────────────────────────────────────────
 merge_prisma_files "$SCHEMA_FILE" "${SCHEMA_FILES[@]}"
 format_and_validate "$SCHEMA_FILE"

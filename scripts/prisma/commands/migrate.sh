@@ -9,27 +9,27 @@ MIGRATION_NAME="${2:-}"
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ──────────────────────────────────────────────
-# 1️⃣ Load bootstrap (paths + logging)
+# 1 Load bootstrap (paths + logging)
 # ──────────────────────────────────────────────
 source "$DIR/../../bootstrap.sh"
 
 # ──────────────────────────────────────────────
-# 2️⃣ Guard environment (env + validation + schema paths)
+# 2 Guard environment (env + validation + schema paths)
 # ──────────────────────────────────────────────
 source "$REPO_ROOT/scripts/prisma/utils/prisma-guard.sh" "$ENVIRONMENT" "dev-migrate"
 
 # ──────────────────────────────────────────────
-# 3️⃣ Merge schema & generate Prisma client
+# 3 Merge schema & generate Prisma client
 # ──────────────────────────────────────────────
 bash "$REPO_ROOT/scripts/prisma/commands/merge-generate.sh" "$ENVIRONMENT"
 
 # ──────────────────────────────────────────────
-# 4️⃣ Validate merged schema exists
+# 4 Validate merged schema exists
 # ──────────────────────────────────────────────
 check_files "$SCHEMA_FILE"
 
 # ──────────────────────────────────────────────
-# 5️⃣ Prevent running in production
+# 5 Prevent running in production
 # ──────────────────────────────────────────────
 if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
   log_error "❌ Refusing to run 'prisma migrate dev' in production. Use 'deploy' instead."
@@ -37,7 +37,7 @@ if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
 fi
 
 # ──────────────────────────────────────────────
-# 6️⃣ Run migration
+# 6 Run migration
 # ──────────────────────────────────────────────
 if [[ -n "$MIGRATION_NAME" ]]; then
   log_info "🛠 Running prisma migrate dev with migration name: $MIGRATION_NAME"

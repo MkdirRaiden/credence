@@ -8,17 +8,17 @@ ENVIRONMENT="${1:-development}"
 MIGRATION_NAME="${2:-}"
 
 # ──────────────────────────────────────────────
-# 1️⃣ Load bootstrap (paths + logging)
+# 1 Load bootstrap (paths + logging)
 # ──────────────────────────────────────────────
 source "$(dirname "$0")/../../bootstrap.sh"
 
 # ──────────────────────────────────────────────
-# 2️⃣ Guard environment (ensures DATABASE_URL, SHADOW_DATABASE_URL, schema paths)
+# 2 Guard environment (ensures DATABASE_URL, SHADOW_DATABASE_URL, schema paths)
 # ──────────────────────────────────────────────
 source "$REPO_ROOT/scripts/prisma/utils/prisma-guard.sh" "$ENVIRONMENT" "dev-migrate"
 
 # ──────────────────────────────────────────────
-# 3️⃣ Merge schema & generate Prisma client
+# 3 Merge schema & generate Prisma client
 # ──────────────────────────────────────────────
 bash "$REPO_ROOT/scripts/prisma/commands/merge-generate.sh" "$ENVIRONMENT"
 
@@ -26,7 +26,7 @@ bash "$REPO_ROOT/scripts/prisma/commands/merge-generate.sh" "$ENVIRONMENT"
 check_files "$SCHEMA_FILE"
 
 # ──────────────────────────────────────────────
-# 5️⃣ Handle production environment
+# 5 Handle production environment
 # ──────────────────────────────────────────────
 if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
   log_info "🌐 Production mode detected — running prisma migrate deploy"
@@ -36,13 +36,13 @@ if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
 fi
 
 # ──────────────────────────────────────────────
-# 6️⃣ Reset development database
+# 6 Reset development database
 # ──────────────────────────────────────────────
 log_info "🧹 Resetting development database for environment: $ENVIRONMENT"
 npx prisma migrate reset --force --skip-generate --schema "$SCHEMA_FILE"
 
 # ──────────────────────────────────────────────
-# 7️⃣ Run migrations (dev)
+# 7 Run migrations (dev)
 # ──────────────────────────────────────────────
 if [[ -n "$MIGRATION_NAME" ]]; then
   log_info "🚀 Running prisma migrate dev with migration name: $MIGRATION_NAME"

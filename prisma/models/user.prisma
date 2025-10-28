@@ -6,25 +6,40 @@ model User {
   passwordHash String?
   role         UserRole @default(USER)
 
+  // Display & profile fields
+  name         String?
+  avatarUrl    String?
+
+  // Verification status
+  emailVerified Boolean @default(false)
+  phoneVerified Boolean @default(false)
+
   // Self-referral graph
   referredById String?
   referredBy   User?   @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull, onUpdate: Cascade)
   referrals    User[]  @relation("Referrals")
 
-  // // Redemptions
+  // Redemptions
   redemptionsAsReferrer ReferralRedemption[] @relation("Referrer")
   redemptionsAsReferee  ReferralRedemption[] @relation("Referee")
 
-  // // Referral codes owned by this user
+  // Referral codes owned by this user
   referralCodes ReferralCode[]
 
-  // // OTPs
+  // OTPs
   otps OtpCode[]
 
-  // // Ledger
+  // Ledger
   credits CreditLedger[]
+
+  // Soft delete support
+  deletedAt DateTime?
 
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Indexes for performance
+  @@index([deletedAt])
+  @@index([email, deletedAt])
 }

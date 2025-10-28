@@ -3,6 +3,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
+    "strictPropertyInitialization": false,
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]

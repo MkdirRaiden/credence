@@ -25,7 +25,7 @@ export class Bootstrap {
       credentials: true,
     });
     // Global prefix for all routes except root and health
-    app.setGlobalPrefix(globalPrefix, {exclude: [ '/', 'health/(.*)' ]}); 
+    app.setGlobalPrefix(globalPrefix, { exclude: ['/', 'health/(.*)'] });
   }
 
   private static configureGlobals(

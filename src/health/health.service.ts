@@ -20,7 +20,7 @@ export class HealthService implements OnModuleInit {
     this.scheduler.start();
   }
 
-  // Returns liveness data 
+  // Returns liveness data
   liveness() {
     return getLiveness();
   }
@@ -36,7 +36,7 @@ export class HealthService implements OnModuleInit {
         },
         HttpStatus.SERVICE_UNAVAILABLE,
       );
-    }   
+    }
     return readiness;
   }
 

@@ -16,10 +16,9 @@ export const toCreateInput = (dto: CreateUserDto): Prisma.UserCreateInput => ({
 // Map UpdateUserDto to Prisma update input
 export const toUpdateInput = (dto: UpdateUserDto): Prisma.UserUpdateInput => {
   return Object.fromEntries(
-    Object.entries(dto).filter(([_, value]) => value !== undefined)
+    Object.entries(dto).filter(([_, value]) => value !== undefined),
   ) as Prisma.UserUpdateInput;
 };
-
 
 // Map Prisma User entity to UserResponseDto
 export const toResponseDto = (user: User): UserResponseDto => ({

@@ -5,13 +5,17 @@ import { Bootstrap } from '@/bootstrap/bootstrap';
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
 import { LoggerService } from '@/logger/logger.service';
 import { validatePreConfig } from '@/config/helpers';
-import { startServer, runReadinessChecks } from '@/bootstrap/helpers';
+import {
+  startServer,
+  runReadinessChecks,
+  handleBootstrapError,
+} from '@/bootstrap/helpers';
 
 const nodeEnv = process.env.NODE_ENV;
 const bootstrapLogger = new BootstrapLogger();
 
 async function bootstrap() {
-
+  // Log starting bootstrap process
   bootstrapLogger.log(`Bootstrapping app, Env: ${nodeEnv}...`, 'Bootstrap.app');
 
   // 1) Validate essential pre-configuration env vars
@@ -38,8 +42,6 @@ async function bootstrap() {
   await startServer(app, logger);
 }
 
-void bootstrap().catch((err) => {
-  const message = `Bootstrap failed, err: ${err?.message}`;
-  bootstrapLogger.error(message, err?.stack, 'Bootstrap.error');
-  process.exit(1);
-});
+void bootstrap().catch((err: unknown) =>
+  handleBootstrapError(err, bootstrapLogger),
+);

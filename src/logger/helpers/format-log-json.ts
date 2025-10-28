@@ -9,7 +9,7 @@ export function formatLogJson(
   opts?: BuildOptions & { error?: unknown },
 ): string {
   const entry = buildEntry(level, message, opts);
-  
+
   // Add error metadata if present
   if (opts?.error) {
     const errMeta = errorMeta(opts.error);

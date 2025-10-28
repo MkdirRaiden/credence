@@ -36,15 +36,9 @@ export class ValidationExceptionFilter extends BaseExceptionFilter {
       }
     }
 
-    const errorMessage = messages.length > 0 
-      ? messages.join(', ') 
-      : 'Validation failed';
+    const errorMessage =
+      messages.length > 0 ? messages.join(', ') : 'Validation failed';
 
-    this.handleResponse(
-      host, 
-      HttpStatus.BAD_REQUEST, 
-      errorMessage,
-      exception
-    );
+    this.handleResponse(host, HttpStatus.BAD_REQUEST, errorMessage, exception);
   }
 }

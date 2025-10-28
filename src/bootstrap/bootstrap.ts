@@ -13,7 +13,6 @@ import compression from 'compression';
 import { LoggerService } from '@/logger/logger.service';
 
 export class Bootstrap {
-
   private static configureMiddlewares(app: INestApplication): void {
     const { allowedOrigins, globalPrefix } = getServerConfig(app);
     // Security middlewares
@@ -44,7 +43,7 @@ export class Bootstrap {
     );
 
     const logger = app.get(LoggerService);
-    // Global interceptors registration 
+    // Global interceptors registration
     resolveAndRegister<NestInterceptor>(
       moduleRef,
       GLOBAL_INTERCEPTORS,

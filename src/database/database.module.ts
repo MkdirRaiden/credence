@@ -1,9 +1,9 @@
 // src/database/database.module.ts
-import { Global, Module } from '@nestjs/common';
-import { PrismaService } from '@/database/prisma.service';
+import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from '@/common/interfaces/app-config.interface';
+import { PrismaService } from '@/database/prisma.service';
 import { LoggerService } from '@/logger/logger.service';
+import type { AppConfig } from '@/common/interfaces/app-config.interface';
 
 @Global()
 @Module({
@@ -11,11 +11,12 @@ import { LoggerService } from '@/logger/logger.service';
     {
       provide: PrismaService,
       useFactory: (
-        config: ConfigService<AppConfig>,
+        configService: ConfigService<AppConfig, true>,
         logger: LoggerService,
       ) => {
-        const dbUrl = config.getOrThrow('database').url;
-        return new PrismaService(dbUrl, logger);
+        const database = configService.get('database', { infer: true });
+        const databaseUrl: string = database.url;
+        return new PrismaService(databaseUrl, logger);
       },
       inject: [ConfigService, LoggerService],
     },

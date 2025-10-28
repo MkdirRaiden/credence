@@ -3,7 +3,7 @@ import { safeSerialize } from './safe-serialize';
 
 export function errorMeta(err?: unknown): Record<string, unknown> | undefined {
   if (!err) return undefined;
-  
+
   if (err instanceof Error) {
     return {
       name: err.name,
@@ -11,6 +11,6 @@ export function errorMeta(err?: unknown): Record<string, unknown> | undefined {
       // Removed 'message' to avoid overwriting the log entry's message
     };
   }
-  
+
   return { trace: safeSerialize(err) };
 }

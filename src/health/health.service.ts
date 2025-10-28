@@ -25,7 +25,7 @@ export class HealthService implements OnModuleInit {
     const data = getLiveness();
     return buildResponse(
       data,
-      '/health/live', 
+      '/health/live',
       HttpStatus.OK,
       true,
       'Liveness OK',
@@ -49,7 +49,9 @@ export class HealthService implements OnModuleInit {
   async assertReadiness(): Promise<void> {
     const readiness = await getReadiness(this.prismaProbe);
     if (readiness.status !== 'ok') {
-      throw new Error(`Readiness check failed: ${JSON.stringify(readiness.details)}`);
+      throw new Error(
+        `Readiness check failed: ${JSON.stringify(readiness.details)}`,
+      );
     }
   }
 }

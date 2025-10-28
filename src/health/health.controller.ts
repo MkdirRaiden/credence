@@ -8,16 +8,16 @@ export class HealthController {
 
   @Get('live')
   live() {
-    return this.healthService.liveEnvelope();
+    return this.healthService.liveness();
   }
 
   @Get('ready')
   async ready() {
-    return this.healthService.readyEnvelopeOrThrow();
+    return this.healthService.readinessOrThrow();
   }
 
   @Get()
   async health() {
-    return this.healthService.readyEnvelopeOrThrow();
+    return this.healthService.readinessOrThrow();
   }
 }

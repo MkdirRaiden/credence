@@ -1,12 +1,12 @@
 // src/features/users/users.repository.ts
 import { Injectable } from '@nestjs/common';
-import { DatabasePrismaService } from '../../database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import { NotFound } from '../../common/decorators/not-found.decorator';
 
 @Injectable()
 export class UsersRepository {
-  constructor(private readonly prisma: DatabasePrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
     return this.prisma.user.create({ data });

@@ -5,7 +5,6 @@ import {
   HttpStatus,
   OnModuleInit,
 } from '@nestjs/common';
-import { buildResponse } from '@/common/utils/response-builder';
 import { PrismaProbe } from '@/health/probes/prisma.probe';
 import { HealthScheduler } from '@/health/health.scheduler';
 import { getLiveness, getReadiness } from '@/health/helpers';
@@ -21,31 +20,27 @@ export class HealthService implements OnModuleInit {
     this.scheduler.start();
   }
 
-  liveEnvelope() {
-    const data = getLiveness();
-    return buildResponse(
-      data,
-      '/health/live',
-      HttpStatus.OK,
-      true,
-      'Liveness OK',
-    );
+  // Returns liveness data 
+  liveness() {
+    return getLiveness();
   }
 
-  async readyEnvelopeOrThrow() {
+  // Returns readiness data or throws if unhealthy
+  async readinessOrThrow() {
     const readiness = await getReadiness(this.prismaProbe);
     if (readiness.status === 'error') {
-      throw new HttpException(readiness, HttpStatus.SERVICE_UNAVAILABLE);
-    }
-    return buildResponse(
-      readiness,
-      '/health/ready',
-      HttpStatus.OK,
-      true,
-      'Readiness OK',
-    );
+      throw new HttpException(
+        {
+          status: readiness.status,
+          details: readiness.details,
+        },
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    }   
+    return readiness;
   }
 
+  // Assert readiness for bootstrap checks (no HTTP response)
   async assertReadiness(): Promise<void> {
     const readiness = await getReadiness(this.prismaProbe);
     if (readiness.status !== 'ok') {

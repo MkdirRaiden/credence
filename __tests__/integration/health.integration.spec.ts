@@ -37,33 +37,33 @@ describe('HealthService (Integration)', () => {
     });
   });
 
-  describe('liveEnvelope', () => {
-    it('returns liveness response', () => {
-      const result = healthService.liveEnvelope();
+  describe('liveness', () => {
+    it('returns raw liveness data', () => {
+      const result = healthService.liveness();
       
-      expect(result.success).toBe(true);
-      expect(result.statusCode).toBe(200);
-      expect(result.data).toBeDefined();
-      expect(result.data!.status).toBe('up');  // Add ! here
-      expect(result.data!.uptimeMs).toBeGreaterThan(0);  // Add ! here
+      expect(result).toBeDefined();
+      expect(result.status).toBe('up');
+      expect(result.uptimeMs).toBeGreaterThan(0);
+      expect(typeof result.uptimeMs).toBe('number');
     });
   });
 
-  describe('readyEnvelopeOrThrow', () => {
-    it('returns readiness response when database is up', async () => {
-      const result = await healthService.readyEnvelopeOrThrow();
+  describe('readinessOrThrow', () => {
+    it('returns raw readiness data when database is up', async () => {
+      const result = await healthService.readinessOrThrow();
       
-      expect(result.success).toBe(true);
-      expect(result.statusCode).toBe(200);
-      expect(result.data).toBeDefined();
-      expect(result.data!.status).toBe('ok');  // Add ! here
-      expect(result.data!.details.database.status).toBe('up');  // Add ! here
+      expect(result).toBeDefined();
+      expect(result.status).toBe('ok');
+      expect(result.details).toBeDefined();
+      expect(result.details.database.status).toBe('up');
     });
 
     it('checks database connectivity', async () => {
-      const result = await healthService.readyEnvelopeOrThrow();
-      expect(result.data).toBeDefined();
-      expect(result.data!.details.database.status).toBe('up');  // Add ! here
+      const result = await healthService.readinessOrThrow();
+      
+      expect(result.details).toBeDefined();
+      expect(result.details.database).toBeDefined();
+      expect(result.details.database.status).toBe('up');
     });
   });
 });

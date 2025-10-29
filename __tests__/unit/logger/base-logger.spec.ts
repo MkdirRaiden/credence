@@ -10,38 +10,46 @@ jest.mock('@/logger/helpers/format-log-json', () => ({
 
 describe('BaseLogger', () => {
   let logger: BaseLogger;
+  let logSpy: jest.SpyInstance;
+  let warnSpy: jest.SpyInstance;
+  let errorSpy: jest.SpyInstance;
+  let debugSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
     logger = new BaseLogger('development');
+    logSpy = jest.spyOn(console, 'log').mockImplementation();
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    errorSpy = jest.spyOn(console, 'error').mockImplementation();
+    debugSpy = jest.spyOn(console, 'debug').mockImplementation();
+  });
+
+  afterEach(() => {
+    logSpy.mockRestore();
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
+    debugSpy.mockRestore();
   });
 
   it('log calls console.log with formatted message', () => {
-    console.log = jest.fn();
     logger.log('hello', 'CTX');
-    expect(console.log).toHaveBeenCalledWith(
+    
+    expect(logSpy).toHaveBeenCalledWith(
       JSON.stringify({
         level: 'INFO',
         msg: 'hello',
-        opts: {
-          context: 'CTX',
-          env: 'development',
-        },
+        opts: { context: 'CTX', env: 'development' },
       }),
     );
   });
 
-  it('warn calls console.warn with formatted message', () => {
-    console.warn = jest.fn();
+  it('warn and error call correct console methods', () => {
     logger.warn('warn-msg', 'CTX');
-    expect(console.warn).toHaveBeenCalled();
-  });
+    expect(warnSpy).toHaveBeenCalled();
 
-  it('error calls console.error with formatted message and error', () => {
-    console.error = jest.fn();
     const err = new Error('fail');
     logger.error('error-msg', err, 'CTX');
-    expect(console.error).toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalled();
     expect(formatLogJson).toHaveBeenCalledWith(
       'ERROR',
       'error-msg',
@@ -49,25 +57,15 @@ describe('BaseLogger', () => {
     );
   });
 
-  it('debug logs only outside production', () => {
-    console.debug = jest.fn();
+  it('debug and verbose only log outside production', () => {
     logger.debug('debug-msg', 'CTX');
-    expect(console.debug).toHaveBeenCalled();
-
-    const prodLogger = new BaseLogger('production');
-    console.debug = jest.fn();
-    prodLogger.debug('debug-msg', 'CTX');
-    expect(console.debug).not.toHaveBeenCalled();
-  });
-
-  it('verbose logs only outside production', () => {
-    console.debug = jest.fn();
     logger.verbose('verbose-msg', 'CTX');
-    expect(console.debug).toHaveBeenCalled();
+    expect(debugSpy).toHaveBeenCalledTimes(2);
 
+    debugSpy.mockClear();
     const prodLogger = new BaseLogger('production');
-    console.debug = jest.fn();
+    prodLogger.debug('debug-msg', 'CTX');
     prodLogger.verbose('verbose-msg', 'CTX');
-    expect(console.debug).not.toHaveBeenCalled();
+    expect(debugSpy).not.toHaveBeenCalled();
   });
 });

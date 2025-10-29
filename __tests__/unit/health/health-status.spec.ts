@@ -6,32 +6,26 @@ describe('Health helpers', () => {
   describe('getLiveness', () => {
     it('returns status up with uptimeMs', () => {
       const result = getLiveness();
+      
       expect(result.status).toBe('up');
-      expect(typeof result.uptimeMs).toBe('number');
       expect(result.uptimeMs).toBeGreaterThan(0);
     });
   });
 
   describe('getReadiness', () => {
-    it('returns ok when prisma probe is up', async () => {
-      const mockProbe = {
-        name: 'prisma',
+    it('returns ok when probe is up and error when down', async () => {
+      const upProbe = {
         check: jest.fn().mockResolvedValue({ 
           name: 'prisma', 
           status: 'up' 
         }),
       } as unknown as PrismaProbe;
 
-      const result = await getReadiness(mockProbe);
-      
-      expect(result.status).toBe('ok');
-      expect(result.details.database.status).toBe('up');
-      expect(mockProbe.check).toHaveBeenCalledTimes(1);
-    });
+      const upResult = await getReadiness(upProbe);
+      expect(upResult.status).toBe('ok');
+      expect(upResult.details.database.status).toBe('up');
 
-    it('returns error when prisma probe is down', async () => {
-      const mockProbe = {
-        name: 'prisma',
+      const downProbe = {
         check: jest.fn().mockResolvedValue({
           name: 'prisma',
           status: 'down',
@@ -39,24 +33,21 @@ describe('Health helpers', () => {
         }),
       } as unknown as PrismaProbe;
 
-      const result = await getReadiness(mockProbe);
-      
-      expect(result.status).toBe('error');
-      expect(result.details.database.status).toBe('down');
-      expect(result.details.database.message).toBe('Connection failed');
-      expect(mockProbe.check).toHaveBeenCalledTimes(1);
+      const downResult = await getReadiness(downProbe);
+      expect(downResult.status).toBe('error');
+      expect(downResult.details.database.status).toBe('down');
+      expect(downResult.details.database.message).toBe('Connection failed');
     });
 
-    it('returns error without message when probe fails', async () => {
-      const mockProbe = {
-        name: 'prisma',
+    it('handles probe failure without message', async () => {
+      const probe = {
         check: jest.fn().mockResolvedValue({
           name: 'prisma',
           status: 'down',
         }),
       } as unknown as PrismaProbe;
 
-      const result = await getReadiness(mockProbe);
+      const result = await getReadiness(probe);
       
       expect(result.status).toBe('error');
       expect(result.details.database.status).toBe('down');

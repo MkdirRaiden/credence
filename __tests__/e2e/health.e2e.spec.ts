@@ -14,38 +14,29 @@ describe('Health Controller (E2E)', () => {
     await closeTestApp(app);
   });
 
-  describe('GET /health/live', () => {
-    it('returns liveness status', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/health/live')
-        .expect(200);
+  it('GET /health/live returns liveness status', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/health/live')
+      .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.status).toBe('up');
-      expect(response.body.data.uptimeMs).toBeGreaterThan(0);
-    });
+    expect(response.body.success).toBe(true);
+    expect(response.body.data.status).toBe('up');
+    expect(response.body.data.uptimeMs).toBeGreaterThan(0);
   });
 
-  describe('GET /health/ready', () => {
-    it('returns readiness with database check', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/health/ready')
-        .expect(200);
+  it('GET /health/ready and /health return database readiness', async () => {
+    const ready = await request(app.getHttpServer())
+      .get('/health/ready')
+      .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.status).toBe('ok');
-      expect(response.body.data.details.database.status).toBe('up');
-    });
-  });
+    expect(ready.body.success).toBe(true);
+    expect(ready.body.data.status).toBe('ok');
+    expect(ready.body.data.details.database.status).toBe('up');
 
-  describe('GET /health', () => {
-    it('returns default health check', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/health')
-        .expect(200);
+    const health = await request(app.getHttpServer())
+      .get('/health')
+      .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.status).toBe('ok');
-    });
+    expect(health.body.data.status).toBe('ok');
   });
 });

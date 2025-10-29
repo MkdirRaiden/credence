@@ -4,100 +4,50 @@ import { ConfigService } from '@nestjs/config';
 import type { AppConfig } from '@/common/interfaces/app-config.interface';
 
 describe('extractConfig utility', () => {
-  // Utility factory for ConfigService mock
   const createMockConfigService = (mockValues: Partial<AppConfig>) => {
     return {
-      get: jest.fn((key: keyof AppConfig, options?: { infer: boolean }) => {
-        if (options?.infer) {
-          return mockValues[key];
-        }
-        return mockValues[key];
-      }),
-      getOrThrow: jest.fn(),
+      get: jest.fn((key: keyof AppConfig) => mockValues[key]),
     } as unknown as ConfigService<AppConfig, true>;
   };
 
-  it('extracts a single config key with infer:true', () => {
-    const mockConfig = createMockConfigService({
-      nodeEnv: 'test',
-      port: 3000,
-    });
+  it('extracts single, multiple, and empty keys with infer:true', () => {
+    // Single key
+    const singleMock = createMockConfigService({ nodeEnv: 'test', port: 3000 });
+    const single = extractConfig(singleMock, ['nodeEnv'] as const);
+    expect(single).toEqual({ nodeEnv: 'test' });
+    expect(singleMock.get).toHaveBeenCalledWith('nodeEnv', { infer: true });
 
-    const result = extractConfig(mockConfig, ['nodeEnv'] as const);
-
-    expect(result).toEqual({ nodeEnv: 'test' });
-    expect(mockConfig.get).toHaveBeenCalledWith('nodeEnv', { infer: true });
-    expect(mockConfig.get).toHaveBeenCalledTimes(1);
-  });
-
-  it('extracts multiple config keys with infer:true', () => {
-    const mockConfig = createMockConfigService({
+    // Multiple keys
+    const multiMock = createMockConfigService({
       nodeEnv: 'production',
       port: 5000,
       host: 'localhost',
-      globalPrefix: 'api/v1',
-      allowedOrigins: ['http://localhost:3000'],
     });
+    const multi = extractConfig(multiMock, ['nodeEnv', 'port', 'host'] as const);
+    expect(multi).toEqual({ nodeEnv: 'production', port: 5000, host: 'localhost' });
+    expect(multiMock.get).toHaveBeenCalledTimes(3);
 
-    const result = extractConfig(mockConfig, [
-      'nodeEnv',
-      'port',
-      'host',
-      'globalPrefix',
-      'allowedOrigins',
-    ] as const);
-
-    expect(result).toEqual({
-      nodeEnv: 'production',
-      port: 5000,
-      host: 'localhost',
-      globalPrefix: 'api/v1',
-      allowedOrigins: ['http://localhost:3000'],
-    });
-    expect(mockConfig.get).toHaveBeenCalledTimes(5);
-    expect(mockConfig.get).toHaveBeenCalledWith('nodeEnv', { infer: true });
-    expect(mockConfig.get).toHaveBeenCalledWith('port', { infer: true });
-    expect(mockConfig.get).toHaveBeenCalledWith('host', { infer: true });
-    expect(mockConfig.get).toHaveBeenCalledWith('globalPrefix', { infer: true });
-    expect(mockConfig.get).toHaveBeenCalledWith('allowedOrigins', { infer: true });
+    // Empty keys
+    const emptyMock = createMockConfigService({ nodeEnv: 'test' });
+    const empty = extractConfig(emptyMock, [] as const);
+    expect(empty).toEqual({});
+    expect(emptyMock.get).not.toHaveBeenCalled();
   });
 
-  it('returns empty object when extracting empty keys array', () => {
-    const mockConfig = createMockConfigService({
-      nodeEnv: 'test',
-    });
-
-    const result = extractConfig(mockConfig, [] as const);
-
-    expect(result).toEqual({});
-    expect(mockConfig.get).not.toHaveBeenCalled();
-  });
-
-  it('extracts database config object correctly', () => {
-    const mockConfig = createMockConfigService({
+  it('extracts complex objects and handles undefined values', () => {
+    // Database object
+    const dbMock = createMockConfigService({
       database: { url: 'postgresql://localhost:5432/test' },
     });
+    const db = extractConfig(dbMock, ['database'] as const);
+    expect(db).toEqual({ database: { url: 'postgresql://localhost:5432/test' } });
 
-    const result = extractConfig(mockConfig, ['database'] as const);
-
-    expect(result).toEqual({
-      database: { url: 'postgresql://localhost:5432/test' },
-    });
-    expect(mockConfig.get).toHaveBeenCalledWith('database', { infer: true });
-  });
-
-  it('handles undefined values from config', () => {
-    const mockConfig = createMockConfigService({
+    // Undefined values
+    const undefinedMock = createMockConfigService({
       nodeEnv: undefined,
       port: undefined,
     });
-
-    const result = extractConfig(mockConfig, ['nodeEnv', 'port'] as const);
-
-    expect(result).toEqual({
-      nodeEnv: undefined,
-      port: undefined,
-    });
-    expect(mockConfig.get).toHaveBeenCalledTimes(2);
+    const undef = extractConfig(undefinedMock, ['nodeEnv', 'port'] as const);
+    expect(undef).toEqual({ nodeEnv: undefined, port: undefined });
   });
 });

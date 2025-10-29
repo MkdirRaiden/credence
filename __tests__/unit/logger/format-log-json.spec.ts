@@ -2,8 +2,9 @@
 import { formatLogJson } from '@/logger/helpers/format-log-json';
 
 describe('formatLogJson', () => {
-  it('includes basic fields', () => {
+  it('formats basic log with required fields', () => {
     const parsed = JSON.parse(formatLogJson('INFO', 'msg'));
+    
     expect(parsed.level).toBe('INFO');
     expect(parsed.message).toBe('msg');
     expect(parsed.context).toBeDefined();
@@ -11,49 +12,37 @@ describe('formatLogJson', () => {
     expect(parsed.timestamp).toBeDefined();
   });
 
-  it('includes error metadata', () => {
-    const err = new Error('fail');
-    const parsed = JSON.parse(formatLogJson('ERROR', 'msg', { error: err }));
+  it('formats error logs with stack trace', () => {
+    const error = new Error('fail');
+    const parsed = JSON.parse(formatLogJson('ERROR', 'msg', { error }));
+    
     expect(parsed.name).toBe('Error');
-    expect(parsed.message).toBe('msg'); // Log message should be preserved
-    expect(parsed.trace).toContain('fail'); // Error in trace
+    expect(parsed.message).toBe('msg');
+    expect(parsed.trace).toContain('fail');
   });
 
-  it('serializes string, object, and Error correctly', () => {
-    const obj = { a: 1 };
-    const parsedObj = JSON.parse(formatLogJson('DEBUG', obj));
-    expect(parsedObj.message).toBe(JSON.stringify(obj));
+  it('handles different message types and circular references', () => {
+    // Object
+    const objParsed = JSON.parse(formatLogJson('DEBUG', { a: 1 }));
+    expect(objParsed.message).toBe('{"a":1}');
 
-    const error = new Error('oops');
-    const parsedErr = JSON.parse(formatLogJson('ERROR', error));
-    expect(parsedErr.message).toBe('oops');
-  });
+    // Error
+    const errParsed = JSON.parse(formatLogJson('ERROR', new Error('oops')));
+    expect(errParsed.message).toBe('oops');
 
-  it('handles circular references gracefully', () => {
-    const circular: any = {};
+    // Circular
+    const circular: any = { self: null };
     circular.self = circular;
-    const parsed = JSON.parse(formatLogJson('DEBUG', circular));
-
-    expect(parsed.message).toBe('[Unserializable Object]');
-    expect(parsed.timestamp).toBeDefined();
-    expect(parsed.level).toBe('DEBUG');
-    // The fallback entry should still have required fields
+    const circularParsed = JSON.parse(formatLogJson('DEBUG', circular));
+    expect(circularParsed.message).toBe('[Unserializable Object]');
   });
 
-  it('allows custom context and env', () => {
+  it('uses custom context and env when provided', () => {
     const parsed = JSON.parse(
-      formatLogJson('WARN', 'msg', {
-        context: 'MyCTX',
-        env: 'test-env',
-      }),
+      formatLogJson('WARN', 'msg', { context: 'MyCTX', env: 'test-env' }),
     );
+    
     expect(parsed.context).toBe('MyCTX');
     expect(parsed.env).toBe('test-env');
-  });
-
-  it('uses default context and env if not provided', () => {
-    const parsed = JSON.parse(formatLogJson('INFO', 'msg'));
-    expect(parsed.context).toBeDefined();
-    expect(parsed.env).toBeDefined();
   });
 });

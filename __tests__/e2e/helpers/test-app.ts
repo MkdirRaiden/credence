@@ -2,7 +2,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '@/app.module';
-import { Bootstrap } from '@/bootstrap/bootstrap.service';
+import { BootstrapService } from '@/bootstrap/bootstrap.service';
 
 /**
  * Creates a fully configured test application instance
@@ -14,8 +14,9 @@ export async function createTestApp(): Promise<INestApplication> {
 
   const app = moduleFixture.createNestApplication();
 
-  // Apply same bootstrap configuration as production
-  Bootstrap.init(app);
+  // Get BootstrapService instance and initialize
+  const bootstrapService = app.get(BootstrapService);
+  bootstrapService.init(app);
 
   await app.init();
   return app;

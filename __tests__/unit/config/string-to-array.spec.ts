@@ -2,31 +2,16 @@
 import { splitStringToArray } from '@/config/helpers/string-to-array';
 
 describe('splitStringToArray', () => {
-  it('returns fallback when value is undefined', () => {
-    expect(splitStringToArray(undefined, ['default'])).toEqual(['default']);
+  it('splits and trims comma-separated strings', () => {
+    expect(splitStringToArray('one,two,three')).toEqual(['one', 'two', 'three']);
+    expect(splitStringToArray('  one ,  two ,three  ')).toEqual(['one', 'two', 'three']);
+    expect(splitStringToArray('single')).toEqual(['single']);
   });
 
-  it('returns fallback when value is empty string', () => {
+  it('returns fallback for undefined or empty strings', () => {
+    expect(splitStringToArray(undefined, ['default'])).toEqual(['default']);
     expect(splitStringToArray('', ['default'])).toEqual(['default']);
     expect(splitStringToArray('   ', ['default'])).toEqual(['default']);
-  });
-
-  it('splits comma-separated string into array', () => {
-    const input = 'one,two,three';
-    expect(splitStringToArray(input)).toEqual(['one', 'two', 'three']);
-  });
-
-  it('trims spaces around each item', () => {
-    const input = '  one ,  two ,three  ';
-    expect(splitStringToArray(input)).toEqual(['one', 'two', 'three']);
-  });
-
-  it('returns single-item array for string without commas', () => {
-    const input = 'single';
-    expect(splitStringToArray(input)).toEqual(['single']);
-  });
-
-  it('uses empty array as default fallback', () => {
-    expect(splitStringToArray(undefined)).toEqual([]);
+    expect(splitStringToArray(undefined)).toEqual([]); // default fallback
   });
 });

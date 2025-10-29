@@ -17,7 +17,7 @@ describe('HealthScheduler', () => {
     } as any;
 
     mockProbe = {
-      check: jest.fn(),
+      check: jest.fn().mockResolvedValue({ name: 'prisma', status: 'up' }),
     } as any;
 
     scheduler = new HealthScheduler(mockLogger, mockProbe);
@@ -27,24 +27,13 @@ describe('HealthScheduler', () => {
     jest.useRealTimers();
   });
 
-  it('starts periodic health checks', () => {
-    mockProbe.check.mockResolvedValue({ name: 'prisma', status: 'up' });
-
-    scheduler.start(5000);
-    
-    expect(scheduler['interval']).toBeDefined();
-  });
-
-  it('does not start multiple times', () => {
-    mockProbe.check.mockResolvedValue({ name: 'prisma', status: 'up' });
-
+  it('starts periodic checks and prevents duplicate starts', () => {
     scheduler.start(5000);
     const firstInterval = scheduler['interval'];
-    
+    expect(firstInterval).toBeDefined();
+
     scheduler.start(5000);
-    const secondInterval = scheduler['interval'];
-    
-    expect(firstInterval).toBe(secondInterval);
+    expect(scheduler['interval']).toBe(firstInterval); // Same instance
   });
 
   it('logs warning when health check fails', async () => {
@@ -64,8 +53,6 @@ describe('HealthScheduler', () => {
   });
 
   it('stops on application shutdown', () => {
-    mockProbe.check.mockResolvedValue({ name: 'prisma', status: 'up' });
-
     scheduler.start(5000);
     scheduler.onApplicationShutdown('SIGTERM');
 

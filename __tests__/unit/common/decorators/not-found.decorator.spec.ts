@@ -4,12 +4,12 @@ import { NotFound } from '@/common/decorators/not-found.decorator';
 
 class TestService {
   @NotFound('Item not found')
-  async findOneSuccess(): Promise<{ id: number; name: string }> {
-    return { id: 1, name: 'Test' };
+  async findOneSuccess(): Promise<{ id: number }> {
+    return { id: 1 };
   }
 
   @NotFound('Item not found')
-  async findOneFail(): Promise<null> {
+  async findOneNull(): Promise<null> {
     return null;
   }
 
@@ -26,17 +26,15 @@ describe('NotFound Decorator', () => {
     service = new TestService();
   });
 
-  it('should return result if method returns valid value', async () => {
+  it('returns result when method returns valid value', async () => {
     const result = await service.findOneSuccess();
-    expect(result).toEqual({ id: 1, name: 'Test' });
+    expect(result).toEqual({ id: 1 });
   });
 
-  it('should throw NotFoundException if method returns null', async () => {
-    await expect(service.findOneFail()).rejects.toThrow(NotFoundException);
-    await expect(service.findOneFail()).rejects.toThrow('Item not found');
-  });
+  it('throws NotFoundException for null or undefined values', async () => {
+    await expect(service.findOneNull()).rejects.toThrow(NotFoundException);
+    await expect(service.findOneNull()).rejects.toThrow('Item not found');
 
-  it('should throw NotFoundException if method returns undefined', async () => {
     await expect(service.findOneUndefined()).rejects.toThrow(NotFoundException);
     await expect(service.findOneUndefined()).rejects.toThrow('Item undefined');
   });

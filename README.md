@@ -305,4 +305,3 @@ Built as a hands-on learning project to master enterprise NestJS patterns.
 🤝 Contribute via pull requests  
 
 **Happy coding!** 🚀
-```

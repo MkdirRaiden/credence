@@ -13,7 +13,6 @@ I built Credence to:
 - Handle complex domains: referrals, credits, idempotency, soft deletes
 - Prepare for multi-database architectures (PostgreSQL + MongoDB + Redis)
 - Write maintainable, testable code that follows SOLID principles
-- Create something recruiters actually want to see
 
 ## What's Inside
 
@@ -96,7 +95,7 @@ src/
 
 prisma/
 ├── base.prisma          # Generator & datasource configuration
-├── enums.prisma         # Shared enums across models
+├── enums/enums.prisma         # Shared enums across models
 ├── models/              # Individual model schemas
 │   ├── user.prisma
 │   ├── referral.prisma
@@ -139,13 +138,13 @@ npm install
 3. Setup environment variables:
 ```
 cp .env.example .env
-# Edit .env with your PostgreSQL credentials or create env folder and decide multiple environments like .env.test, .env.development, .env.production, etc.
+# Edit .env with your PostgreSQL credentials 
 ```
 
 4. Run database migrations:
 ```
+npm run prisma:gen development
 npm run prisma:migrate
-npm run prisma:gen
 ```
 
 5. Start development server:
@@ -171,7 +170,7 @@ curl http://localhost:5000/health/live
 - `npm run format` - Format code with Prettier
 
 **Database (Prisma):**
-- `npm run prisma:gen` - Generate Prisma client
+- `npm run prisma:gen` - Merge and generate Prisma client
 - `npm run prisma:migrate` - Create and apply migrations
 - `npm run prisma:fmt` - Format and validate schema
 - `npm run prisma:studio` - Open Prisma Studio (DB GUI)
@@ -234,12 +233,12 @@ DELETE /api/v1/users/{userId}
 
 **Liveness:**
 ```
-GET /api/v1/health/live
+GET /health/live
 ```
 
 **Readiness:**
 ```
-GET /api/v1/health/ready
+GET /health/ready
 ```
 
 ## Architecture Decisions
@@ -307,9 +306,3 @@ Built as a hands-on learning project to master enterprise NestJS patterns.
 
 **Happy coding!** 🚀
 ```
-
-**TO HERE**
-
-***
-
-Then save this file as `README.md` in your project root. This is the complete, unbroken version!

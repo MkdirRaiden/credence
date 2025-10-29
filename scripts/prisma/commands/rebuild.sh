@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# rebuild.sh — Rebuild Prisma setup: merge, reset, migrate
+# rebuild.sh — Rebuild Prisma setup: merge, reset, migrate (NO SEED)
 # Usage: bash scripts/prisma/commands/rebuild.sh [environment] [migration_name]
 
 set -euo pipefail
@@ -26,7 +26,7 @@ bash "$REPO_ROOT/scripts/prisma/commands/merge-generate.sh" "$ENVIRONMENT"
 check_files "$SCHEMA_FILE"
 
 # ──────────────────────────────────────────────
-# 5 Handle production environment
+# 4 Handle production environment
 # ──────────────────────────────────────────────
 if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
   log_info "🌐 Production mode detected — running prisma migrate deploy"
@@ -36,13 +36,13 @@ if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
 fi
 
 # ──────────────────────────────────────────────
-# 6 Reset development database
+# 5 Reset development database (NO SEED)
 # ──────────────────────────────────────────────
-log_info "🧹 Resetting development database for environment: $ENVIRONMENT"
-npx prisma migrate reset --force --skip-generate --schema "$SCHEMA_FILE"
+log_info "🧹 Resetting development database for environment: $ENVIRONMENT (no seed)"
+npx prisma migrate reset --force --skip-generate --skip-seed --schema "$SCHEMA_FILE"
 
 # ──────────────────────────────────────────────
-# 7 Run migrations (dev)
+# 6 Run migrations (dev)
 # ──────────────────────────────────────────────
 if [[ -n "$MIGRATION_NAME" ]]; then
   log_info "🚀 Running prisma migrate dev with migration name: $MIGRATION_NAME"
@@ -52,4 +52,5 @@ else
   npx prisma migrate dev --schema "$SCHEMA_FILE"
 fi
 
-log_success "✅ Prisma rebuild complete for environment '$ENVIRONMENT'"
+log_success "✅ Prisma rebuild complete for environment '$ENVIRONMENT' (clean database)"
+log_info "💡 To seed data, run: npm run prisma:seed"

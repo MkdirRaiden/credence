@@ -41,7 +41,14 @@ export class BootstrapService {
       credentials: true,
     });
     // Global prefix for all routes except root and health
-    app.setGlobalPrefix(globalPrefix, { exclude: ['/', 'health/(.*)'] });
+    app.setGlobalPrefix(globalPrefix, {
+      exclude: [
+        '/',
+        'health',           
+        'health/live',      
+        'health/ready',   
+      ],
+    });
   }
 
   // Configure global pipes, interceptors, and filters

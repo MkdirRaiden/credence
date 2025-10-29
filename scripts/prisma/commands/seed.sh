@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# reset.sh — Reset Prisma database WITH automatic seeding
-# Usage: bash scripts/prisma/commands/reset.sh [environment]
+# seed.sh — Seed Prisma database with initial data
+# Usage: bash scripts/prisma/commands/seed.sh [environment]
 
 set -euo pipefail
 
@@ -13,34 +13,40 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/../../bootstrap.sh"
 
 # ──────────────────────────────────────────────
-# 2 Guard environment (dev only + shadow DB + schema paths)
+# 2 Guard environment (env + validation + schema paths)
 # ──────────────────────────────────────────────
-source "$REPO_ROOT/scripts/prisma/utils/prisma-guard.sh" "$ENVIRONMENT" "dev-migrate"
+source "$REPO_ROOT/scripts/prisma/utils/prisma-guard.sh" "$ENVIRONMENT"
 
 # ──────────────────────────────────────────────
-# 3 Merge schema & generate Prisma client
-# ──────────────────────────────────────────────
-bash "$REPO_ROOT/scripts/prisma/commands/merge-generate.sh" "$ENVIRONMENT"
-
-# ──────────────────────────────────────────────
-# 4 Ensure merged schema exists
+# 3 Ensure merged schema exists
 # ──────────────────────────────────────────────
 check_files "$SCHEMA_FILE"
 
 # ──────────────────────────────────────────────
-# 5 Prevent reset in production
+# 4 Prevent seeding in production (optional safeguard)
 # ──────────────────────────────────────────────
 if [[ "${NODE_ENV:-$ENVIRONMENT}" == "production" ]]; then
-  log_error "❌ Refusing to reset database in production"
-  exit 2
+  log_warning "⚠️  Seeding in production - proceed with caution!"
+  read -p "Are you sure you want to seed production database? (yes/no): " confirm
+  if [[ "$confirm" != "yes" ]]; then
+    log_error "❌ Production seeding cancelled"
+    exit 1
+  fi
 fi
 
 # ──────────────────────────────────────────────
-# 6 Reset development database (WITH SEED)
+# 5 Run seed script
 # ──────────────────────────────────────────────
-log_info "🧹 Resetting database for environment: $ENVIRONMENT (will auto-seed)"
-npx prisma migrate reset --force --skip-generate --schema "$SCHEMA_FILE"
+log_info "🌱 Seeding database for environment: $ENVIRONMENT"
 
-# Seed hook will run automatically via package.json
+if [[ -f "$REPO_ROOT/prisma/seed.ts" ]]; then
+  npx ts-node "$REPO_ROOT/prisma/seed.ts"
+elif command -v npx prisma &>/dev/null; then
+  # Fallback to Prisma's seed hook
+  npx prisma db seed --schema "$SCHEMA_FILE"
+else
+  log_error "❌ No seed script found at prisma/seed.ts"
+  exit 1
+fi
 
-log_success "✅ Prisma reset + seed completed successfully for environment: $ENVIRONMENT"
+log_success "✅ Database seeded successfully for environment: $ENVIRONMENT"

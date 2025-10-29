@@ -15,7 +15,7 @@ import type { AppConfig } from '@/common/interfaces/app-config.interface';
         logger: LoggerService,
       ) => {
         const database = configService.get('database', { infer: true });
-        const databaseUrl: string = database.url;
+        const databaseUrl = database.url;
         return new PrismaService(databaseUrl, logger);
       },
       inject: [ConfigService, LoggerService],

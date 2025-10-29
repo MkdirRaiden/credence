@@ -1,9 +1,7 @@
 // src/bootstrap/helpers/handle-bootstrap-error.ts
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
 
-/**
- * Handles bootstrap errors with proper type safety and logging
- */
+// Handles bootstrap errors with proper type safety and logging
 export function handleBootstrapError(
   err: unknown,
   logger: BootstrapLogger,

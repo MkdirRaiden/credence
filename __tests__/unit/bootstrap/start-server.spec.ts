@@ -1,37 +1,28 @@
-// __tests__/unit/bootstrap/start-server.spec.ts
-import { startServer } from '@/bootstrap/helpers';
-import { getServerConfig } from '@/bootstrap/helpers/server-config';
+// __tests__/unit/bootstrap/helpers/start-server-and-log.spec.ts
+import { startServerAndLog } from '@/bootstrap/helpers';
 import { LoggerService } from '@/logger/logger.service';
+import { ServerConfig } from '@/bootstrap/bootstrap.interface';
 import type { INestApplication } from '@nestjs/common';
 
-jest.mock('@/bootstrap/helpers/server-config', () => ({
-  getServerConfig: jest.fn(),
-}));
-
-describe('startServer', () => {
+describe('startServerAndLog', () => {
   let mockApp: jest.Mocked<INestApplication>;
   let mockLogger: jest.Mocked<LoggerService>;
 
   beforeEach(() => {
     mockLogger = { log: jest.fn() } as any;
-    mockApp = {
-      listen: jest.fn().mockResolvedValue(undefined),
-    } as any;
+    mockApp = { listen: jest.fn().mockResolvedValue(undefined) } as any;
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('logs full base URL when prefix is provided', async () => {
-    (getServerConfig as jest.Mock).mockReturnValue({
+  it('logs full URL with prefix', async () => {
+    const config: ServerConfig = {
       port: 3000,
       host: 'localhost',
       globalPrefix: 'api/v1',
       nodeEnv: 'development',
-    });
+      allowedOrigins: [],
+    };
 
-    await startServer(mockApp, mockLogger);
+    await startServerAndLog(config, mockApp, mockLogger);
 
     expect(mockApp.listen).toHaveBeenCalledWith(3000);
     expect(mockLogger.log).toHaveBeenCalledWith(
@@ -40,34 +31,36 @@ describe('startServer', () => {
     );
   });
 
-  it('logs without prefix when none provided', async () => {
-    (getServerConfig as jest.Mock).mockReturnValue({
+  it('logs URL without prefix when empty', async () => {
+    const config: ServerConfig = {
       port: 4000,
-      host: '127.0.0.1',
+      host: 'localhost',
       globalPrefix: '',
       nodeEnv: 'test',
-    });
+      allowedOrigins: [],
+    };
 
-    await startServer(mockApp, mockLogger);
+    await startServerAndLog(config, mockApp, mockLogger);
 
     expect(mockLogger.log).toHaveBeenCalledWith(
-      '🚀 Server running on http://127.0.0.1:4000 [test]',
+      '🚀 Server running on http://localhost:4000 [test]',
       'Bootstrap',
     );
   });
 
-  it('trims slashes in prefix', async () => {
-    (getServerConfig as jest.Mock).mockReturnValue({
-      port: 8080,
+  it('trims slashes from prefix', async () => {
+    const config: ServerConfig = {
+      port: 5000,
       host: 'localhost',
-      globalPrefix: '/v2/',
+      globalPrefix: '/api/',
       nodeEnv: 'production',
-    });
+      allowedOrigins: [],
+    };
 
-    await startServer(mockApp, mockLogger);
+    await startServerAndLog(config, mockApp, mockLogger);
 
     expect(mockLogger.log).toHaveBeenCalledWith(
-      '🚀 Server running on http://localhost:8080/v2 [production]',
+      '🚀 Server running on http://localhost:5000/api [production]',
       'Bootstrap',
     );
   });

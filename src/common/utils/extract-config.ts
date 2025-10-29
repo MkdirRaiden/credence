@@ -1,0 +1,17 @@
+// src/common/utils/extract-config.ts
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '@/common/interfaces/app-config.interface';
+
+// Extracts specific keys from AppConfig using ConfigService
+export function extractConfig<K extends keyof AppConfig>(
+  configService: ConfigService<AppConfig, true>,
+  keys: readonly K[],
+): Pick<AppConfig, K> {
+  return keys.reduce(
+    (acc, key) => {
+      acc[key] = configService.get(key, { infer: true });
+      return acc;
+    },
+    {} as Pick<AppConfig, K>,
+  );
+}

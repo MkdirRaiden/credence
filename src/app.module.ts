@@ -7,6 +7,7 @@ import { HealthModule } from '@/health/health.module';
 import { LoggerModule } from '@/logger/logger.module';
 import { RootController } from '@/root.controller';
 import { CommonModule } from '@/common/common.module';
+import { BootstrapModule } from '@/bootstrap/bootstrap.module';
 
 @Module({
   imports: [
@@ -16,8 +17,8 @@ import { CommonModule } from '@/common/common.module';
     CommonModule,
     DatabaseModule,
     // System Modules
+    BootstrapModule,
     HealthModule,
-    UsersModule,
     // Domain Feature Modules
     UsersModule,
   ],

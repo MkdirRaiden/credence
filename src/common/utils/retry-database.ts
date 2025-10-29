@@ -28,6 +28,7 @@ export async function retry<T>(
         if (context) {
           logger?.warn(
             `[${context}] Retry attempt ${attempt + 1} failed. Retrying in ${delay}ms...`,
+            'Database.Retry',
           );
         }
         await wait(delay);

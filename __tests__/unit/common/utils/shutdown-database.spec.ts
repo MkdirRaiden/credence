@@ -27,7 +27,7 @@ describe('gracefulShutdown', () => {
     expect(logger.error).toHaveBeenCalledWith(
       'Critical shutdown',
       undefined,
-      'Shutdown',
+      "App.Shutdown",
     );
 
     // Fast-forward timers
@@ -41,7 +41,7 @@ describe('gracefulShutdown', () => {
     expect(logger.error).toHaveBeenCalledWith(
       'Custom message',
       undefined,
-      'Shutdown',
+      'App.Shutdown',
     );
 
     jest.advanceTimersByTime(100);

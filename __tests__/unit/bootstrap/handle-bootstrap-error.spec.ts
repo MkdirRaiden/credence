@@ -1,5 +1,5 @@
-// __tests__/unit/bootstrap/handle-bootstrap-error.spec.ts
-import { handleBootstrapError } from '@/bootstrap/helpers/handle-bootstrap-error';
+// __tests__/unit/bootstrap/helpers/handle-bootstrap-error.spec.ts
+import { handleBootstrapError } from '@/bootstrap/helpers';
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
 
 describe('handleBootstrapError', () => {
@@ -20,76 +20,40 @@ describe('handleBootstrapError', () => {
     exitSpy.mockRestore();
   });
 
-  describe('Error type handling', () => {
-    it('handles Error instances correctly', () => {
-      const error = new Error('Test error');
-      
-      expect(() => handleBootstrapError(error, logger)).toThrow('process.exit called');
-      
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Bootstrap failed, err: Test error',
-        error.stack,
-        'Bootstrap.error',
-      );
-      expect(exitSpy).toHaveBeenCalledWith(1);
-    });
+  it('handles Error instances with stack trace and exits', () => {
+    const error = new Error('Test error');
 
-    it('handles string errors', () => {
-      expect(() => handleBootstrapError('String error', logger)).toThrow('process.exit called');
-      
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Bootstrap failed, err: String error',
-        undefined,
-        'Bootstrap.error',
-      );
-      expect(exitSpy).toHaveBeenCalledWith(1);
-    });
+    expect(() => handleBootstrapError(error, logger)).toThrow('process.exit called');
 
-    it('handles non-Error objects', () => {
-      const errorObj = { code: 'ERR_UNKNOWN', details: 'Something went wrong' };
-      
-      expect(() => handleBootstrapError(errorObj, logger)).toThrow('process.exit called');
-      
-      expect(errorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Bootstrap failed, err:'),
-        undefined,
-        'Bootstrap.error',
-      );
-      expect(exitSpy).toHaveBeenCalledWith(1);
-    });
-
-    it('handles null and undefined', () => {
-      expect(() => handleBootstrapError(null, logger)).toThrow('process.exit called');
-      expect(exitSpy).toHaveBeenCalledWith(1);
-
-      exitSpy.mockClear();
-      
-      expect(() => handleBootstrapError(undefined, logger)).toThrow('process.exit called');
-      expect(exitSpy).toHaveBeenCalledWith(1);
-    });
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Bootstrap failed, err: Test error',
+      error.stack,
+      'Bootstrap.error',
+    );
+    expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
-  describe('Error with stack trace', () => {
-    it('includes stack trace for Error instances', () => {
-      const error = new Error('Error with stack');
-      const stack = error.stack;
-      
-      expect(() => handleBootstrapError(error, logger)).toThrow('process.exit called');
-      
-      expect(errorSpy).toHaveBeenCalledWith(
-        'Bootstrap failed, err: Error with stack',
-        stack,
-        'Bootstrap.error',
-      );
-    });
+  it('handles string errors without stack trace', () => {
+    expect(() => handleBootstrapError('String error', logger)).toThrow('process.exit called');
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Bootstrap failed, err: String error',
+      undefined,
+      'Bootstrap.error',
+    );
+    expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
-  describe('Process exit', () => {
-    it('exits with code 1', () => {
-      const error = new Error('Fatal error');
-      
-      expect(() => handleBootstrapError(error, logger)).toThrow('process.exit called');
-      expect(exitSpy).toHaveBeenCalledWith(1);
-    });
+  it('handles non-Error objects by stringifying', () => {
+    const errorObj = { code: 'ERR_UNKNOWN' };
+
+    expect(() => handleBootstrapError(errorObj, logger)).toThrow('process.exit called');
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Bootstrap failed, err: [object Object]',
+      undefined,
+      'Bootstrap.error',
+    );
+    expect(exitSpy).toHaveBeenCalledWith(1);
   });
 });

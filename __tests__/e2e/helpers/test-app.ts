@@ -2,7 +2,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '@/app.module';
-import { Bootstrap } from '@/bootstrap/bootstrap';
+import { Bootstrap } from '@/bootstrap/bootstrap.service';
 
 /**
  * Creates a fully configured test application instance

@@ -1,6 +1,7 @@
 // src/root.controller.ts
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { extractConfig } from '@/common/utils';
 import type { AppConfig } from '@/common/interfaces/app-config.interface';
 
 @Controller()
@@ -9,18 +10,15 @@ export class RootController {
 
   @Get()
   getInfo(): { name: string; version: string; environment: string } {
-    const name: string = this.configService.get('appName', { infer: true });
-    const version: string = this.configService.get('appVersion', {
-      infer: true,
-    });
-    const environment: string = this.configService.get('nodeEnv', {
-      infer: true,
-    });
+    const { appName, appVersion, nodeEnv } = extractConfig(
+      this.configService,
+      ['appName', 'appVersion', 'nodeEnv'] as const,
+    );
 
     return {
-      name,
-      version,
-      environment,
+      name: appName,
+      version: appVersion,
+      environment: nodeEnv,
     };
   }
 }

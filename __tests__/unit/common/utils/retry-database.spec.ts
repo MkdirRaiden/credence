@@ -33,7 +33,7 @@ describe('retry utility', () => {
     expect(result).toBe('OK');
     expect(operation).toHaveBeenCalledTimes(2);
     expect(mockLogger.warn).toHaveBeenCalledWith(
-      '[DB] Retry attempt 1 failed. Retrying in 10ms...',
+      '[DB] Retry attempt 1 failed. Retrying in 10ms...', "Database.Retry"
     );
   });
 
@@ -53,7 +53,7 @@ describe('retry utility', () => {
 
     expect(operation).toHaveBeenCalledTimes(2);
     expect(mockLogger.warn).toHaveBeenCalledWith(
-      '[DB] Retry attempt 1 failed. Retrying in 10ms...',
+      '[DB] Retry attempt 1 failed. Retrying in 10ms...', "Database.Retry"
     );
   });
 

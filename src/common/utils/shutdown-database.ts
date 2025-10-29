@@ -9,7 +9,7 @@ export function gracefulShutdown(
 ) {
   const logMsg = message || 'Critical shutdown';
 
-  logger.error(logMsg, undefined, 'Shutdown');
+  logger.error(logMsg, undefined, 'App.Shutdown');
 
   // always runtime-style shutdown → give time for logs to flush
   setTimeout(() => process.exit(1), delayMs);

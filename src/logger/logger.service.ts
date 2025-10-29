@@ -6,7 +6,7 @@ import { AppConfig } from '@/common/interfaces/app-config.interface';
 
 @Injectable()
 export class LoggerService extends BaseLogger {
-  constructor(config: ConfigService<AppConfig>) {
+  constructor(config: ConfigService<AppConfig, true>) {
     const env = config.get('nodeEnv', { infer: true });
     super(env);
   }

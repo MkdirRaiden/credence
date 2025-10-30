@@ -20,6 +20,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoggerService } from '@/logger/logger.service';
 import { AppConfig } from '@/common/interfaces/app-config.interface';
 import { ServerConfig } from '@/bootstrap/bootstrap.interface';
+import { EXCLUDE_PREFIX_ARRAY } from '@/common/constants';
 
 @Injectable()
 export class BootstrapService {
@@ -41,14 +42,7 @@ export class BootstrapService {
       credentials: true,
     });
     // Global prefix for all routes except root and health
-    app.setGlobalPrefix(globalPrefix, {
-      exclude: [
-        '/',
-        'health',           
-        'health/live',      
-        'health/ready',   
-      ],
-    });
+    app.setGlobalPrefix(globalPrefix, { exclude: EXCLUDE_PREFIX_ARRAY });
   }
 
   // Configure global pipes, interceptors, and filters

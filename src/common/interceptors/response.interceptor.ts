@@ -9,16 +9,8 @@ import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { buildResponse } from '@/common/utils';
-import { APP_VERSION } from '../constants';
-
-export interface StandardResponse<T> {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data?: T;
-  timestamp: string;
-  path: string;
-}
+import { APP_VERSION } from '@/common/constants';
+import { StandardResponse } from '@/common/interfaces';
 
 @Injectable()
 export class ResponseInterceptor<T>
@@ -40,7 +32,7 @@ export class ResponseInterceptor<T>
         if (res.statusCode >= 400) {
           return data;
         }
-        return buildResponse<T>(data, req.url, res.statusCode, true);
+        return buildResponse<T>(data, req.url, res.statusCode);
       }),
     );
   }

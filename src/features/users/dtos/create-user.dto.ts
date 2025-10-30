@@ -4,11 +4,15 @@ import {
   IsOptional,
   IsString,
   MinLength,
+  MaxLength,
   Matches,
+  IsUrl,
 } from 'class-validator';
+import { TrimTransform } from '@/common/decorators';
 
 export class CreateUserDto {
   @IsEmail()
+  @TrimTransform
   email: string;
 
   @IsOptional()
@@ -16,18 +20,24 @@ export class CreateUserDto {
   @Matches(/^\+?[1-9]\d{1,14}$/, {
     message: 'Phone must be in valid international format',
   })
+  @TrimTransform
   phone?: string;
 
   @IsOptional()
   @IsString()
   @MinLength(2)
+  @MaxLength(100)
+  @TrimTransform
   name?: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl()
   avatarUrl?: string;
 
   @IsOptional()
   @IsString()
-  referralCode?: string; // Referral code string (we'll look up referrer in service)
+  @MinLength(3)
+  @MaxLength(50)
+  @TrimTransform
+  referralCode?: string;
 }

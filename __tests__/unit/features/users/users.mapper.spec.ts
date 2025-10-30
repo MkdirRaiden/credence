@@ -4,7 +4,7 @@ import {
   toUpdateInput,
   toResponseDto,
   toResponseDtoList,
-} from '@/features/users/mappers/users.mapper';
+} from '@/features/users/users.mapper';
 import { UserRole } from '@prisma/client';
 import {
   mockUser,

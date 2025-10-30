@@ -1,4 +1,4 @@
-// __tests__/unit/bootstrap/helpers/start-server-and-log.spec.ts
+// __tests__/unit/bootstrap/helpers/start-server.spec.ts
 import { startServerAndLog } from '@/bootstrap/helpers';
 import { LoggerService } from '@/logger/logger.service';
 import { ServerConfig } from '@/bootstrap/bootstrap.interface';
@@ -60,8 +60,9 @@ describe('startServerAndLog', () => {
     await startServerAndLog(config, mockApp, mockLogger);
 
     expect(mockLogger.log).toHaveBeenCalledWith(
-      '🚀 Server running on http://localhost:5000/api [production]',
+      '🚀 Server running on https://localhost:5000/api [production]',
       'Bootstrap',
     );
   });
+
 });

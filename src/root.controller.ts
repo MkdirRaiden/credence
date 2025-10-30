@@ -10,10 +10,11 @@ export class RootController {
 
   @Get()
   getInfo(): { name: string; version: string; environment: string } {
-    const { appName, appVersion, nodeEnv } = extractConfig(
-      this.configService,
-      ['appName', 'appVersion', 'nodeEnv'] as const,
-    );
+    const { appName, appVersion, nodeEnv } = extractConfig(this.configService, [
+      'appName',
+      'appVersion',
+      'nodeEnv',
+    ] as const);
 
     return {
       name: appName,

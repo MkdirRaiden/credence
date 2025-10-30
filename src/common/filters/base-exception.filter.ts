@@ -30,8 +30,6 @@ export abstract class BaseExceptionFilter<T = unknown>
     // Single structured log line; stack is routed to trace by your logger helpers
     this.logger.error(message, stack, context);
     // Emit standard error envelope; data is omitted on failure per builder
-    res
-      .status(status)
-      .json(buildResponse(null, req.url, status, false, message));
+    res.status(status).json(buildResponse(null, req.url, status, message));
   }
 }

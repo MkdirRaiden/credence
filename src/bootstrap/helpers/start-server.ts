@@ -9,13 +9,12 @@ export async function startServerAndLog(
   logger: LoggerService,
 ): Promise<void> {
   const { port, host, globalPrefix, nodeEnv } = config;
-
   await app.listen(port);
-
+  const protocol = nodeEnv === 'production' ? 'https' : 'http';
   const normPrefix = String(globalPrefix ?? '').replace(/^\/+|\/+$/g, '');
   const baseUrl = normPrefix
-    ? `http://${host}:${port}/${normPrefix}`
-    : `http://${host}:${port}`;
+    ? `${protocol}://${host}:${port}/${normPrefix}`
+    : `${protocol}://${host}:${port}`;
 
   logger.log(`🚀 Server running on ${baseUrl} [${nodeEnv}]`, 'Bootstrap');
 }

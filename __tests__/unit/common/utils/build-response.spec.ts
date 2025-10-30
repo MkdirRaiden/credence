@@ -14,7 +14,7 @@ describe('buildResponse', () => {
   });
 
   it('builds error response with custom message', () => {
-    const result = buildResponse(null, '/fail', 500, false, 'DB error');
+    const result = buildResponse(null, '/fail', 500, 'DB error');
 
     expect(result.success).toBe(false);
     expect(result.message).toBe('DB error');
@@ -22,7 +22,7 @@ describe('buildResponse', () => {
   });
 
   it('uses default error message when not provided', () => {
-    const result = buildResponse(null, '/fail', 500, false);
+    const result = buildResponse(null, '/fail', 500);
     expect(result.message).toBe('Internal server error');
   });
 });

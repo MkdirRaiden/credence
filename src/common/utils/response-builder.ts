@@ -1,17 +1,20 @@
 // src/common/utils/response-builder.ts
+import { StandardResponse } from '@/common/interfaces';
+
 export function buildResponse<T>(
   data: T,
   path: string,
   statusCode: number,
-  success = true,
   message?: string,
-) {
+): StandardResponse<T> {
+  const success = statusCode < 400;
+
   return {
     success,
     statusCode,
     message:
       message ?? (success ? 'Request successful' : 'Internal server error'),
-    data: success ? data : (undefined as T | undefined),
+    data: success ? data : undefined,
     timestamp: new Date().toISOString(),
     path,
   };

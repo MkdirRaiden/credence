@@ -1,0 +1,18 @@
+// src/common/decorators/visibility.decorator.ts
+import { SetMetadata } from '@nestjs/common';
+import { VisibilityLevel } from '@/common/interfaces';
+import { VISIBILITY_KEY } from '@/common/constants';
+
+/**
+ * Decorator to mark endpoint visibility level
+ * Used by VisibilityInterceptor to determine FieldSelectorContext
+ *
+ * @param level - 'public' | 'self' | 'admin'
+ *
+ * @example
+ * @Get(':id')
+ * @Visibility('public')
+ * async findById(@Param('id') id: string) { }
+ */
+export const Visibility = (level: VisibilityLevel) =>
+  SetMetadata(VISIBILITY_KEY, level);

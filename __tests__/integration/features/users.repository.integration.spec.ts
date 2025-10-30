@@ -1,5 +1,5 @@
 // __tests__/integration/features/users.repository.integration.spec.ts
-import { UsersRepository } from '@/features/users/repositories/users.repository';
+import { UsersRepository } from '@/features/users/users.repository';
 import { PrismaService } from '@/database/prisma.service';
 import { UsersModule } from '@/features/users/users.module';
 import { createTestModule } from '../__helpers__/test-module.factory';

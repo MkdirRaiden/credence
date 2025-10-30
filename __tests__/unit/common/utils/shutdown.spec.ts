@@ -1,5 +1,5 @@
-// __tests__/unit/common/utils/shutdown-database.spec.ts
-import { gracefulShutdown } from '@/common/utils/shutdown-database';
+// __tests__/unit/common/utils/shutdown.spec.ts
+import { gracefulShutdown } from '@/common/utils/shutdown-app';
 
 jest.useFakeTimers();
 

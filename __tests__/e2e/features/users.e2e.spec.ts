@@ -59,9 +59,7 @@ describe('Users API (E2E)', () => {
       ],
     });
 
-    const all = await request(app.getHttpServer())
-      .get(baseUrl)
-      .expect(200);
+    const all = await request(app.getHttpServer()).get(baseUrl).expect(200);
     expect(all.body.data).toHaveLength(3);
 
     const paginated = await request(app.getHttpServer())
@@ -86,9 +84,7 @@ describe('Users API (E2E)', () => {
       .expect(200);
 
     // Verify exclusion from list
-    const list = await request(app.getHttpServer())
-      .get(baseUrl)
-      .expect(200);
+    const list = await request(app.getHttpServer()).get(baseUrl).expect(200);
     expect(list.body.data).toHaveLength(0);
 
     // Verify in database

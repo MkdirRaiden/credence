@@ -25,11 +25,14 @@ import {
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // Create a new user
   @Post()
   async create(@Body() dto: CreateUserDto): Promise<Partial<UserResponseDto>> {
     return this.usersService.create(dto);
   }
 
+  // __Public endpoints__
+  // Get all users with pagination
   @Get()
   @Visibility('public')
   async findAll(
@@ -45,7 +48,7 @@ export class UsersController {
       take,
     });
   }
-
+  // Get a user by ID
   @Get('id/:id')
   @Visibility('public')
   async findById(
@@ -54,25 +57,7 @@ export class UsersController {
   ): Promise<Partial<UserResponseDto>> {
     return this.usersService.findById(id, context);
   }
-
-  @Get('email/:email')
-  @Visibility('admin')
-  async findByEmail(
-    @Param('email') email: string,
-    @GetVisibilityContext() context: FieldSelectorContext,
-  ): Promise<Partial<UserResponseDto>> {
-    return this.usersService.findByEmail(email, context);
-  }
-
-  @Get('phone/:phone')
-  @Visibility('admin')
-  async findByPhone(
-    @Param('phone') phone: string,
-    @GetVisibilityContext() context: FieldSelectorContext,
-  ): Promise<Partial<UserResponseDto>> {
-    return this.usersService.findByPhone(phone, context);
-  }
-
+  // Update a user by ID
   @Put(':id')
   @Visibility('self')
   async update(
@@ -82,7 +67,7 @@ export class UsersController {
   ): Promise<Partial<UserResponseDto>> {
     return this.usersService.update(id, dto, context);
   }
-
+  // Delete a user by ID
   @Delete(':id')
   @Visibility('self')
   async remove(
@@ -90,5 +75,25 @@ export class UsersController {
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>> {
     return this.usersService.remove(id, context);
+  }
+
+  // __Admin specific endpoints__
+  // Get a user by email
+  @Get('email/:email')
+  @Visibility('admin')
+  async findByEmail(
+    @Param('email') email: string,
+    @GetVisibilityContext() context: FieldSelectorContext,
+  ): Promise<Partial<UserResponseDto>> {
+    return this.usersService.findByEmail(email, context);
+  }
+  // Get a user by phone
+  @Get('phone/:phone')
+  @Visibility('admin')
+  async findByPhone(
+    @Param('phone') phone: string,
+    @GetVisibilityContext() context: FieldSelectorContext,
+  ): Promise<Partial<UserResponseDto>> {
+    return this.usersService.findByPhone(phone, context);
   }
 }

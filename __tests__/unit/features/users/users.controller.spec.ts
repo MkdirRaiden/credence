@@ -41,19 +41,21 @@ describe('UsersController', () => {
 
   describe('findAll', () => {
     it('passes pagination params to service', async () => {
-      service.findAll.mockResolvedValue(mockUserList.map((u) => ({
-        id: u.id,
-        email: u.email,
-        phone: u.phone ?? undefined,
-        name: u.name ?? undefined,
-        avatarUrl: u.avatarUrl ?? undefined,
-        emailVerified: u.emailVerified,
-        phoneVerified: u.phoneVerified,
-        role: u.role,
-        referredById: u.referredById ?? undefined,
-        createdAt: u.createdAt,
-        updatedAt: u.updatedAt,
-      })));
+      service.findAll.mockResolvedValue(
+        mockUserList.map((u) => ({
+          id: u.id,
+          email: u.email,
+          phone: u.phone ?? undefined,
+          name: u.name ?? undefined,
+          avatarUrl: u.avatarUrl ?? undefined,
+          emailVerified: u.emailVerified,
+          phoneVerified: u.phoneVerified,
+          role: u.role,
+          referredById: u.referredById ?? undefined,
+          createdAt: u.createdAt,
+          updatedAt: u.updatedAt,
+        })),
+      );
 
       const result = await controller.findAll(20, 50);
 

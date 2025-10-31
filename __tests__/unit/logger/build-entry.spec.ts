@@ -11,7 +11,10 @@ describe('buildEntry', () => {
     expect(defaultEntry.env).toBe(process.env.NODE_ENV ?? NODE_ENV);
     expect(defaultEntry.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/);
 
-    const customEntry = buildEntry('WARN', 'msg', { context: 'CTX', env: 'test' });
+    const customEntry = buildEntry('WARN', 'msg', {
+      context: 'CTX',
+      env: 'test',
+    });
     expect(customEntry.context).toBe('CTX');
     expect(customEntry.env).toBe('test');
   });

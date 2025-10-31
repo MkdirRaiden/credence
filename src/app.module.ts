@@ -8,6 +8,7 @@ import { LoggerModule } from '@/logger/logger.module';
 import { RootController } from '@/root.controller';
 import { CommonModule } from '@/common/common.module';
 import { BootstrapModule } from '@/bootstrap/bootstrap.module';
+import { AuthModule } from './features/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { BootstrapModule } from '@/bootstrap/bootstrap.module';
     HealthModule,
     // Domain Feature Modules
     UsersModule,
+    AuthModule,
   ],
   controllers: [RootController],
 })

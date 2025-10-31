@@ -3,7 +3,10 @@ import { UsersRepository } from '@/features/users/users.repository';
 import { PrismaService } from '@/database/prisma.service';
 import { UsersModule } from '@/features/users/users.module';
 import { createTestModule } from '../__helpers__/test-module.factory';
-import { cleanupDatabase, disconnectDatabase } from '../__helpers__/test-database';
+import {
+  cleanupDatabase,
+  disconnectDatabase,
+} from '../__helpers__/test-database';
 import { UserRole } from '@prisma/client';
 
 jest.setTimeout(20000);
@@ -41,7 +44,9 @@ describe('UsersRepository (Integration)', () => {
       expect(fullUser.role).toBe(UserRole.USER);
       expect(fullUser.deletedAt).toBeNull();
 
-      const minimalUser = await repository.create({ email: 'minimal@example.com' });
+      const minimalUser = await repository.create({
+        email: 'minimal@example.com',
+      });
       expect(minimalUser.email).toBe('minimal@example.com');
       expect(minimalUser.phone).toBeNull();
     });
@@ -69,7 +74,9 @@ describe('UsersRepository (Integration)', () => {
       expect(found?.email).toBe('find@example.com');
 
       await repository.softDelete(user.id);
-      await expect(repository.findById(user.id)).rejects.toThrow('User not found');
+      await expect(repository.findById(user.id)).rejects.toThrow(
+        'User not found',
+      );
       await expect(
         repository.findById('00000000-0000-0000-0000-000000000000'),
       ).rejects.toThrow('User not found');
@@ -118,7 +125,9 @@ describe('UsersRepository (Integration)', () => {
       expect(updated?.avatarUrl).toBe('https://new-avatar.com');
 
       await expect(
-        repository.update('00000000-0000-0000-0000-000000000000', { name: 'Test' }),
+        repository.update('00000000-0000-0000-0000-000000000000', {
+          name: 'Test',
+        }),
       ).rejects.toThrow('User not found');
     });
   });
@@ -130,7 +139,9 @@ describe('UsersRepository (Integration)', () => {
       const deleted = await repository.softDelete(user.id);
       expect(deleted?.deletedAt).toBeInstanceOf(Date);
 
-      await expect(repository.findById(user.id)).rejects.toThrow('User not found');
+      await expect(repository.findById(user.id)).rejects.toThrow(
+        'User not found',
+      );
     });
   });
 

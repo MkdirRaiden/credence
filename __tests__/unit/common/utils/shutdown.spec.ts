@@ -27,7 +27,7 @@ describe('gracefulShutdown', () => {
     expect(logger.error).toHaveBeenCalledWith(
       'Critical shutdown',
       undefined,
-      "App.Shutdown",
+      'App.Shutdown',
     );
 
     // Fast-forward timers

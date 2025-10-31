@@ -125,14 +125,18 @@ describe('UsersService', () => {
 
   describe('existence checks', () => {
     it('checks email existence', async () => {
-      repository.existsByEmail.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+      repository.existsByEmail
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(false);
 
       expect(await service.emailExists('existing@example.com')).toBe(true);
       expect(await service.emailExists('new@example.com')).toBe(false);
     });
 
     it('checks phone existence', async () => {
-      repository.existsByPhone.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+      repository.existsByPhone
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(false);
 
       expect(await service.phoneExists('+1234567890')).toBe(true);
       expect(await service.phoneExists('+9999999999')).toBe(false);

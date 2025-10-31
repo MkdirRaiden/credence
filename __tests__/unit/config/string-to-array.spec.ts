@@ -3,8 +3,16 @@ import { splitStringToArray } from '@/config/helpers/string-to-array';
 
 describe('splitStringToArray', () => {
   it('splits and trims comma-separated strings', () => {
-    expect(splitStringToArray('one,two,three')).toEqual(['one', 'two', 'three']);
-    expect(splitStringToArray('  one ,  two ,three  ')).toEqual(['one', 'two', 'three']);
+    expect(splitStringToArray('one,two,three')).toEqual([
+      'one',
+      'two',
+      'three',
+    ]);
+    expect(splitStringToArray('  one ,  two ,three  ')).toEqual([
+      'one',
+      'two',
+      'three',
+    ]);
     expect(splitStringToArray('single')).toEqual(['single']);
   });
 

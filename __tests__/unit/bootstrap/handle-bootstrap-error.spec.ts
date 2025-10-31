@@ -23,7 +23,9 @@ describe('handleBootstrapError', () => {
   it('handles Error instances with stack trace and exits', () => {
     const error = new Error('Test error');
 
-    expect(() => handleBootstrapError(error, logger)).toThrow('process.exit called');
+    expect(() => handleBootstrapError(error, logger)).toThrow(
+      'process.exit called',
+    );
 
     expect(errorSpy).toHaveBeenCalledWith(
       'Bootstrap failed, err: Test error',
@@ -34,7 +36,9 @@ describe('handleBootstrapError', () => {
   });
 
   it('handles string errors without stack trace', () => {
-    expect(() => handleBootstrapError('String error', logger)).toThrow('process.exit called');
+    expect(() => handleBootstrapError('String error', logger)).toThrow(
+      'process.exit called',
+    );
 
     expect(errorSpy).toHaveBeenCalledWith(
       'Bootstrap failed, err: String error',
@@ -47,7 +51,9 @@ describe('handleBootstrapError', () => {
   it('handles non-Error objects by stringifying', () => {
     const errorObj = { code: 'ERR_UNKNOWN' };
 
-    expect(() => handleBootstrapError(errorObj, logger)).toThrow('process.exit called');
+    expect(() => handleBootstrapError(errorObj, logger)).toThrow(
+      'process.exit called',
+    );
 
     expect(errorSpy).toHaveBeenCalledWith(
       'Bootstrap failed, err: [object Object]',

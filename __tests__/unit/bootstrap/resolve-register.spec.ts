@@ -56,7 +56,7 @@ describe('resolveAndRegister', () => {
     class Provider2 {}
     const instance1 = new Provider1();
     const instance2 = new Provider2();
-    
+
     (moduleRef.get as jest.Mock)
       .mockReturnValueOnce(instance1)
       .mockReturnValueOnce(instance2);

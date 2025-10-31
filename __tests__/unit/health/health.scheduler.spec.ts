@@ -10,7 +10,7 @@ describe('HealthScheduler', () => {
 
   beforeEach(() => {
     jest.useFakeTimers();
-    
+
     mockLogger = {
       log: jest.fn(),
       warn: jest.fn(),

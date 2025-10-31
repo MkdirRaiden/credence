@@ -8,7 +8,8 @@ describe('configuration', () => {
 
   beforeEach(() => {
     process.env = { ...OLD_ENV };
-    process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/db';
+    process.env.DATABASE_URL =
+      process.env.DATABASE_URL || 'postgres://localhost:5432/db';
   });
 
   afterEach(() => {
@@ -23,7 +24,10 @@ describe('configuration', () => {
     expect(full.nodeEnv).toBe(validEnv.NODE_ENV);
     expect(full.port).toBe(Number(validEnv.PORT));
     expect(full.database.url).toBe(validEnv.DATABASE_URL);
-    expect(full.allowedOrigins).toEqual(['http://localhost:3000', 'https://credence.app']);
+    expect(full.allowedOrigins).toEqual([
+      'http://localhost:3000',
+      'https://credence.app',
+    ]);
 
     // Test with partialEnv
     process.env = { ...partialEnv };
@@ -36,7 +40,10 @@ describe('configuration', () => {
 
   it('parses ALLOWED_ORIGINS correctly or falls back to defaults', () => {
     process.env.ALLOWED_ORIGINS = 'http://one.com,https://two.com';
-    expect(configuration().allowedOrigins).toEqual(['http://one.com', 'https://two.com']);
+    expect(configuration().allowedOrigins).toEqual([
+      'http://one.com',
+      'https://two.com',
+    ]);
 
     delete process.env.ALLOWED_ORIGINS;
     expect(configuration().allowedOrigins).toEqual(DEFAULT_ALLOWED_ORIGINS);

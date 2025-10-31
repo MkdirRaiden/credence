@@ -6,7 +6,7 @@ describe('Health helpers', () => {
   describe('getLiveness', () => {
     it('returns status up with uptimeMs', () => {
       const result = getLiveness();
-      
+
       expect(result.status).toBe('up');
       expect(result.uptimeMs).toBeGreaterThan(0);
     });
@@ -15,9 +15,9 @@ describe('Health helpers', () => {
   describe('getReadiness', () => {
     it('returns ok when probe is up and error when down', async () => {
       const upProbe = {
-        check: jest.fn().mockResolvedValue({ 
-          name: 'prisma', 
-          status: 'up' 
+        check: jest.fn().mockResolvedValue({
+          name: 'prisma',
+          status: 'up',
         }),
       } as unknown as PrismaProbe;
 
@@ -48,7 +48,7 @@ describe('Health helpers', () => {
       } as unknown as PrismaProbe;
 
       const result = await getReadiness(probe);
-      
+
       expect(result.status).toBe('error');
       expect(result.details.database.status).toBe('down');
       expect(result.details.database.message).toBeUndefined();

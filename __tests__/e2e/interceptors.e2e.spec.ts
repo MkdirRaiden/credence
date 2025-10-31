@@ -29,9 +29,7 @@ describe('Global Interceptors (E2E)', () => {
   });
 
   it('includes security headers from helmet', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/')
-      .expect(200);
+    const response = await request(app.getHttpServer()).get('/').expect(200);
 
     expect(response.headers['x-content-type-options']).toBe('nosniff');
   });

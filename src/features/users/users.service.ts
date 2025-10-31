@@ -10,24 +10,24 @@ import * as UsersMapper from '@/features/users/users.mapper';
 
 @Injectable()
 export class UsersService {
-  private readonly context = 'UsersService';
+  private readonly logContext = 'UsersService';
 
+  // Injecting UsersRepository and LoggerService
   constructor(
     private readonly repository: UsersRepository,
     private readonly logger: LoggerService,
   ) {}
 
+  // Create a new user
   async create(dto: CreateUserDto): Promise<Partial<UserResponseDto>> {
-    this.logger.log(`Creating user: ${dto.email}`, this.context);
-
+    this.logger.log(`Creating user: ${dto.email}`, this.logContext);
     const createInput = UsersMapper.toCreateInput(dto);
     const user = await this.repository.create(createInput);
-
-    this.logger.log(`User created with ID: ${user.id}`, this.context);
-
+    this.logger.log(`User created with ID: ${user.id}`, this.logContext);
     return UsersMapper.toResponseDto(user);
   }
 
+  // Get all users with pagination
   async findAll(
     context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>[]> {
@@ -35,6 +35,7 @@ export class UsersService {
     return UsersMapper.toResponseDtoList(users);
   }
 
+  // Get a user by ID
   async findById(
     id: string,
     context: FieldSelectorContext,
@@ -43,6 +44,31 @@ export class UsersService {
     return UsersMapper.toResponseDto(user!);
   }
 
+  // Update a user by ID
+  async update(
+    id: string,
+    dto: UpdateUserDto,
+    context: FieldSelectorContext,
+  ): Promise<Partial<UserResponseDto>> {
+    this.logger.log(`Updating user: ${id}`, this.logContext);
+    const updateInput = UsersMapper.toUpdateInput(dto);
+    const user = await this.repository.update(id, updateInput, context);
+    this.logger.log(`User updated: ${id}`, this.logContext);
+    return UsersMapper.toResponseDto(user!);
+  }
+
+  // Soft delete a user by ID
+  async remove(
+    id: string,
+    context: FieldSelectorContext,
+  ): Promise<Partial<UserResponseDto>> {
+    this.logger.log(`Soft deleting user: ${id}`, this.logContext);
+    const user = await this.repository.softDelete(id, context);
+    this.logger.log(`User soft deleted: ${id}`, this.logContext);
+    return UsersMapper.toResponseDto(user!);
+  }
+
+  // Get a user by email
   async findByEmail(
     email: string,
     context: FieldSelectorContext,
@@ -51,6 +77,7 @@ export class UsersService {
     return UsersMapper.toResponseDto(user!);
   }
 
+  // Get a user by phone
   async findByPhone(
     phone: string,
     context: FieldSelectorContext,
@@ -59,38 +86,12 @@ export class UsersService {
     return UsersMapper.toResponseDto(user!);
   }
 
-  async update(
-    id: string,
-    dto: UpdateUserDto,
-    context: FieldSelectorContext,
-  ): Promise<Partial<UserResponseDto>> {
-    this.logger.log(`Updating user: ${id}`, this.context);
-
-    const updateInput = UsersMapper.toUpdateInput(dto);
-    const user = await this.repository.update(id, updateInput, context);
-
-    this.logger.log(`User updated: ${id}`, this.context);
-
-    return UsersMapper.toResponseDto(user!);
-  }
-
-  async remove(
-    id: string,
-    context: FieldSelectorContext,
-  ): Promise<Partial<UserResponseDto>> {
-    this.logger.log(`Soft deleting user: ${id}`, this.context);
-
-    const user = await this.repository.softDelete(id, context);
-
-    this.logger.log(`User soft deleted: ${id}`, this.context);
-
-    return UsersMapper.toResponseDto(user!);
-  }
-
+  // Check if email exists
   async emailExists(email: string): Promise<boolean> {
     return this.repository.existsByEmail(email);
   }
 
+  // Check if phone exists
   async phoneExists(phone: string): Promise<boolean> {
     return this.repository.existsByPhone(phone);
   }

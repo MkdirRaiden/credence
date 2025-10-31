@@ -29,6 +29,9 @@ model User {
   // OTPs
   otps OtpCode[]
 
+  // refresh tokens
+  refreshTokens RefreshToken[] 
+
   // Ledger
   credits CreditLedger[]
 

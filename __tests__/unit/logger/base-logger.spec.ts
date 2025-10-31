@@ -33,7 +33,7 @@ describe('BaseLogger', () => {
 
   it('log calls console.log with formatted message', () => {
     logger.log('hello', 'CTX');
-    
+
     expect(logSpy).toHaveBeenCalledWith(
       JSON.stringify({
         level: 'INFO',

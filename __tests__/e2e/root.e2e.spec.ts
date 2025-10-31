@@ -31,9 +31,7 @@ describe('Root Controller (E2E)', () => {
     });
 
     it('has correct response structure', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/').expect(200);
 
       // Check wrapper structure
       expect(response.body).toHaveProperty('success', true);

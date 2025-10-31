@@ -23,8 +23,16 @@ describe('extractConfig utility', () => {
       port: 5000,
       host: 'localhost',
     });
-    const multi = extractConfig(multiMock, ['nodeEnv', 'port', 'host'] as const);
-    expect(multi).toEqual({ nodeEnv: 'production', port: 5000, host: 'localhost' });
+    const multi = extractConfig(multiMock, [
+      'nodeEnv',
+      'port',
+      'host',
+    ] as const);
+    expect(multi).toEqual({
+      nodeEnv: 'production',
+      port: 5000,
+      host: 'localhost',
+    });
     expect(multiMock.get).toHaveBeenCalledTimes(3);
 
     // Empty keys
@@ -40,7 +48,9 @@ describe('extractConfig utility', () => {
       database: { url: 'postgresql://localhost:5432/test' },
     });
     const db = extractConfig(dbMock, ['database'] as const);
-    expect(db).toEqual({ database: { url: 'postgresql://localhost:5432/test' } });
+    expect(db).toEqual({
+      database: { url: 'postgresql://localhost:5432/test' },
+    });
 
     // Undefined values
     const undefinedMock = createMockConfigService({

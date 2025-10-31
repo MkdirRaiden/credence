@@ -19,7 +19,7 @@ describe('PrismaService (Integration)', () => {
 
   it('executes simple queries', async () => {
     const result = await db.$queryRaw<[{ result: number }]>`SELECT 1 as result`;
-    
+
     expect(result[0].result).toBe(1);
   });
 

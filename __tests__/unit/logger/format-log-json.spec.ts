@@ -4,7 +4,7 @@ import { formatLogJson } from '@/logger/helpers/format-log-json';
 describe('formatLogJson', () => {
   it('formats basic log with required fields', () => {
     const parsed = JSON.parse(formatLogJson('INFO', 'msg'));
-    
+
     expect(parsed.level).toBe('INFO');
     expect(parsed.message).toBe('msg');
     expect(parsed.context).toBeDefined();
@@ -15,7 +15,7 @@ describe('formatLogJson', () => {
   it('formats error logs with stack trace', () => {
     const error = new Error('fail');
     const parsed = JSON.parse(formatLogJson('ERROR', 'msg', { error }));
-    
+
     expect(parsed.name).toBe('Error');
     expect(parsed.message).toBe('msg');
     expect(parsed.trace).toContain('fail');
@@ -41,7 +41,7 @@ describe('formatLogJson', () => {
     const parsed = JSON.parse(
       formatLogJson('WARN', 'msg', { context: 'MyCTX', env: 'test-env' }),
     );
-    
+
     expect(parsed.context).toBe('MyCTX');
     expect(parsed.env).toBe('test-env');
   });

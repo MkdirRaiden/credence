@@ -8,6 +8,7 @@ import { BaseUserService } from '@/features/users/base-user.service';
 @Module({
   controllers: [UsersController],
   providers: [
+    UsersService,
     UsersRepository,
     {
       provide: BaseUserService,

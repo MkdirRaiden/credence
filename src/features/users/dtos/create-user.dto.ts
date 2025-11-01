@@ -11,12 +11,12 @@ import {
 import { TrimTransform } from '@/common/decorators';
 
 export class CreateUserDto {
-  @IsEmail()
+  @IsEmail({}, { message: 'Invalid email format' })
   @TrimTransform
   email: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'Phone must be a string' })
   @Matches(/^\+?[1-9]\d{1,14}$/, {
     message: 'Phone must be in valid international format',
   })
@@ -24,20 +24,20 @@ export class CreateUserDto {
   phone?: string;
 
   @IsOptional()
-  @IsString()
-  @MinLength(2)
-  @MaxLength(100)
+  @IsString({ message: 'Name must be a string' })
+  @MinLength(2, { message: 'Name must be at least 2 characters' })
+  @MaxLength(100, { message: 'Name must not exceed 100 characters' })
   @TrimTransform
   name?: string;
 
   @IsOptional()
-  @IsUrl()
+  @IsUrl({}, { message: 'Avatar URL must be a valid URL' })
   avatarUrl?: string;
 
   @IsOptional()
-  @IsString()
-  @MinLength(3)
-  @MaxLength(50)
+  @IsString({ message: 'Referral code must be a string' })
+  @MinLength(3, { message: 'Referral code must be at least 3 characters' })
+  @MaxLength(50, { message: 'Referral code must not exceed 50 characters' })
   @TrimTransform
   referralCode?: string;
 }

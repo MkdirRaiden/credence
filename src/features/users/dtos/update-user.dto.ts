@@ -10,13 +10,13 @@ import { TrimTransform } from '@/common/decorators';
 
 export class UpdateUserDto {
   @IsOptional()
-  @IsString()
-  @MinLength(2)
-  @MaxLength(100)
+  @IsString({ message: 'Name must be a string' })
+  @MinLength(2, { message: 'Name must be at least 2 characters' })
+  @MaxLength(100, { message: 'Name must not exceed 100 characters' })
   @TrimTransform
   name?: string;
 
   @IsOptional()
-  @IsUrl()
+  @IsUrl({}, { message: 'Avatar URL must be a valid URL' })
   avatarUrl?: string;
 }

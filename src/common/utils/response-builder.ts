@@ -1,6 +1,9 @@
 // src/common/utils/response-builder.ts
 import { StandardResponse } from '@/common/interfaces';
 
+/**
+ * Builds standardized API response envelope with success/error handling.
+ */
 export function buildResponse<T>(
   data: T,
   path: string,

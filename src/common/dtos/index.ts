@@ -1,1 +1,1 @@
-export * from './deleted-resource.dto';
+export { DeletedResourceDto } from './deleted-resource.dto';

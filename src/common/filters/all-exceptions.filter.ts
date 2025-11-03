@@ -10,6 +10,9 @@ import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
 import { LoggerService } from '@/logger/logger.service';
 import { Response, Request } from 'express';
 
+/**
+ * Catch-all global exception filter for unhandled errors.
+ */
 @Injectable()
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
@@ -22,31 +25,51 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const req = ctx.getRequest<Request>();
     const res = ctx.getResponse<Response>();
 
-    // Skip noisy favicon.ico errors
-    if (req.url === '/favicon.ico') {
+    // Skip favicon requests (noisy in logs)
+    if (this.isFaviconRequest(req)) {
       return res.status(204).send();
     }
 
+    const { status, message } = this.resolveExceptionDetails(exception);
+    this.handleResponse(host, status, message, exception);
+  }
+
+  private isFaviconRequest(req: Request): boolean {
+    return req.url === '/favicon.ico';
+  }
+
+  private resolveExceptionDetails(exception: unknown): {
+    status: number;
+    message: string;
+  } {
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal server error';
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const resData = exception.getResponse();
-      if (typeof resData === 'string') {
-        message = resData;
-      } else if (
-        resData &&
-        typeof resData === 'object' &&
-        'message' in resData
-      ) {
-        const msg = (resData as { message?: string }).message;
-        if (msg) message = msg;
-      }
+      message = this.extractHttpExceptionMessage(resData);
     } else if (exception instanceof Error) {
       message = exception.message;
     }
 
-    this.handleResponse(host, status, message, exception);
+    return { status, message };
+  }
+
+  private extractHttpExceptionMessage(responseBody: unknown): string {
+    if (typeof responseBody === 'string') {
+      return responseBody;
+    }
+
+    if (
+      responseBody &&
+      typeof responseBody === 'object' &&
+      'message' in responseBody
+    ) {
+      const msg = (responseBody as { message?: string }).message;
+      if (msg) return msg;
+    }
+
+    return 'Internal server error';
   }
 }

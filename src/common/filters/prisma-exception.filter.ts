@@ -2,9 +2,11 @@
 import { Catch, ArgumentsHost, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
-import { gracefulShutdown } from '@/common/utils';
 import { LoggerService } from '@/logger/logger.service';
 
+/**
+ * Handles Prisma-specific database errors and maps to HTTP responses.
+ */
 @Injectable()
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter extends BaseExceptionFilter {
@@ -13,16 +15,8 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
   }
 
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
-    const { status, message, critical } = this.mapPrismaError(exception);
-
+    const { status, message } = this.mapPrismaError(exception);
     this.handleResponse(host, status, message, exception);
-
-    if (critical) {
-      gracefulShutdown(
-        this.logger,
-        'Critical database failure — shutting down application',
-      );
-    }
   }
 
   private mapPrismaError(exception: Prisma.PrismaClientKnownRequestError) {
@@ -34,20 +28,17 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         return {
           status: HttpStatus.CONFLICT,
           message: `Unique constraint failed on fields: ${fields}`,
-          critical: false,
         };
       }
       case 'P2025':
         return {
           status: HttpStatus.NOT_FOUND,
           message: 'Record not found',
-          critical: false,
         };
       default:
         return {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: exception.message,
-          critical: true,
+          message: 'Database error',
         };
     }
   }

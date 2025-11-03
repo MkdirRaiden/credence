@@ -2,12 +2,7 @@
 import { Transform, TransformFnParams } from 'class-transformer';
 
 /**
- * Trim whitespace from string values
- * Safe transform for class-transformer DTOs
- *
- * @example
- * @TrimTransform
- * name: string;
+ * Trims whitespace from string values in class-transformer DTOs.
  */
 export const TrimTransform = Transform(({ value }: TransformFnParams): any =>
   typeof value === 'string' ? value.trim() : value,

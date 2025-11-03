@@ -11,7 +11,19 @@ export abstract class BaseExceptionFilter<T = unknown>
 
   abstract catch(exception: T, host: ArgumentsHost): void;
 
-  // Centralized response handling to ensure consistent logging and response format
+  protected logException(message: string, stack?: string, context?: string) {
+    this.logger.error(message, stack, context);
+  }
+
+  protected sendResponse(
+    res: Response,
+    req: Request,
+    status: number,
+    message: string,
+  ) {
+    res.status(status).json(buildResponse(null, req.url, status, message));
+  }
+
   protected handleResponse(
     host: ArgumentsHost,
     status: number,
@@ -22,14 +34,10 @@ export abstract class BaseExceptionFilter<T = unknown>
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
 
-    // Safely extract stack if provided
     const stack = exception instanceof Error ? exception.stack : undefined;
-    // Optional, minimal request context to improve log forensics
-    // Keep it in the log context string to avoid altering the envelope schema.
     const context = `${this.constructor.name} ${req.method} ${req.url}`;
-    // Single structured log line; stack is routed to trace by your logger helpers
-    this.logger.error(message, stack, context);
-    // Emit standard error envelope; data is omitted on failure per builder
-    res.status(status).json(buildResponse(null, req.url, status, message));
+
+    this.logException(message, stack, context);
+    this.sendResponse(res, req, status, message);
   }
 }

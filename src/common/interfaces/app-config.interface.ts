@@ -8,4 +8,6 @@ export interface AppConfig {
   globalPrefix: string;
   database: { url: string };
   allowedOrigins: string[];
+  jwtSecret: string;
+  jwtRefreshSecret: string;
 }

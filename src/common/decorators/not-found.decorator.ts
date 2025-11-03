@@ -6,8 +6,7 @@ type AsyncMethod<T = unknown, Args extends unknown[] = unknown[]> = (
 ) => Promise<T>;
 
 /**
- * Method decorator that throws NotFoundException if the method result is null or undefined.
- * @param message - Message to use in NotFoundException
+ * Throws NotFoundException if async method returns null or undefined.
  */
 export function NotFound<T, Args extends unknown[] = unknown[]>(
   message: string,

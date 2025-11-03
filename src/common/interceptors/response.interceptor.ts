@@ -12,6 +12,9 @@ import { buildResponse } from '@/common/utils';
 import { APP_VERSION } from '@/common/constants';
 import { StandardResponse } from '@/common/interfaces';
 
+/**
+ * Wraps successful responses in StandardResponse envelope with API version.
+ */
 @Injectable()
 export class ResponseInterceptor<T>
   implements NestInterceptor<T, StandardResponse<T> | T>
@@ -28,7 +31,7 @@ export class ResponseInterceptor<T>
 
     return next.handle().pipe(
       map((data: T) => {
-        // Don't wrap error responses - filters handle those
+        // Skip wrapping for error responses (exception filters handle those)
         if (res.statusCode >= 400) {
           return data;
         }

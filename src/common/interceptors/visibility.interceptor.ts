@@ -14,12 +14,14 @@ import {
 } from '@/common/interfaces';
 import { VISIBILITY_KEY } from '@/common/constants';
 
+/**
+ * Attaches field visibility context to request based on endpoint level and user role.
+ */
 @Injectable()
 export class VisibilityInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest<RequestWithContext>();
 
-    // Cast metadata to VisibilityLevel with default 'public'
     const declaredLevel =
       (Reflect.getMetadata(
         VISIBILITY_KEY,
@@ -49,12 +51,6 @@ export class VisibilityInterceptor implements NestInterceptor {
 
     switch (declaredLevel) {
       case 'public':
-        if (userId && requestedUserId === userId) {
-          return { level: 'self', requesterId: userId };
-        }
-        return { level: 'public', requesterId: userId };
-
-      case 'self':
         if (userId && requestedUserId === userId) {
           return { level: 'self', requesterId: userId };
         }

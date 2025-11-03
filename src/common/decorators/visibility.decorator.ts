@@ -7,7 +7,7 @@ import { VISIBILITY_KEY } from '@/common/constants';
  * Decorator to mark endpoint visibility level
  * Used by VisibilityInterceptor to determine FieldSelectorContext
  *
- * @param level - 'public' | 'self' | 'admin'
+ * @param level - 'public' | 'admin'
  *
  * @example
  * @Get(':id')

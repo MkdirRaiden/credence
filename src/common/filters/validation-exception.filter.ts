@@ -9,6 +9,9 @@ import {
 import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
 import { LoggerService } from '@/logger/logger.service';
 
+/**
+ * Handles validation errors and extracts detailed error messages.
+ */
 @Injectable()
 @Catch(BadRequestException)
 export class ValidationExceptionFilter extends BaseExceptionFilter {
@@ -17,10 +20,14 @@ export class ValidationExceptionFilter extends BaseExceptionFilter {
   }
 
   catch(exception: BadRequestException, host: ArgumentsHost) {
+    const message = this.extractValidationMessage(exception);
+    this.handleResponse(host, HttpStatus.BAD_REQUEST, message, exception);
+  }
+
+  private extractValidationMessage(exception: BadRequestException): string {
     const responseBody = exception.getResponse();
     let messages: string[] = [];
 
-    // Extract validation messages
     if (typeof responseBody === 'string') {
       messages = [responseBody];
     } else if (
@@ -36,9 +43,6 @@ export class ValidationExceptionFilter extends BaseExceptionFilter {
       }
     }
 
-    const errorMessage =
-      messages.length > 0 ? messages.join(', ') : 'Validation failed';
-
-    this.handleResponse(host, HttpStatus.BAD_REQUEST, errorMessage, exception);
+    return messages.length > 0 ? messages.join(', ') : 'Validation failed';
   }
 }

@@ -29,7 +29,6 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-
     "test": "jest --passWithNoTests --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -37,7 +36,6 @@
     "test:unit": "jest --roots __tests__/unit --runInBand",
     "test:integration": "NODE_ENV=test jest --roots __tests__/integration --runInBand",
     "test:e2e": "NODE_ENV=test jest --config ./__tests__/jest-e2e.json --runInBand",
-    
     "prisma:gen": "bash ./scripts/prisma/commands/merge-generate.sh",
     "prisma:fmt": "bash ./scripts/prisma/commands/format-validate.sh",
     "prisma:seed": "bash ./scripts/prisma/commands/seed.sh",
@@ -48,21 +46,27 @@
     "prisma:reset": "bash ./scripts/prisma/commands/reset.sh",
     "prisma:rebuild": "bash ./scripts/prisma/commands/rebuild.sh"
   },
-    "prisma": {
+  "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.1",
+    "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/terminus": "^11.0.0",
     "@prisma/client": "6.17.1",
+    "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "compression": "^1.8.1",
     "helmet": "^8.1.0",
     "joi": "^18.0.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -72,10 +76,13 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/compression": "^1.8.1",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.3",
     "@types/node": "^22.10.7",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.3",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",

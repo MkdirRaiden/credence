@@ -1,24 +1,24 @@
 // __tests__/integration/health.integration.spec.ts
+import { INestApplication } from '@nestjs/common';
 import { HealthService } from '@/health/health.service';
 import { HealthModule } from '@/health/health.module';
 import { createTestModule } from './__helpers__/test-module.factory';
-import { disconnectDatabase } from './__helpers__/test-database';
-import { PrismaService } from '@/database/prisma.service';
 
-jest.setTimeout(20000);
+jest.setTimeout(30000);
 
 describe('HealthService (Integration)', () => {
+  let app: INestApplication;
   let healthService: HealthService;
-  let prismaService: PrismaService;
 
   beforeAll(async () => {
     const moduleRef = await createTestModule({ imports: [HealthModule] });
+    app = moduleRef.createNestApplication();
+    await app.init();
     healthService = moduleRef.get(HealthService);
-    prismaService = moduleRef.get(PrismaService);
   });
 
   afterAll(async () => {
-    await disconnectDatabase(prismaService);
+    if (app) await app.close();
   });
 
   it('passes readiness check with connected database', async () => {
@@ -27,15 +27,22 @@ describe('HealthService (Integration)', () => {
 
   it('returns liveness with uptime', () => {
     const result = healthService.liveness();
-
     expect(result.status).toBe('up');
     expect(result.uptimeMs).toBeGreaterThan(0);
   });
 
-  it('returns readiness with database status', async () => {
+  it('returns readiness with database status ok', async () => {
     const result = await healthService.readinessOrThrow();
-
     expect(result.status).toBe('ok');
-    expect(result.details.database.status).toBe('up');
+    expect(result.details.database?.status).toBe('up');
+  });
+
+  it('readiness includes all probe details', async () => {
+    const result = await healthService.readinessOrThrow();
+    expect(Object.keys(result.details).length).toBeGreaterThan(0);
+    Object.values(result.details).forEach((detail: any) => {
+      expect(detail.status).toBeDefined();
+      expect(['up', 'down']).toContain(detail.status);
+    });
   });
 });

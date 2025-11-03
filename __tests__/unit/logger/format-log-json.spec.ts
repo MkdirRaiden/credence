@@ -21,7 +21,7 @@ describe('formatLogJson', () => {
     expect(parsed.trace).toContain('fail');
   });
 
-  it('handles different message types and circular references', () => {
+  it('handles different message types', () => {
     // Object
     const objParsed = JSON.parse(formatLogJson('DEBUG', { a: 1 }));
     expect(objParsed.message).toBe('{"a":1}');
@@ -29,12 +29,14 @@ describe('formatLogJson', () => {
     // Error
     const errParsed = JSON.parse(formatLogJson('ERROR', new Error('oops')));
     expect(errParsed.message).toBe('oops');
+  });
 
-    // Circular
+  it('falls back for unserializable entries', () => {
     const circular: any = { self: null };
     circular.self = circular;
     const circularParsed = JSON.parse(formatLogJson('DEBUG', circular));
-    expect(circularParsed.message).toBe('[Unserializable Object]');
+
+    expect(circularParsed.message).toBe('[Unserializable Object]'); 
   });
 
   it('uses custom context and env when provided', () => {

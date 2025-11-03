@@ -9,7 +9,9 @@ import {
   Param,
   Query,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '@/features/auth/guards/jwt-auth.guard';
 import {
   DEFAULT_PAGINATION_SKIP,
   DEFAULT_PAGINATION_TAKE,
@@ -28,28 +30,43 @@ import { FieldSelectorContext } from '@/common/interfaces';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // Create a new user
+  /**
+   * Create a new user (protected)
+   * POST /users
+   */
   @Post()
+  @UseGuards(JwtAuthGuard)
   async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
-    return await this.usersService.create(dto);
+    return this.usersService.create(dto);
   }
 
-  // Update a user by ID
+  /**
+   * Update a user by ID (protected)
+   * PUT /users/:id
+   */
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    return await this.usersService.update(id, dto);
+    return this.usersService.update(id, dto);
   }
 
-  // Delete a user by ID
+  /**
+   * Delete a user by ID (protected)
+   * DELETE /users/:id
+   */
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id') id: string): Promise<DeletedResourceDto> {
-    return await this.usersService.remove(id);
+    return this.usersService.remove(id);
   }
 
-  // Get all users with pagination
+  /**
+   * Get all users with pagination and public visibility
+   * GET /users?skip=0&take=10
+   */
   @Get()
   @Visibility('public')
   async findAll(
@@ -59,40 +76,51 @@ export class UsersController {
     take = DEFAULT_PAGINATION_TAKE,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>[]> {
-    return await this.usersService.findAll({
+    return this.usersService.findAll({
       ...context,
       skip,
       take,
     });
   }
 
-  // Get a user by ID
+  /**
+   * Get a user by ID with public visibility
+   * GET /users/id/:id
+   */
   @Get('id/:id')
   @Visibility('public')
   async findById(
     @Param('id') id: string,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>> {
-    return await this.usersService.findById(id, context);
+    return this.usersService.findById(id, context);
   }
 
-  // Get a user by email
+  /**
+   * Get a user by email (admin only - protected)
+   * GET /users/email/:email
+   */
   @Get('email/:email')
+  @UseGuards(JwtAuthGuard)
   @Visibility('admin')
   async findByEmail(
     @Param('email') email: string,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>> {
-    return await this.usersService.findByEmail(email, context);
+    return this.usersService.findByEmail(email, context);
   }
 
-  // Get a user by phone
+  /**
+   * Get a user by phone (admin only - protected)
+   * GET /users/phone/:phone
+   */
   @Get('phone/:phone')
+  @UseGuards(JwtAuthGuard)
   @Visibility('admin')
   async findByPhone(
     @Param('phone') phone: string,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>> {
-    return await this.usersService.findByPhone(phone, context);
+    return this.usersService.findByPhone(phone, context);
   }
 }

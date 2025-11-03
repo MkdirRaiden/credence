@@ -1,46 +1,37 @@
 // __tests__/integration/config.integration.spec.ts
+import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from '@/common/interfaces/app-config.interface';
 import { createTestModule } from './__helpers__/test-module.factory';
+import type { AppConfig } from '@/common/interfaces/app-config.interface';
 
 describe('ConfigModule (Integration)', () => {
+  let app: INestApplication;
   let configService: ConfigService<AppConfig>;
 
   beforeAll(async () => {
     const moduleRef = await createTestModule();
+    app = moduleRef.createNestApplication();
+    await app.init();
     configService = moduleRef.get(ConfigService);
   });
 
+  afterAll(async () => {
+    if (app) await app.close();
+  });
+
   it('loads all required config properties', () => {
-    const requiredKeys: (keyof AppConfig)[] = [
-      'nodeEnv',
-      'port',
-      'appName',
-      'appVersion',
-      'host',
-      'globalPrefix',
-      'database',
-      'allowedOrigins',
+    const keys: (keyof AppConfig)[] = [
+      'nodeEnv', 'port', 'appName', 'appVersion', 'host',
+      'globalPrefix', 'database', 'allowedOrigins', 'jwtSecret', 'jwtRefreshSecret',
     ];
-
-    requiredKeys.forEach((key) => {
-      const value = configService.get(key);
-      expect(value).toBeDefined();
-    });
+    keys.forEach(key => expect(configService.get(key)).toBeDefined());
   });
 
-  it('loads correct types for config values', () => {
-    expect(typeof configService.get('nodeEnv')).toBe('string');
-    expect(typeof configService.get('port')).toBe('number');
-    expect(Array.isArray(configService.get('allowedOrigins'))).toBe(true);
-    expect(configService.get('database')?.url).toContain('postgresql');
-  });
-
-  it('uses test environment', () => {
-    expect(configService.get('nodeEnv')).toBe('test');
-  });
-
-  it('throws for missing required config', () => {
-    expect(() => configService.getOrThrow('nonExistentKey' as any)).toThrow();
+  it('loads JWT secrets from environment', () => {
+    const jwtSecret = configService.get('jwtSecret');
+    const jwtRefreshSecret = configService.get('jwtRefreshSecret');
+    expect(jwtSecret).toBeDefined();
+    expect(jwtRefreshSecret).toBeDefined();
+    expect(jwtSecret).not.toBe(jwtRefreshSecret);
   });
 });

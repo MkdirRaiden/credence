@@ -11,17 +11,17 @@ export const USER_FIELD_VISIBILITY_CONFIG: Record<
   keyof UserResponseDto,
   VisibilityLevel[]
 > = {
-  id: ['public', 'self', 'admin'],
-  name: ['public', 'self', 'admin'],
-  avatarUrl: ['public', 'self', 'admin'],
-  role: ['self', 'admin'],
-  email: ['self', 'admin'],
-  phone: ['self', 'admin'],
-  emailVerified: ['self', 'admin'],
-  phoneVerified: ['self', 'admin'],
-  referredById: ['self', 'admin'],
-  createdAt: ['self', 'admin'],
-  updatedAt: ['self', 'admin'],
+  id: ['public', 'admin'],
+  name: ['public', 'admin'],
+  avatarUrl: ['public', 'admin'],
+  role: ['admin'],
+  email: ['admin'],
+  phone: ['admin'],
+  emailVerified: ['admin'],
+  phoneVerified: ['admin'],
+  referredById: ['admin'],
+  createdAt: ['admin'],
+  updatedAt: ['admin'],
 };
 
 /**

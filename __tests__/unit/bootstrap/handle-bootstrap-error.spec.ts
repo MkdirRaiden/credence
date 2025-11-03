@@ -10,9 +10,7 @@ describe('handleBootstrapError', () => {
   beforeEach(() => {
     logger = new BootstrapLogger();
     errorSpy = jest.spyOn(logger, 'error').mockImplementation();
-    exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
-      throw new Error('process.exit called');
-    });
+    exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
   });
 
   afterEach(() => {
@@ -20,15 +18,13 @@ describe('handleBootstrapError', () => {
     exitSpy.mockRestore();
   });
 
-  it('handles Error instances with stack trace and exits', () => {
+  it('handles Error instances with stack trace', () => {
     const error = new Error('Test error');
 
-    expect(() => handleBootstrapError(error, logger)).toThrow(
-      'process.exit called',
-    );
+    handleBootstrapError(error, logger, null);
 
     expect(errorSpy).toHaveBeenCalledWith(
-      'Bootstrap failed, err: Test error',
+      'Bootstrap failed: Test error',
       error.stack,
       'Bootstrap.error',
     );
@@ -36,30 +32,25 @@ describe('handleBootstrapError', () => {
   });
 
   it('handles string errors without stack trace', () => {
-    expect(() => handleBootstrapError('String error', logger)).toThrow(
-      'process.exit called',
-    );
+    handleBootstrapError('String error', logger, null);
 
     expect(errorSpy).toHaveBeenCalledWith(
-      'Bootstrap failed, err: String error',
+      'Bootstrap failed: String error',
       undefined,
       'Bootstrap.error',
     );
     expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
-  it('handles non-Error objects by stringifying', () => {
-    const errorObj = { code: 'ERR_UNKNOWN' };
+  it('gracefully closes app if provided', async () => {
+    const mockApp = { close: jest.fn().mockResolvedValue(undefined) } as any;
+    const logSpy = jest.spyOn(logger, 'log').mockImplementation();
 
-    expect(() => handleBootstrapError(errorObj, logger)).toThrow(
-      'process.exit called',
-    );
+    await handleBootstrapError(new Error('Test'), logger, mockApp);
 
-    expect(errorSpy).toHaveBeenCalledWith(
-      'Bootstrap failed, err: [object Object]',
-      undefined,
-      'Bootstrap.error',
-    );
+    expect(mockApp.close).toHaveBeenCalled();
+    expect(logSpy).toHaveBeenCalledWith('App closed gracefully', 'Bootstrap.error');
     expect(exitSpy).toHaveBeenCalledWith(1);
+    logSpy.mockRestore();
   });
 });

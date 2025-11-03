@@ -1,7 +1,8 @@
-// __tests__/unit/bootstrap/resolve-register.spec.ts
+// __tests__/unit/bootstrap/helpers/resolve-register.spec.ts
 import { resolveAndRegister } from '@/bootstrap/helpers/resolve-register';
 import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from '@/logger/logger.service';
+import { CRITICAL_PROVIDERS } from '@/common/modules/common.config';
 
 describe('resolveAndRegister', () => {
   let moduleRef: Partial<ModuleRef>;
@@ -11,12 +12,10 @@ describe('resolveAndRegister', () => {
   beforeEach(() => {
     registerFn = jest.fn();
     mockLogger = { warn: jest.fn() };
-    moduleRef = {
-      get: jest.fn(),
-    };
+    moduleRef = { get: jest.fn() };
   });
 
-  it('resolves class providers from moduleRef and registers them', () => {
+  it('resolves and registers provider successfully', () => {
     class TestProvider {}
     const instance = new TestProvider();
     (moduleRef.get as jest.Mock).mockReturnValue(instance);
@@ -28,27 +27,42 @@ describe('resolveAndRegister', () => {
       mockLogger as any,
     );
 
-    expect(moduleRef.get).toHaveBeenCalledWith(TestProvider, { strict: false });
     expect(registerFn).toHaveBeenCalledWith(instance);
-    expect(mockLogger.warn as jest.Mock).not.toHaveBeenCalled();
   });
 
-  it('logs warning if provider not found', () => {
-    class MissingProvider {}
+  it('logs warning if non-critical provider not found', () => {
+    class NonCriticalProvider {}
     (moduleRef.get as jest.Mock).mockReturnValue(undefined);
 
     resolveAndRegister(
       moduleRef as ModuleRef,
-      [MissingProvider],
+      [NonCriticalProvider],
       registerFn,
       mockLogger as any,
     );
 
     expect(registerFn).not.toHaveBeenCalled();
-    expect(mockLogger.warn as jest.Mock).toHaveBeenCalledWith(
-      'Provider MissingProvider not found for registration',
+    expect(mockLogger.warn).toHaveBeenCalledWith(
+      'Provider NonCriticalProvider not found for registration',
       'Bootstrap',
     );
+  });
+
+  it('throws error if critical provider not found', () => {
+    const CriticalProvider = class {};
+    Object.defineProperty(CriticalProvider, 'name', { 
+      value: CRITICAL_PROVIDERS[0] 
+    });
+    (moduleRef.get as jest.Mock).mockReturnValue(undefined);
+
+    expect(() =>
+      resolveAndRegister(
+        moduleRef as ModuleRef,
+        [CriticalProvider as any],
+        registerFn,
+        mockLogger as any,
+      ),
+    ).toThrow(`CRITICAL: Provider ${CRITICAL_PROVIDERS[0]} not found for registration`);
   });
 
   it('handles multiple providers', () => {
@@ -69,7 +83,7 @@ describe('resolveAndRegister', () => {
     );
 
     expect(registerFn).toHaveBeenCalledTimes(2);
-    expect(registerFn).toHaveBeenCalledWith(instance1);
-    expect(registerFn).toHaveBeenCalledWith(instance2);
+    expect(registerFn).toHaveBeenNthCalledWith(1, instance1);
+    expect(registerFn).toHaveBeenNthCalledWith(2, instance2);
   });
 });

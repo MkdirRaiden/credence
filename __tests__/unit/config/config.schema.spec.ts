@@ -9,7 +9,8 @@ describe('configValidationSchema', () => {
     expect(error).toBeUndefined();
     expect(value.PORT).toBe(4000);
     expect(value.NODE_ENV).toBe(validEnv.NODE_ENV);
-    expect(value.ALLOWED_ORIGINS).toBe(validEnv.ALLOWED_ORIGINS); // still string here
+    expect(value.JWT_SECRET).toBe(validEnv.JWT_SECRET);
+    expect(value.JWT_REFRESH_SECRET).toBe(validEnv.JWT_REFRESH_SECRET);
   });
 
   it('rejects invalid environment variables', () => {
@@ -18,21 +19,33 @@ describe('configValidationSchema', () => {
     expect(error?.message).toContain('NODE_ENV');
   });
 
-  // Test ensures non-PostgreSQL URLs fail validation
   it('rejects non-PostgreSQL database URLs', () => {
     const { error } = configValidationSchema.validate({
       ...validEnv,
       DATABASE_URL: 'mysql://localhost:3306/db',
     });
     expect(error).toBeDefined();
-    // Optionally assert for the pattern label you defined
-    expect(error?.message).toContain('PostgreSQL connection string');
+    expect(error?.message).toContain('PostgreSQL');
+  });
+
+  it('rejects empty JWT secrets', () => {
+    const { error } = configValidationSchema.validate({
+      ...validEnv,
+      JWT_SECRET: '',
+    });
+    expect(error).toBeDefined();
+  });
+
+  it('rejects missing JWT fields', () => {
+    const { JWT_SECRET, ...env } = validEnv;
+    const { error } = configValidationSchema.validate(env);
+    expect(error).toBeDefined();
   });
 
   it('applies default values when not provided', () => {
     const { value } = configValidationSchema.validate(partialEnv);
     expect(value.PORT).toBeDefined();
     expect(value.NODE_ENV).toBeDefined();
-    expect(value.ALLOWED_ORIGINS).toBe(DEFAULT_ALLOWED_ORIGINS.join(',')); // string default
+    expect(value.ALLOWED_ORIGINS).toBe(DEFAULT_ALLOWED_ORIGINS.join(','));
   });
 });

@@ -1,5 +1,6 @@
 // src/features/auth/dtos/requests/refresh-token.dto.ts
 import { IsString, IsNotEmpty } from 'class-validator';
+import { TrimTransform } from '@/common/decorators';
 
 /**
  * Refresh token request
@@ -8,5 +9,6 @@ import { IsString, IsNotEmpty } from 'class-validator';
 export class RefreshTokenDto {
   @IsString({ message: 'Refresh token must be a string' })
   @IsNotEmpty({ message: 'Refresh token cannot be empty' })
+  @TrimTransform
   refreshToken: string;
 }

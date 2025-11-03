@@ -51,4 +51,12 @@ describe('configuration', () => {
     process.env.ALLOWED_ORIGINS = '';
     expect(configuration().allowedOrigins).toEqual(DEFAULT_ALLOWED_ORIGINS);
   });
+
+  it('includes JWT secrets in config', () => {
+    process.env = { ...validEnv };
+    const config = configuration();
+    
+    expect(config.jwtSecret).toBe(validEnv.JWT_SECRET);
+    expect(config.jwtRefreshSecret).toBe(validEnv.JWT_REFRESH_SECRET);
+  });
 });

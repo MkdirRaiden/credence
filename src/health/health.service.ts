@@ -4,30 +4,33 @@ import {
   HttpException,
   HttpStatus,
   OnModuleInit,
+  Inject,
 } from '@nestjs/common';
-import { PrismaProbe } from '@/health/probes/prisma.probe';
+import { Probe } from '@/health/health.interface';
 import { HealthScheduler } from '@/health/health.scheduler';
+import { PROBES_TOKEN } from '@/common/constants';
 import { getLiveness, getReadiness } from '@/health/helpers';
 
+/**
+ * Orchestrates health checks across all probes.
+ */
 @Injectable()
 export class HealthService implements OnModuleInit {
   constructor(
-    private readonly prismaProbe: PrismaProbe,
+    @Inject(PROBES_TOKEN) private readonly probes: Probe[],
     private readonly scheduler: HealthScheduler,
   ) {}
 
   onModuleInit() {
-    this.scheduler.start();
+    this.scheduler.start(this.probes);
   }
 
-  // Returns liveness data
   liveness() {
     return getLiveness();
   }
 
-  // Returns readiness data or throws if unhealthy
   async readinessOrThrow() {
-    const readiness = await getReadiness(this.prismaProbe);
+    const readiness = await getReadiness(this.probes);
     if (readiness.status === 'error') {
       throw new HttpException(
         {
@@ -40,9 +43,8 @@ export class HealthService implements OnModuleInit {
     return readiness;
   }
 
-  // Assert readiness for bootstrap checks (no HTTP response)
   async assertReadiness(): Promise<void> {
-    const readiness = await getReadiness(this.prismaProbe);
+    const readiness = await getReadiness(this.probes);
     if (readiness.status !== 'ok') {
       throw new Error(
         `Readiness check failed: ${JSON.stringify(readiness.details)}`,

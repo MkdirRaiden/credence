@@ -2,6 +2,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { HealthService } from '@/health/health.service';
 
+/**
+ * Health check endpoints for Kubernetes probes.
+ */
 @Controller('health')
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
@@ -13,11 +16,6 @@ export class HealthController {
 
   @Get('ready')
   async ready() {
-    return this.healthService.readinessOrThrow();
-  }
-
-  @Get()
-  async health() {
     return this.healthService.readinessOrThrow();
   }
 }

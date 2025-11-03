@@ -2,30 +2,40 @@
 import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { LoggerService } from '@/logger/logger.service';
 import { HEALTH_CHECK_INTERVAL_MS } from '@/common/constants';
-import { PrismaProbe } from '@/health/probes/prisma.probe';
+import { Probe } from '@/health/health.interface';
 
+/**
+ * Runs periodic health checks on all probes.
+ */
 @Injectable()
 export class HealthScheduler implements OnApplicationShutdown {
-  // Timer for health checks
   private interval?: NodeJS.Timeout;
 
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly prismaProbe: PrismaProbe,
-  ) {}
+  constructor(private readonly logger: LoggerService) {}
 
-  public start(intervalMs = HEALTH_CHECK_INTERVAL_MS) {
+  public start(probes: Probe[], intervalMs = HEALTH_CHECK_INTERVAL_MS) {
     if (this.interval) return;
     this.interval = setInterval(() => {
-      void this.tick();
+      void this.tick(probes);
     }, intervalMs);
   }
 
-  private async tick() {
-    const db = await this.prismaProbe.check();
-    if (db.status !== 'up') {
+  private async tick(probes: Probe[]) {
+    const results = await Promise.all(
+      probes.map((p) =>
+        p.check().catch((err) => ({
+          name: 'unknown',
+          status: 'down' as const,
+          message: err instanceof Error ? err.message : String(err),
+        })),
+      ),
+    );
+
+    const failures = results.filter((r) => r.status === 'down');
+
+    if (failures.length > 0) {
       this.logger.warn(
-        `Periodic health check failed: ${JSON.stringify({ database: db })}`,
+        `Health check failures: ${JSON.stringify(failures)}`,
         'HealthScheduler',
       );
     }

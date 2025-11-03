@@ -1,7 +1,7 @@
 // __tests__/integration/prisma.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
-import { createTestModule } from './__helpers__/test-module.factory';
+import { createTestModule } from '../helpers/test-module.factory';
 
 jest.setTimeout(30000);
 

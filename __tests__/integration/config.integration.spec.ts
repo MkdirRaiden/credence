@@ -1,7 +1,7 @@
 // __tests__/integration/config.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createTestModule } from './__helpers__/test-module.factory';
+import { createTestModule } from '../helpers/test-module.factory';
 import type { AppConfig } from '@/common/interfaces/app-config.interface';
 
 describe('ConfigModule (Integration)', () => {

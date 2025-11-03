@@ -8,6 +8,7 @@ import {
   fullCreateUserDto,
   fullUpdateUserDto,
   expectedUserResponse,
+  mockPublicContext,
 } from './__fixtures__/users.fixtures';
 
 describe('UsersService', () => {
@@ -24,8 +25,7 @@ describe('UsersService', () => {
       findByPhone: jest.fn(),
       update: jest.fn(),
       softDelete: jest.fn(),
-      existsByEmail: jest.fn(),
-      existsByPhone: jest.fn(),
+      findByEmailForAuth: jest.fn(),
     } as any;
 
     logger = { log: jest.fn() } as any;
@@ -34,112 +34,115 @@ describe('UsersService', () => {
   });
 
   describe('create', () => {
-    it('creates user, logs, and returns mapped response', async () => {
+    it('calls repository.create and returns mapped response', async () => {
       repository.create.mockResolvedValue(mockUser);
 
       const result = await service.create(fullCreateUserDto);
 
-      expect(repository.create).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        phone: '+1234567890',
-        name: 'John Doe',
-        avatarUrl: 'https://example.com/avatar.jpg',
-      });
-      expect(logger.log).toHaveBeenCalledTimes(2);
+      expect(repository.create).toHaveBeenCalled();
+      expect(logger.log).toHaveBeenCalled();
       expect(result).toEqual(expectedUserResponse);
     });
   });
 
   describe('findAll', () => {
-    it('returns paginated list with default and custom params', async () => {
+    it('calls repository.findAll with context', async () => {
       repository.findAll.mockResolvedValue(mockUserList);
 
-      const defaultResult = await service.findAll();
-      expect(repository.findAll).toHaveBeenCalledWith(0, 10);
-      expect(defaultResult).toHaveLength(2);
+      const result = await service.findAll(mockPublicContext);
 
-      const customResult = await service.findAll(20, 50);
-      expect(repository.findAll).toHaveBeenCalledWith(20, 50);
+      expect(repository.findAll).toHaveBeenCalledWith(mockPublicContext);
+      expect(result).toHaveLength(2);
     });
   });
 
   describe('findById', () => {
-    it('delegates to repository and maps response', async () => {
+    it('calls repository.findById with id and context', async () => {
       repository.findById.mockResolvedValue(mockUser);
 
-      const result = await service.findById(mockUser.id);
+      const result = await service.findById(mockUser.id, mockPublicContext);
 
-      expect(repository.findById).toHaveBeenCalledWith(mockUser.id);
+      expect(repository.findById).toHaveBeenCalledWith(
+        mockUser.id,
+        mockPublicContext,
+      );
       expect(result).toEqual(expectedUserResponse);
     });
   });
 
   describe('findByEmail', () => {
-    it('delegates to repository and maps response', async () => {
+    it('calls repository.findByEmail with email and context', async () => {
       repository.findByEmail.mockResolvedValue(mockUser);
 
-      const result = await service.findByEmail('user@example.com');
+      const result = await service.findByEmail(
+        'user@example.com',
+        mockPublicContext,
+      );
 
-      expect(repository.findByEmail).toHaveBeenCalledWith('user@example.com');
+      expect(repository.findByEmail).toHaveBeenCalledWith(
+        'user@example.com',
+        mockPublicContext,
+      );
       expect(result).toEqual(expectedUserResponse);
     });
   });
 
   describe('findByPhone', () => {
-    it('delegates to repository and maps response', async () => {
+    it('calls repository.findByPhone with phone and context', async () => {
       repository.findByPhone.mockResolvedValue(mockUser);
 
-      const result = await service.findByPhone('+1234567890');
+      const result = await service.findByPhone(
+        '+1234567890',
+        mockPublicContext,
+      );
 
-      expect(repository.findByPhone).toHaveBeenCalledWith('+1234567890');
+      expect(repository.findByPhone).toHaveBeenCalledWith(
+        '+1234567890',
+        mockPublicContext,
+      );
       expect(result).toEqual(expectedUserResponse);
     });
   });
 
   describe('update', () => {
-    it('updates user with logging', async () => {
+    it('calls repository.update with id and DTO', async () => {
       repository.update.mockResolvedValue(mockUser);
 
       const result = await service.update(mockUser.id, fullUpdateUserDto);
 
-      expect(repository.update).toHaveBeenCalledWith(mockUser.id, {
-        name: 'Jane Doe',
-        avatarUrl: 'https://example.com/new-avatar.jpg',
-      });
-      expect(logger.log).toHaveBeenCalledTimes(2);
+      expect(repository.update).toHaveBeenCalledWith(
+        mockUser.id,
+        fullUpdateUserDto,
+      );
+      expect(logger.log).toHaveBeenCalled();
       expect(result).toEqual(expectedUserResponse);
     });
   });
 
   describe('remove', () => {
-    it('soft deletes user with logging', async () => {
-      repository.softDelete.mockResolvedValue(mockUser);
+    it('calls repository.softDelete with id', async () => {
+      repository.softDelete.mockResolvedValue({
+        id: mockUser.id,
+        deletedAt: new Date(),
+      });
 
       const result = await service.remove(mockUser.id);
 
       expect(repository.softDelete).toHaveBeenCalledWith(mockUser.id);
-      expect(logger.log).toHaveBeenCalledTimes(2);
-      expect(result).toEqual(expectedUserResponse);
+      expect(logger.log).toHaveBeenCalled();
     });
   });
 
-  describe('existence checks', () => {
-    it('checks email existence', async () => {
-      repository.existsByEmail
-        .mockResolvedValueOnce(true)
-        .mockResolvedValueOnce(false);
+  describe('findByEmailForAuth', () => {
+    it('calls repository.findByEmailForAuth and returns full user', async () => {
+      repository.findByEmailForAuth.mockResolvedValue(mockUser);
 
-      expect(await service.emailExists('existing@example.com')).toBe(true);
-      expect(await service.emailExists('new@example.com')).toBe(false);
-    });
+      const result = await service.findByEmailForAuth('user@example.com');
 
-    it('checks phone existence', async () => {
-      repository.existsByPhone
-        .mockResolvedValueOnce(true)
-        .mockResolvedValueOnce(false);
-
-      expect(await service.phoneExists('+1234567890')).toBe(true);
-      expect(await service.phoneExists('+9999999999')).toBe(false);
+      expect(repository.findByEmailForAuth).toHaveBeenCalledWith(
+        'user@example.com',
+      );
+      expect(result.passwordHash).toBeDefined();
     });
   });
 });

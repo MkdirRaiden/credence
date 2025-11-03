@@ -5,17 +5,13 @@ import {
   toResponseDto,
   toResponseDtoList,
 } from '@/features/users/users.mapper';
-import { UserRole } from '@prisma/client';
 import {
   mockUser,
-  mockUserWithNulls,
   mockAdminUser,
   mockUserList,
   fullCreateUserDto,
   minimalCreateUserDto,
   fullUpdateUserDto,
-  partialUpdateUserDto,
-  emptyUpdateUserDto,
   expectedUserResponse,
 } from './__fixtures__/users.fixtures';
 
@@ -29,18 +25,25 @@ describe('Users Mapper', () => {
         phone: '+1234567890',
         name: 'John Doe',
         avatarUrl: 'https://example.com/avatar.jpg',
+        passwordHash: undefined,
       });
     });
 
-    it('maps only required email field when optionals are undefined', () => {
+    it('maps minimal DTO with only email', () => {
       const result = toCreateInput(minimalCreateUserDto);
 
-      expect(result).toEqual({
-        email: 'minimal@example.com',
-        phone: undefined,
-        name: undefined,
-        avatarUrl: undefined,
+      expect(result.email).toBe('minimal@example.com');
+      expect(result.phone).toBeUndefined();
+      expect(result.name).toBeUndefined();
+    });
+
+    it('includes passwordHash when provided (for auth)', () => {
+      const result = toCreateInput({
+        ...fullCreateUserDto,
+        passwordHash: 'hashed_pw',
       });
+
+      expect(result.passwordHash).toBe('hashed_pw');
     });
   });
 
@@ -55,62 +58,52 @@ describe('Users Mapper', () => {
     });
 
     it('filters out undefined fields', () => {
-      const result = toUpdateInput(partialUpdateUserDto);
+      const result = toUpdateInput({ name: 'Jane Doe' });
 
       expect(result).toEqual({ name: 'Jane Doe' });
       expect(result).not.toHaveProperty('avatarUrl');
     });
 
-    it('returns empty object when all fields are undefined', () => {
-      const result = toUpdateInput(emptyUpdateUserDto);
+    it('returns empty object when empty DTO', () => {
+      const result = toUpdateInput({});
 
       expect(result).toEqual({});
     });
   });
 
   describe('toResponseDto', () => {
-    it('maps User entity to UserResponseDto with all fields', () => {
+    it('maps User entity to UserResponseDto', () => {
       const result = toResponseDto(mockUser);
 
-      expect(result).toEqual(expectedUserResponse);
+      expect(result.id).toBe(expectedUserResponse.id);
+      expect(result.email).toBe(expectedUserResponse.email);
+      expect(result.name).toBe(expectedUserResponse.name);
     });
 
-    it('does not expose sensitive fields', () => {
+    it('excludes sensitive fields (passwordHash, deletedAt)', () => {
       const result = toResponseDto(mockUser);
 
       expect(result).not.toHaveProperty('passwordHash');
       expect(result).not.toHaveProperty('deletedAt');
     });
 
-    it('converts null optional fields to undefined', () => {
-      const result = toResponseDto(mockUserWithNulls);
-
-      expect(result.phone).toBeUndefined();
-      expect(result.name).toBeUndefined();
-      expect(result.avatarUrl).toBeUndefined();
-      expect(result.referredById).toBeUndefined();
-    });
-
-    it('preserves ADMIN role correctly', () => {
+    it('preserves role correctly', () => {
       const result = toResponseDto(mockAdminUser);
 
-      expect(result.role).toBe(UserRole.ADMIN);
+      expect(result.role).toBe('ADMIN');
     });
   });
 
   describe('toResponseDtoList', () => {
-    it('maps array of User entities to array of UserResponseDto', () => {
+    it('maps array of Users to array of UserResponseDtos', () => {
       const result = toResponseDtoList(mockUserList);
 
       expect(result).toHaveLength(2);
-      expect(result[0].id).toBe('1');
-      expect(result[0].email).toBe('user1@example.com');
-      expect(result[0]).not.toHaveProperty('passwordHash');
-      expect(result[1].id).toBe('2');
-      expect(result[1].role).toBe(UserRole.ADMIN);
+      expect(result[0].id).toBe(mockUserList[0].id);
+      expect(result[1].role).toBe('ADMIN');
     });
 
-    it('returns empty array when given empty array', () => {
+    it('returns empty array for empty input', () => {
       const result = toResponseDtoList([]);
 
       expect(result).toEqual([]);

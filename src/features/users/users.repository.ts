@@ -2,11 +2,8 @@
 import {
   USER_FIELD_VISIBILITY_CONFIG,
   AUTH_USER_SELECT,
+  PAGINATION_LIMITS,
 } from '@/features/users/users.config';
-import {
-  DEFAULT_PAGINATION_SKIP,
-  DEFAULT_PAGINATION_TAKE,
-} from '@/common/constants';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
 import { Prisma, User } from '@prisma/client';
@@ -19,12 +16,16 @@ import { DeletedResourceDto } from '@/common/dtos';
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Create a new user with full User return
+  /**
+   * Create a new user with full User return.
+   */
   async create(data: Prisma.UserCreateInput): Promise<User> {
     return await this.prisma.user.create({ data });
   }
 
-  // Update a user by ID (@NotFound guarantees non-null)
+  /**
+   * Update a user by ID (@NotFound guarantees non-null).
+   */
   @NotFound('User not found')
   async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
     return await this.prisma.user.update({
@@ -33,7 +34,9 @@ export class UsersRepository {
     });
   }
 
-  // Soft delete a user by ID
+  /**
+   * Soft delete a user by ID.
+   */
   @NotFound('User not found')
   async softDelete(id: string): Promise<DeletedResourceDto> {
     const deleted = await this.prisma.user.update({
@@ -47,11 +50,13 @@ export class UsersRepository {
     return deleted as unknown as DeletedResourceDto;
   }
 
-  // Get all users with pagination (@NotFound guarantees non-null)
+  /**
+   * Get all users with pagination and visibility.
+   */
   async findAll(context: FieldSelectorContext): Promise<Partial<User>[]> {
     const select = createPrismaSelect(USER_FIELD_VISIBILITY_CONFIG, context);
-    const skip = context.skip ?? DEFAULT_PAGINATION_SKIP;
-    const take = context.take ?? DEFAULT_PAGINATION_TAKE;
+    const skip = context.skip ?? PAGINATION_LIMITS.DEFAULT_SKIP;
+    const take = context.take ?? PAGINATION_LIMITS.DEFAULT_TAKE;
     const users = await this.prisma.user.findMany({
       where: { deletedAt: null },
       select,
@@ -62,7 +67,9 @@ export class UsersRepository {
     return users as unknown as Partial<User>[];
   }
 
-  // Get a user by ID (@NotFound guarantees non-null)
+  /**
+   * Get a user by ID with visibility.
+   */
   @NotFound('User not found')
   async findById(
     id: string,
@@ -76,7 +83,9 @@ export class UsersRepository {
     return user as unknown as Partial<User>;
   }
 
-  // Get a user by email (@NotFound guarantees non-null)
+  /**
+   * Get a user by email with visibility.
+   */
   @NotFound('User not found')
   async findByEmail(
     email: string,
@@ -90,7 +99,9 @@ export class UsersRepository {
     return user as unknown as Partial<User>;
   }
 
-  // Get a user by phone (@NotFound guarantees non-null)
+  /**
+   * Get a user by phone with visibility.
+   */
   @NotFound('User not found')
   async findByPhone(
     phone: string,
@@ -104,12 +115,14 @@ export class UsersRepository {
     return user as unknown as Partial<User>;
   }
 
-  // Get full user by email for auth verification (uses AUTH_USER_SELECT constant)
+  /**
+   * Get full user by email for auth verification (bypasses visibility).
+   */
   @NotFound('User not found for auth')
   async findByEmailForAuth(email: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { email, deletedAt: null },
-      select: AUTH_USER_SELECT, // Use centralized constant
+      select: AUTH_USER_SELECT,
     });
     return user as unknown as User;
   }

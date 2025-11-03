@@ -9,6 +9,7 @@ import {
   IsUrl,
 } from 'class-validator';
 import { TrimTransform } from '@/common/decorators';
+import { USER_VALIDATION } from '@/features/users/users.config';
 
 export class CreateUserDto {
   @IsEmail({}, { message: 'Invalid email format' })
@@ -17,7 +18,7 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString({ message: 'Phone must be a string' })
-  @Matches(/^\+?[1-9]\d{1,14}$/, {
+  @Matches(USER_VALIDATION.PHONE_REGEX, {
     message: 'Phone must be in valid international format',
   })
   @TrimTransform
@@ -25,8 +26,8 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString({ message: 'Name must be a string' })
-  @MinLength(2, { message: 'Name must be at least 2 characters' })
-  @MaxLength(100, { message: 'Name must not exceed 100 characters' })
+  @MinLength(USER_VALIDATION.NAME_MIN_LENGTH)
+  @MaxLength(USER_VALIDATION.NAME_MAX_LENGTH)
   @TrimTransform
   name?: string;
 
@@ -34,10 +35,10 @@ export class CreateUserDto {
   @IsUrl({}, { message: 'Avatar URL must be a valid URL' })
   avatarUrl?: string;
 
-  @IsOptional()
-  @IsString({ message: 'Referral code must be a string' })
-  @MinLength(3, { message: 'Referral code must be at least 3 characters' })
-  @MaxLength(50, { message: 'Referral code must not exceed 50 characters' })
-  @TrimTransform
-  referralCode?: string;
+  // @IsOptional()
+  // @IsString({ message: 'Referral code must be a string' })
+  // @MinLength(USER_VALIDATION.REFERRAL_CODE_MIN_LENGTH)
+  // @MaxLength(USER_VALIDATION.REFERRAL_CODE_MAX_LENGTH)
+  // @TrimTransform
+  // referralCode?: string;
 }

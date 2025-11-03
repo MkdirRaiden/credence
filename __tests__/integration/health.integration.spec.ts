@@ -2,7 +2,7 @@
 import { INestApplication } from '@nestjs/common';
 import { HealthService } from '@/health/health.service';
 import { HealthModule } from '@/health/health.module';
-import { createTestModule } from './__helpers__/test-module.factory';
+import { createTestModule } from '../helpers/test-module.factory';
 
 jest.setTimeout(30000);
 

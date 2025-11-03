@@ -35,8 +35,6 @@ export const DATABASE_MAX_RETRIES = 5;
 export const DATABASE_RETRY_DELAY = 2000;
 
 // Features
-export const DEFAULT_PAGINATION_TAKE = 10;
-export const DEFAULT_PAGINATION_SKIP = 0;
 export const DEFAULT_USER = 'USER';
 export const VISIBILITY_KEY = 'visibility-level';
 export const JWT_EXPIRATION = 900; // 15 minutes

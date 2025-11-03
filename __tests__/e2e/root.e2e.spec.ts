@@ -1,7 +1,7 @@
 // __tests__/e2e/root.e2e.spec.ts
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { createTestApp, closeTestApp } from './helpers/test-app';
+import { createTestApp, closeTestApp } from '../helpers/test-app';
 
 describe('Root Controller (E2E)', () => {
   let app: INestApplication;

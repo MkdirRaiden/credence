@@ -1,7 +1,7 @@
 // __tests__/integration/logger.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
 import { LoggerService } from '@/logger/logger.service';
-import { createTestModule } from './__helpers__/test-module.factory';
+import { createTestModule } from '../helpers/test-module.factory';
 
 describe('LoggerModule (Integration)', () => {
   let app: INestApplication;

@@ -15,7 +15,8 @@ import {
 import { VISIBILITY_KEY } from '@/common/constants';
 
 /**
- * Attaches field visibility context to request based on endpoint level and user role.
+ * Attaches field visibility context to request based on endpoint level, user role, and resource ownership.
+ * Smart logic: upgrades level if user has higher privilege or owns the resource.
  */
 @Injectable()
 export class VisibilityInterceptor implements NestInterceptor {
@@ -48,20 +49,14 @@ export class VisibilityInterceptor implements NestInterceptor {
   ): FieldSelectorContext {
     const userId = user?.id;
     const userRole = user?.role;
+    const isAdmin = userRole === 'ADMIN';
+    const isOwner = userId && requestedUserId === userId;
 
-    switch (declaredLevel) {
-      case 'public':
-        if (userId && requestedUserId === userId) {
-          return { level: 'self', requesterId: userId };
-        }
-        return { level: 'public', requesterId: userId };
-
-      case 'admin':
-        if (userRole === 'ADMIN') {
-          return { level: 'admin', requesterId: userId };
-        }
-        return { level: 'public', requesterId: userId };
-
+    switch (true) {
+      case isAdmin:
+        return { level: 'admin', requesterId: userId };
+      case isOwner:
+        return { level: 'self', requesterId: userId };
       default:
         return { level: 'public', requesterId: userId };
     }

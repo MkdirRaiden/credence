@@ -7,12 +7,13 @@ import {
   IsUrl,
 } from 'class-validator';
 import { TrimTransform } from '@/common/decorators';
+import { USER_VALIDATION } from '@/features/users/users.config';
 
 export class UpdateUserDto {
   @IsOptional()
   @IsString({ message: 'Name must be a string' })
-  @MinLength(2, { message: 'Name must be at least 2 characters' })
-  @MaxLength(100, { message: 'Name must not exceed 100 characters' })
+  @MinLength(USER_VALIDATION.NAME_MIN_LENGTH)
+  @MaxLength(USER_VALIDATION.NAME_MAX_LENGTH)
   @TrimTransform
   name?: string;
 

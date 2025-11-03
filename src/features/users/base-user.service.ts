@@ -3,24 +3,21 @@ import { CreateUserDto, UserResponseDto } from '@/features/users/dtos';
 import { User } from '@prisma/client';
 
 /**
- * Abstract class for UserService
- * Defines contract for Auth module (interface segregation)
- * Only exposes methods needed by Auth: create, findByEmailForAuth
+ * Abstract base service for UserService.
+ * Defines contract for Auth module (interface segregation).
+ * Only exposes methods needed by Auth: create, findByEmailForAuth.
  */
 export abstract class BaseUserService {
   /**
-   * Create a new user (used by register)
-   * @param dto - CreateUserDto with optional passwordHash
+   * Create a new user (used by Auth register).
    */
   abstract create(
     dto: CreateUserDto & { passwordHash?: string },
   ): Promise<UserResponseDto>;
 
   /**
-   * Find full user by email for auth verification
-   * Returns full User with passwordHash and refreshTokens
-   * Bypasses visibility rules—internal use only
-   * Used by login/refresh to verify credentials and tokens
+   * Find full user by email for auth verification.
+   * Returns User with passwordHash and refreshTokens (bypasses visibility).
    */
   abstract findByEmailForAuth(email: string): Promise<User>;
 }

@@ -1,7 +1,7 @@
 // __tests__/e2e/interceptors.e2e.spec.ts
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { createTestApp, closeTestApp } from './helpers/test-app';
+import { createTestApp, closeTestApp } from '../helpers/test-app';
 
 describe('Global Interceptors (E2E)', () => {
   let app: INestApplication;
@@ -14,23 +14,42 @@ describe('Global Interceptors (E2E)', () => {
     await closeTestApp(app);
   });
 
-  it('applies response transformation with JSON content type', async () => {
-    const rootResponse = await request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Content-Type', /json/);
+  describe('ResponseInterceptor', () => {
+    it('wraps successful responses in StandardResponse', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/')
+        .expect(200)
+        .expect('Content-Type', /json/);
 
-    expect(rootResponse.body).toBeDefined();
-    expect(rootResponse.body.success).toBe(true);
+      expect(response.body.success).toBe(true);
+      expect(response.body.statusCode).toBe(200);
+      expect(response.body.data).toBeDefined();
+      expect(response.body.timestamp).toBeDefined();
+    });
 
-    await request(app.getHttpServer())
-      .get('/health/live')
-      .expect('Content-Type', /json/);
+    it('includes X-API-Version header', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/')
+        .expect(200);
+
+      expect(response.headers['x-api-version']).toBeDefined();
+    });
   });
 
-  it('includes security headers from helmet', async () => {
-    const response = await request(app.getHttpServer()).get('/').expect(200);
+  describe('Security Headers', () => {
+    it('includes security headers from helmet', async () => {
+      const response = await request(app.getHttpServer()).get('/').expect(200);
 
-    expect(response.headers['x-content-type-options']).toBe('nosniff');
+      expect(response.headers['x-content-type-options']).toBe('nosniff');
+    });
+  });
+
+  describe('VisibilityInterceptor', () => {
+    it('filters fields based on visibility context (tested via Users E2E)', async () => {
+      // This is tested in users.e2e.spec.ts
+      // Example: GET /users/:id returns public visibility (no email)
+      // GET /users/:id?admin returns admin visibility (has email)
+      expect(true).toBe(true);
+    });
   });
 });

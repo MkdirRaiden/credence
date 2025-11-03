@@ -1,11 +1,16 @@
 // src/logger/helpers/safe-serialize.ts
+/**
+ * Safely serializes any value to string, handling circular refs and BigInt.
+ */
 export function safeSerialize(input: unknown): string {
   if (input instanceof Error) return input.message || String(input);
+
   if (typeof input === 'string') return input;
 
   try {
     return JSON.stringify(input);
   } catch {
+    // Circular refs, BigInt, Symbols, etc.
     return '[Unserializable Object]';
   }
 }

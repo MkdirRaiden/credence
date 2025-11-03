@@ -1,6 +1,10 @@
 // src/logger/helpers/error-meta.ts
-import { safeSerialize } from './safe-serialize';
+import { safeSerialize } from '@/logger/helpers';
 
+/**
+ * Extracts error metadata (name, trace) without message.
+ * Excludes message to prevent overwriting log entry message via Object.assign.
+ */
 export function errorMeta(err?: unknown): Record<string, unknown> | undefined {
   if (!err) return undefined;
 
@@ -8,9 +12,9 @@ export function errorMeta(err?: unknown): Record<string, unknown> | undefined {
     return {
       name: err.name,
       trace: err.stack,
-      // Removed 'message' to avoid overwriting the log entry's message
     };
   }
 
+  // Non-Error: serialize as trace string
   return { trace: safeSerialize(err) };
 }

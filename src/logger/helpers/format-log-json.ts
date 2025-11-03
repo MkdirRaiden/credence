@@ -1,8 +1,10 @@
 // src/logger/helpers/format-log-json.ts
 import { LogLevel, BuildOptions } from '@/logger/logger.interface';
-import { buildEntry } from './build-entry';
-import { errorMeta } from './error-meta';
+import { buildEntry, errorMeta } from '@/logger/helpers';
 
+/**
+ * Orchestrates log entry formatting: build → enrich → stringify.
+ */
 export function formatLogJson(
   level: LogLevel,
   message: unknown,
@@ -10,7 +12,6 @@ export function formatLogJson(
 ): string {
   const entry = buildEntry(level, message, opts);
 
-  // Add error metadata if present
   if (opts?.error) {
     const errMeta = errorMeta(opts.error);
     if (errMeta) {
@@ -21,6 +22,7 @@ export function formatLogJson(
   try {
     return JSON.stringify(entry);
   } catch {
+    // Fallback for unserializable entries
     return JSON.stringify({
       ...entry,
       message: '[Unserializable]',

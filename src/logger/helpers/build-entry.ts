@@ -1,8 +1,11 @@
 // src/logger/helpers/build-entry.ts
 import { LogEntry, BuildOptions, LogLevel } from '@/logger/logger.interface';
-import { safeSerialize } from './safe-serialize';
+import { safeSerialize } from '@/logger/helpers';
 import { NODE_ENV, DEFAULT_CONTEXT } from '@/common/constants';
 
+/**
+ * Builds structured LogEntry from logging parameters.
+ */
 export function buildEntry(
   level: LogLevel,
   message: unknown,

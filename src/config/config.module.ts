@@ -5,14 +5,18 @@ import configuration from '@/config/configuration';
 import { getEnvFilePaths } from '@/config/helpers';
 import { configValidationSchema } from '@/config/config.schema';
 
+/**
+ * Global configuration module with runtime validation.
+ * Pre-validation in main.ts catches critical vars; this validates the full schema.
+ */
 @Module({
   imports: [
     NestConfigModule.forRoot({
-      load: [configuration],
-      isGlobal: true,
       envFilePath: getEnvFilePaths(),
-      expandVariables: true,
-      validationSchema: configValidationSchema, //runtime validation
+      load: [configuration],
+      expandVariables: true, // allow passing params via env vars
+      validationSchema: configValidationSchema,
+      isGlobal: true,
     }),
   ],
 })

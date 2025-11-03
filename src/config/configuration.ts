@@ -11,14 +11,29 @@ import {
 import { AppConfig } from '@/common/interfaces/app-config.interface';
 import { splitStringToArray } from '@/config/helpers';
 
+/**
+ * Transforms environment variables into typed AppConfig object.
+ * Loaded by NestConfigModule.forRoot() for DI-wide access.
+ */
 export default (): AppConfig => ({
+  // Application Identity
   nodeEnv: process.env.NODE_ENV || NODE_ENV,
-  port: parseInt(process.env.PORT || String(PORT), 10),
   appName: process.env.APP_NAME || APP_NAME,
-  host: process.env.HOST || HOST,
   appVersion: process.env.APP_VERSION || APP_VERSION,
+
+  // Server
+  port: parseInt(process.env.PORT || String(PORT), 10),
+  host: process.env.HOST || HOST,
   globalPrefix: process.env.GLOBAL_PREFIX || GLOBAL_PREFIX,
-  database: { url: process.env.DATABASE_URL! }, // guaranteed by pre-validation
+
+  // Database (guaranteed by pre-validation)
+  database: { url: process.env.DATABASE_URL! },
+
+  // Security (guaranteed by pre-validation)
+  jwtSecret: process.env.JWT_SECRET!,
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET!,
+
+  // CORS
   allowedOrigins: splitStringToArray(
     process.env.ALLOWED_ORIGINS,
     DEFAULT_ALLOWED_ORIGINS,

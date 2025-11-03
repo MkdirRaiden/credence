@@ -3,9 +3,14 @@ import { configValidationSchema } from '@/config/config.schema';
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
 import { getCriticalSchema } from '@/config/helpers';
 
+/**
+ * Pre-validates critical environment variables before DI initialization.
+ * Fails fast on missing/invalid vars; warns on non-critical issues.
+ */
 export function validatePreConfig(logger?: BootstrapLogger) {
   const preBootLogger = logger || new BootstrapLogger();
 
+  // Critical phase: database, jwt secrets must exist
   const criticalSchema = getCriticalSchema();
   const { error: criticalError } = criticalSchema.validate(process.env, {
     abortEarly: true,
@@ -17,6 +22,7 @@ export function validatePreConfig(logger?: BootstrapLogger) {
     process.exit(1);
   }
 
+  // Full phase: validate all vars, warn on non-critical issues
   const { error: fullError } = configValidationSchema.validate(process.env, {
     abortEarly: false,
   });

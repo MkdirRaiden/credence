@@ -1,8 +1,11 @@
-// src/bootstrap/helpers/startup-log.ts
+// src/bootstrap/helpers/start-server.ts
 import { LoggerService } from '@/logger/logger.service';
 import { INestApplication } from '@nestjs/common';
 import { ServerConfig } from '@/bootstrap/bootstrap.interface';
 
+/**
+ * Starts HTTP server and logs the base URL with environment info.
+ */
 export async function startServerAndLog(
   config: ServerConfig,
   app: INestApplication,
@@ -15,6 +18,5 @@ export async function startServerAndLog(
   const baseUrl = normPrefix
     ? `${protocol}://${host}:${port}/${normPrefix}`
     : `${protocol}://${host}:${port}`;
-
   logger.log(`🚀 Server running on ${baseUrl} [${nodeEnv}]`, 'Bootstrap');
 }

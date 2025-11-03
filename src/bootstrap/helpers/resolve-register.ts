@@ -2,7 +2,11 @@
 import { Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from '@/logger/logger.service';
+import { CRITICAL_PROVIDERS } from '@/common/modules/common.config';
 
+/**
+ * Dynamically resolves and registers providers from DI container after initialization.
+ */
 export function resolveAndRegister<T>(
   moduleRef: ModuleRef,
   providers: Type<T>[],
@@ -14,10 +18,13 @@ export function resolveAndRegister<T>(
     if (instance) {
       registerFn(instance);
     } else {
-      logger?.warn(
-        `Provider ${provider.name} not found for registration`,
-        'Bootstrap',
-      );
+      const isCritical = CRITICAL_PROVIDERS.includes(provider.name);
+      const message = `Provider ${provider.name} not found for registration`;
+      if (isCritical) {
+        throw new Error(`CRITICAL: ${message}`);
+      } else {
+        logger?.warn(message, 'Bootstrap');
+      }
     }
   });
 }

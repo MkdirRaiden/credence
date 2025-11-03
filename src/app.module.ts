@@ -6,21 +6,25 @@ import { UsersModule } from '@/features/users/users.module';
 import { HealthModule } from '@/health/health.module';
 import { LoggerModule } from '@/logger/logger.module';
 import { RootController } from '@/root.controller';
-import { CommonModule } from '@/common/common.module';
+import { CommonModule } from '@/common/modules/common.module';
 import { BootstrapModule } from '@/bootstrap/bootstrap.module';
 import { AuthModule } from './features/auth/auth.module';
 
+/**
+ * Root application module with strict initialization order:
+ * Core modules first, then system modules, then domain features.
+ */
 @Module({
   imports: [
-    // Global Core Modules (loaded once)
+    // Core: Config, logging, utilities loaded once globally
     ConfigModule,
     LoggerModule,
     CommonModule,
     DatabaseModule,
-    // System Modules
+    // System: Infrastructure services
     BootstrapModule,
     HealthModule,
-    // Domain Feature Modules
+    // Domain: Feature modules
     UsersModule,
     AuthModule,
   ],

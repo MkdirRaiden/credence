@@ -8,6 +8,9 @@ import type { AppConfig } from '@/common/interfaces/app-config.interface';
 export class RootController {
   constructor(private readonly configService: ConfigService<AppConfig, true>) {}
 
+  /**
+   * Returns application metadata from environment configuration.
+   */
   @Get()
   getInfo(): { name: string; version: string; environment: string } {
     const { appName, appVersion, nodeEnv } = extractConfig(this.configService, [

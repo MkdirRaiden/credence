@@ -5,6 +5,9 @@ import { PrismaService } from '@/database/prisma.service';
 import { LoggerService } from '@/logger/logger.service';
 import type { AppConfig } from '@/common/interfaces/app-config.interface';
 
+/**
+ * Global database module providing PrismaService singleton.
+ */
 @Global()
 @Module({
   providers: [

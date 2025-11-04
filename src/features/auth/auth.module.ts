@@ -5,13 +5,16 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { AuthController } from '@/features/auth/auth.controller';
 import { AuthService } from '@/features/auth/auth.service';
-import { LocalStrategy } from '@/features/auth/strategies/local.strategy';
-import { JwtStrategy } from '@/features/auth/strategies/jwt.strategy';
-import { LocalAuthGuard } from '@/features/auth/guards/local-auth.guard';
-import { JwtAuthGuard } from '@/features/auth/guards/jwt-auth.guard';
+import { LocalStrategy, JwtStrategy } from '@/features/auth/strategies';
 import { UsersModule } from '@/features/users/users.module';
 import type { AppConfig } from '@/common/interfaces/app-config.interface';
 import { JWT_EXPIRATION } from '@/common/constants';
+import {
+  LocalAuthGuard,
+  JwtAuthGuard,
+  RolesGuard,
+  OptionalJwtAuthGuard,
+} from '@/features/auth/guards';
 
 @Module({
   imports: [
@@ -19,14 +22,9 @@ import { JWT_EXPIRATION } from '@/common/constants';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService<AppConfig, true>) => {
-        const jwtSecret = configService.get('jwtSecret', {
-          infer: true,
-        });
         return {
-          secret: jwtSecret,
-          signOptions: {
-            expiresIn: JWT_EXPIRATION,
-          },
+          secret: configService.get('jwtSecret', { infer: true }),
+          signOptions: { expiresIn: JWT_EXPIRATION },
         };
       },
     }),
@@ -39,7 +37,15 @@ import { JWT_EXPIRATION } from '@/common/constants';
     JwtStrategy,
     LocalAuthGuard,
     JwtAuthGuard,
+    RolesGuard,
+    OptionalJwtAuthGuard,
   ],
-  exports: [AuthService, LocalAuthGuard, JwtAuthGuard],
+  exports: [
+    AuthService,
+    LocalAuthGuard,
+    JwtAuthGuard,
+    RolesGuard,
+    OptionalJwtAuthGuard,
+  ],
 })
 export class AuthModule {}

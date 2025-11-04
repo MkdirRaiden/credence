@@ -2,8 +2,8 @@
 import type {
   ReadinessStatus,
   DependencyStatus,
-  Probe, 
-  ProbeResult
+  Probe,
+  ProbeResult,
 } from '@/health/health.interface';
 
 /**

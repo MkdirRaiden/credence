@@ -12,6 +12,7 @@ export const USER_FIELD_VISIBILITY_CONFIG: Record<
   VisibilityLevel[]
 > = {
   id: ['public', 'self', 'admin'],
+  username: ['public', 'self', 'admin'],
   name: ['public', 'self', 'admin'],
   avatarUrl: ['public', 'self', 'admin'],
   email: ['self', 'admin'],
@@ -28,6 +29,9 @@ export const USER_FIELD_VISIBILITY_CONFIG: Record<
  * Validation constraints for user fields.
  */
 export const USER_VALIDATION = {
+  USERNAME_MIN_LENGTH: 3,
+  USERNAME_MAX_LENGTH: 50,
+  USERNAME_REGEX: /^[a-zA-Z0-9_-]+$/,
   NAME_MIN_LENGTH: 2,
   NAME_MAX_LENGTH: 100,
   REFERRAL_CODE_MIN_LENGTH: 3,
@@ -54,6 +58,7 @@ export const PAGINATION_LIMITS = {
 export const AUTH_USER_SELECT = {
   id: true,
   email: true,
+  username: true,
   phone: true,
   name: true,
   avatarUrl: true,

@@ -1,0 +1,46 @@
+// src/features/auth/helpers/hash-verify-generate.ts
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { JWT_EXPIRATION, JWT_REFRESH_EXPIRATION } from '@/common/constants';
+
+export const hashPassword = async (password: string): Promise<string> => {
+  return bcrypt.hash(password, 10);
+};
+
+export const verifyPassword = async (
+  plain: string,
+  hash: string,
+): Promise<boolean> => {
+  return bcrypt.compare(plain, hash);
+};
+
+export const generateTokens = (
+  jwtService: JwtService,
+  userId: string,
+  email: string,
+  username?: string,
+): { accessToken: string; refreshToken: string; expiresIn: number } => {
+  const payload = {
+    sub: userId,
+    email,
+    ...(username && { username }), // Include username if provided
+  };
+
+  // Access token: 15 minutes
+  const accessToken = jwtService.sign(payload, {
+    expiresIn: JWT_EXPIRATION,
+  });
+
+  // Refresh token: 7 days
+  const refreshToken = jwtService.sign(payload, {
+    expiresIn: JWT_REFRESH_EXPIRATION,
+  });
+
+  // Calculate expiresIn in seconds
+  const decoded: { exp?: number } | null = jwtService.decode(accessToken);
+  const expiresIn = decoded?.exp
+    ? decoded.exp - Math.floor(Date.now() / 1000)
+    : JWT_EXPIRATION;
+
+  return { accessToken, refreshToken, expiresIn };
+};

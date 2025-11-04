@@ -100,6 +100,22 @@ export class UsersRepository {
   }
 
   /**
+   * Get a user by username with visibility (public endpoint).
+   */
+  @NotFound('User not found')
+  async findByUsername(
+    username: string,
+    context: FieldSelectorContext,
+  ): Promise<Partial<User>> {
+    const select = createPrismaSelect(USER_FIELD_VISIBILITY_CONFIG, context);
+    const user = await this.prisma.user.findUnique({
+      where: { username, deletedAt: null },
+      select,
+    });
+    return user as unknown as Partial<User>;
+  }
+
+  /**
    * Get a user by phone with visibility.
    */
   @NotFound('User not found')
@@ -122,6 +138,18 @@ export class UsersRepository {
   async findByEmailForAuth(email: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { email, deletedAt: null },
+      select: AUTH_USER_SELECT,
+    });
+    return user as unknown as User;
+  }
+
+  /**
+   * Get full user by username for auth verification (bypasses visibility).
+   */
+  @NotFound('User not found for auth')
+  async findByUsernameForAuth(username: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: { username, deletedAt: null },
       select: AUTH_USER_SELECT,
     });
     return user as unknown as User;

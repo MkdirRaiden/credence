@@ -91,6 +91,17 @@ export class UsersService extends BaseUserService {
   }
 
   /**
+   * Get a user by username with visibility (public endpoint).
+   */
+  async findByUsername(
+    username: string,
+    context: FieldSelectorContext,
+  ): Promise<Partial<UserResponseDto>> {
+    const user = await this.repository.findByUsername(username, context);
+    return UsersMapper.toResponseDto(user);
+  }
+
+  /**
    * Get a user by phone with visibility.
    */
   async findByPhone(
@@ -107,5 +118,16 @@ export class UsersService extends BaseUserService {
   async findByEmailForAuth(email: string): Promise<User> {
     this.logger.log(`Finding user for auth: ${email}`, this.logContext);
     return await this.repository.findByEmailForAuth(email);
+  }
+
+  /**
+   * Get full user by username for auth verification (bypasses visibility).
+   */
+  async findByUsernameForAuth(username: string): Promise<User> {
+    this.logger.log(
+      `Finding user for auth by username: ${username}`,
+      this.logContext,
+    );
+    return await this.repository.findByUsernameForAuth(username);
   }
 }

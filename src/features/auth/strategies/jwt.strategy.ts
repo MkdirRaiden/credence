@@ -2,24 +2,33 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
+import { ConfigService } from '@nestjs/config';
 import { UserResponseDto } from '@/features/users/dtos';
+import type { AppConfig } from '@/common/interfaces/app-config.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(configService: ConfigService<AppConfig, true>) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'default-secret',
+      secretOrKey: configService.get('jwtSecret', { infer: true }),
     });
   }
-  // Passport automatically calls this method with the decoded JWT payload.
-  validate(payload: { sub: string; email: string }): UserResponseDto {
-    // Payload comes from the JWT token
-    // Return user data to attach to request.user
+
+  /**
+   * Payload comes from the JWT token
+   * Return user data to attach to request.user
+   */
+  validate(payload: {
+    sub: string;
+    email: string;
+    username?: string;
+  }): Partial<UserResponseDto> {
     return {
       id: payload.sub,
       email: payload.email,
-    } as UserResponseDto;
+      username: payload.username,
+    };
   }
 }

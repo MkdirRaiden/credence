@@ -10,26 +10,30 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '@/features/auth/guards/jwt-auth.guard';
-import { ParseUuidPipe } from '@/common/pipes/parse-uuid.pipe';
+import { UserRole } from '@prisma/client';
+import { JwtAuthGuard, RolesGuard } from '@/features/auth/guards';
+import { Roles } from '@/common/decorators';
+import { ParseUuidPipe } from '@/common/pipes';
 import { UsersService } from '@/features/users/users.service';
 import {
   CreateUserDto,
   UpdateUserDto,
   UserResponseDto,
   PaginationQueryDto,
+  DeletedResourceDto,
 } from '@/features/users/dtos';
-import { DeletedResourceDto } from '@/common/dtos';
 import { Visibility, GetVisibilityContext } from '@/common/decorators';
 import { FieldSelectorContext } from '@/common/interfaces';
 
+/**
+ * User management endpoints with role-based access control
+ */
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   /**
-   * Get a user by ID with public visibility.
-   * GET /users/id/:id
+   * Get user by ID (public visibility)
    */
   @Get('id/:id')
   @Visibility('public')
@@ -41,11 +45,23 @@ export class UsersController {
   }
 
   /**
-   * Get a user by email (admin only).
-   * GET /users/email/:email
+   * Get user by username (public visibility)
+   */
+  @Get('username/:username')
+  @Visibility('public')
+  async findByUsername(
+    @Param('username') username: string,
+    @GetVisibilityContext() context: FieldSelectorContext,
+  ): Promise<Partial<UserResponseDto>> {
+    return this.usersService.findByUsername(username, context);
+  }
+
+  /**
+   * Get user by email (admin only)
    */
   @Get('email/:email')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Visibility('admin')
   async findByEmail(
     @Param('email') email: string,
@@ -55,11 +71,11 @@ export class UsersController {
   }
 
   /**
-   * Get a user by phone (admin only).
-   * GET /users/phone/:phone
+   * Get user by phone (admin only)
    */
   @Get('phone/:phone')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Visibility('admin')
   async findByPhone(
     @Param('phone') phone: string,
@@ -69,18 +85,18 @@ export class UsersController {
   }
 
   /**
-   * Create a new user (admin/testing only).
-   * POST /users
+   * Create new user (admin only)
    */
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
     return this.usersService.create(dto);
   }
 
   /**
-   * Update a user by ID (protected).
-   * PUT /users/:id
+   * Update user (authenticated users)
+   * Service layer handles owner/admin authorization
    */
   @Put(':id')
   @UseGuards(JwtAuthGuard)
@@ -92,8 +108,8 @@ export class UsersController {
   }
 
   /**
-   * Delete a user by ID (protected).
-   * DELETE /users/:id
+   * Delete user (authenticated users)
+   * Service layer handles owner/admin authorization
    */
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
@@ -104,8 +120,7 @@ export class UsersController {
   }
 
   /**
-   * Get all users with pagination and public visibility.
-   * GET /users?skip=0&take=10
+   * Get all users with pagination (public visibility)
    */
   @Get()
   @Visibility('public')

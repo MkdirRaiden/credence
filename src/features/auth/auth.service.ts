@@ -7,17 +7,21 @@ import {
   RegisterDto,
   AuthResponseDto,
   RefreshTokenDto,
+  UserResponseDto,
 } from '@/features/auth/dtos';
-import { UserResponseDto } from '@/features/users/dtos';
 import {
   hashPassword,
-  verifyPassword,
   generateTokens,
+  validateUserCredentials,
 } from '@/features/auth/helpers';
 
+/**
+ * Authentication service handling registration, login, token refresh, and credential validation
+ */
 @Injectable()
 export class AuthService {
   private readonly logContext = 'AuthService';
+
   constructor(
     private readonly userService: BaseUserService,
     private readonly jwtService: JwtService,
@@ -25,30 +29,18 @@ export class AuthService {
   ) {}
 
   /**
-   * Validates user credentials (email + password).
-   * Used by LocalStrategy for Passport authentication.
-   * @returns User object (without passwordHash) if valid, null otherwise
+   * Validate user credentials (email OR username) + password
+   * Used by LocalStrategy before login
    */
-  async validateUser(email: string, password: string): Promise<any> {
-    try {
-      // Find user by email
-      const user = await this.userService.findByEmailForAuth(email);
-      // Check if user has a password set
-      if (!user.passwordHash) return null;
-      // Verify password
-      const isPasswordValid = await verifyPassword(password, user.passwordHash);
-      if (!isPasswordValid) return null;
-      // Remove sensitive data before returning
-      const { passwordHash, ...result } = user;
-      return result;
-    } catch (error) {
-      // If user not found or any error, return null
-      return null;
-    }
+  async validateUser(
+    emailOrUsername: string,
+    password: string,
+  ): Promise<Partial<UserResponseDto> | null> {
+    return validateUserCredentials(emailOrUsername, password, this.userService);
   }
 
   /**
-   * Register a new user with password, create account, generate tokens
+   * Register new user, hash password, generate tokens
    */
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
     this.logger.log(`Registering user: ${registerDto.email}`, this.logContext);
@@ -62,20 +54,26 @@ export class AuthService {
   }
 
   /**
-   * Authenticate user with validated credentials, generate tokens
-   * Called after LocalStrategy validates email/password
-   * @param user - Pre-validated user object from LocalStrategy
+   * Generate tokens for authenticated user
+   * Called after LocalStrategy validates credentials
    */
-  async login(user: UserResponseDto): Promise<AuthResponseDto> {
+  login(user: Partial<UserResponseDto>): AuthResponseDto {
     this.logger.log(`User logged in: ${user.id}`, this.logContext);
-    return this.createAuthResponse(user.id, user.email, user);
+    return this.createAuthResponse(
+      user.id!,
+      user.email!,
+      user as UserResponseDto,
+    );
   }
+
   /**
-   * Refresh access token using refresh token
+   * Verify refresh token and generate new access + refresh tokens
+   * @throws UnauthorizedException if token invalid/expired
    */
-  async refresh(refreshTokenDto: RefreshTokenDto): Promise<AuthResponseDto> {
+  refresh(refreshTokenDto: RefreshTokenDto): AuthResponseDto {
     this.logger.log('Refreshing access token', this.logContext);
-    let payload: { sub: string; email: string };
+    let payload: { sub: string; email: string; username?: string };
+
     try {
       payload = this.jwtService.verify(refreshTokenDto.refreshToken);
     } catch (error: unknown) {
@@ -83,28 +81,34 @@ export class AuthService {
       this.logger.warn(`Token refresh failed: ${message}`, this.logContext);
       throw new UnauthorizedException('Invalid or expired refresh token');
     }
+
     this.logger.log(
       `Token refreshed for user: ${payload.sub}`,
       this.logContext,
     );
-    return this.createAuthResponse(payload.sub, payload.email);
+    return this.createAuthResponse(
+      payload.sub,
+      payload.email,
+      undefined,
+      payload.username,
+    );
   }
 
   /**
-   * Create authentication response with tokens
-   * @param userId - User's unique ID
-   * @param email - User's email
-   * @param user - Optional user data (omitted on refresh)
+   * Build auth response with generated tokens
+   * User field is optional (included for register/login, omitted for refresh)
    */
   private createAuthResponse(
     userId: string,
     email: string,
     user?: UserResponseDto,
+    username?: string,
   ): AuthResponseDto {
     const { accessToken, refreshToken, expiresIn } = generateTokens(
       this.jwtService,
       userId,
       email,
+      username || user?.username,
     );
 
     return {

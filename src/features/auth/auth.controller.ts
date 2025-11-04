@@ -9,23 +9,26 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '@/features/auth/auth.service';
 import { CurrentUser } from '@/common/decorators';
-import { LocalAuthGuard } from '@/features/auth/guards/local-auth.guard';
-import { JwtAuthGuard } from '@/features/auth/guards/jwt-auth.guard';
+import { LocalAuthGuard, JwtAuthGuard } from '@/features/auth/guards';
 import {
   RegisterDto,
   LoginDto,
   AuthResponseDto,
   RefreshTokenDto,
+  UserResponseDto,
 } from '@/features/auth/dtos';
-import { UserResponseDto } from '@/features/users/dtos';
 
+/**
+ * Authentication endpoints for register, login, refresh, and profile
+ */
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /**
-   * Register a new user
-   * POST /auth/register
+   * Register a new user account with password
+   * @param registerDto - User data + password
+   * @returns AuthResponseDto with tokens and user info
    */
   @Post('register')
   async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
@@ -33,43 +36,40 @@ export class AuthController {
   }
 
   /**
-   * Login user with email and password
-   * POST /auth/login
-   * Requires: email and password in request body
-   * Uses: LoginDto for input validation, LocalAuthGuard for credential validation
+   * Login with email/username and password
+   * LocalAuthGuard validates credentials via LocalStrategy before reaching handler
+   * @param _loginDto - Validates input format (email/username + password)
+   * @param req - Contains validated user from LocalStrategy
+   * @returns AuthResponseDto with tokens and user info
    */
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  async login(
+  login(
     @Body() _loginDto: LoginDto,
-    @Request() req: Express.Request,
-  ): Promise<AuthResponseDto> {
-    // _loginDto validates input structure (email format, password length, etc.)
-    // LocalStrategy validates credentials (email exists, password matches)
-    // req.user contains the validated user from LocalStrategy
-    return this.authService.login(req.user as UserResponseDto);
+    @Request() req: { user: UserResponseDto },
+  ): AuthResponseDto {
+    return this.authService.login(req.user);
   }
 
   /**
-   * Refresh access token using refresh token
-   * POST /auth/refresh
+   * Refresh expired access token using refresh token
+   * @param refreshTokenDto - Valid refresh token
+   * @returns AuthResponseDto with new tokens (no user data)
    */
   @Post('refresh')
-  async refresh(
-    @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<AuthResponseDto> {
+  refresh(@Body() refreshTokenDto: RefreshTokenDto): AuthResponseDto {
     return this.authService.refresh(refreshTokenDto);
   }
 
   /**
-   * Get current authenticated user
-   * GET /auth/me
-   * Requires: JWT token in Authorization header
-   * Uses: JwtAuthGuard validates token via JwtStrategy
+   * Get current authenticated user profile
+   * JwtAuthGuard validates JWT token via JwtStrategy before reaching handler
+   * @param user - Decoded JWT payload from JwtStrategy
+   * @returns UserResponseDto with current user info
    */
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getMe(@CurrentUser() user: UserResponseDto): Promise<UserResponseDto> {
+  getMe(@CurrentUser() user: UserResponseDto): UserResponseDto {
     return user;
   }
 }

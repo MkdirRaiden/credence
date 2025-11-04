@@ -3,24 +3,33 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthService } from '@/features/auth/auth.service';
+import { extractLoginIdentifier } from '@/features/auth/helpers';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
-    // Configure the strategy to use 'email' instead of the default 'username'
-    super({ usernameField: 'email' });
+    super({
+      usernameField: 'email',
+      passwordField: 'password',
+      passReqToCallback: true,
+    });
   }
 
   /**
-   * Passport automatically calls this method with credentials from the request body.
-   * Validates the email and password using the AuthService.
-   * @returns User object if credentials are valid
-   * @throws UnauthorizedException if credentials are invalid
+   * Passport calls this with the request object.
+   * Delegates identifier extraction and validation to helpers.
    */
-  async validate(email: string, password: string): Promise<any> {
-    const user = await this.authService.validateUser(email, password);
+  async validate(
+    req: { body?: Record<string, unknown> },
+    email: string,
+    password: string,
+  ): Promise<any> {
+    // Extract email or username using utility
+    const emailOrUsername = extractLoginIdentifier(email, req.body);
+
+    const user = await this.authService.validateUser(emailOrUsername, password);
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Invalid email, username, or password');
     }
     return user;
   }

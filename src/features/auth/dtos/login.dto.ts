@@ -1,19 +1,33 @@
 // src/features/auth/dtos/login.dto.ts
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, ValidateIf } from 'class-validator';
 import { TrimTransform } from '@/common/decorators';
+import { AUTH_VALIDATION } from '@/features/auth/auth.config';
 
 /**
- * Email/Password login request
- * Phase 1: Email/Password only
- * Phase 2: Will add phone/OTP variant
+ * Email/Password or Username/Password login request
+ * Users can login with EITHER email OR username + password
  */
 export class LoginDto {
-  @IsEmail({}, { message: 'Invalid email format' })
+  @ValidateIf((o: LoginDto) => !o.username) // Type the object
+  @IsEmail(
+    {},
+    { message: 'Invalid email format (required if username not provided)' },
+  )
   @TrimTransform
-  email: string;
+  email?: string;
+
+  @ValidateIf((o: LoginDto) => !o.email) // Type the object
+  @IsString({ message: 'Username must be a string' })
+  @MinLength(AUTH_VALIDATION.LOGIN_IDENTIFIER_MIN_LENGTH, {
+    message: 'Username cannot be empty',
+  })
+  @TrimTransform
+  username?: string;
 
   @IsString({ message: 'Password must be a string' })
-  @MinLength(1, { message: 'Password cannot be empty' })
+  @MinLength(AUTH_VALIDATION.LOGIN_IDENTIFIER_MIN_LENGTH, {
+    message: 'Password cannot be empty',
+  })
   @TrimTransform
   password: string;
 }

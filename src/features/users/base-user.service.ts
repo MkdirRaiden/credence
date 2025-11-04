@@ -5,7 +5,7 @@ import { User } from '@prisma/client';
 /**
  * Abstract base service for UserService.
  * Defines contract for Auth module (interface segregation).
- * Only exposes methods needed by Auth: create, findByEmailForAuth.
+ * Only exposes methods needed by Auth: create, findByEmailForAuth, findByUsernameForAuth.
  */
 export abstract class BaseUserService {
   /**
@@ -20,4 +20,10 @@ export abstract class BaseUserService {
    * Returns User with passwordHash and refreshTokens (bypasses visibility).
    */
   abstract findByEmailForAuth(email: string): Promise<User>;
+
+  /**
+   * Find full user by username for auth verification.
+   * Returns User with passwordHash and refreshTokens (bypasses visibility).
+   */
+  abstract findByUsernameForAuth(username: string): Promise<User>;
 }

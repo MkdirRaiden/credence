@@ -8,6 +8,7 @@ import { UserResponseDto } from '@/features/users/dtos';
 export class AuthResponseDto {
   accessToken: string;
   refreshToken: string;
-  user?: UserResponseDto;
   expiresIn: number;
+  tokenType?: string;
+  user?: UserResponseDto;
 }

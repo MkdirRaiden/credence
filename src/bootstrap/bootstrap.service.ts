@@ -37,8 +37,8 @@ export class BootstrapService {
       serverConfig.globalPrefix,
     );
     this.globalSetup.setup(app, moduleRef);
-    this.shutdown.registerHandlers(app);
     app.enableShutdownHooks();
+    this.shutdown.registerHandlers(app);
   }
 
   // Order: Readiness checks → Start HTTP server

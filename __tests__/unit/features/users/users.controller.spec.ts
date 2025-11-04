@@ -1,6 +1,6 @@
 // __tests__/unit/features/users/users.controller.spec.ts
 import { UsersController } from '@/features/users/users.controller';
-import { UsersService } from '@/features/users/users.service';
+import { UsersService } from '@/features/users/services/users.service';
 import {
   fullCreateUserDto,
   fullUpdateUserDto,

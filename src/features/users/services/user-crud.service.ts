@@ -1,0 +1,52 @@
+// src/features/users/services/user-crud.service.ts
+import { Injectable } from '@nestjs/common';
+import { LoggerService } from '@/logger/logger.service';
+import { UsersRepository } from '@/features/users/repositories/users.repository';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserResponseDto,
+} from '@/features/users/dtos';
+import { DeletedResourceDto } from '@/common/dtos';
+import * as UsersMapper from '@/features/users/mappers';
+import { BaseCrudService } from '@/features/users/contracts';
+
+/**
+ * User creation, update, deletion operations
+ */
+@Injectable()
+export class UserCrudService extends BaseCrudService {
+  private readonly logContext = 'UserCrudService';
+
+  constructor(
+    private readonly repository: UsersRepository,
+    private readonly logger: LoggerService,
+  ) {
+    super();
+  }
+
+  async create(
+    dto: CreateUserDto & { passwordHash?: string },
+  ): Promise<UserResponseDto> {
+    this.logger.log(`Creating user: ${dto.email}`, this.logContext);
+    const createInput = UsersMapper.toCreateInput(dto);
+    const user = await this.repository.create(createInput);
+    this.logger.log(`User created with ID: ${user.id}`, this.logContext);
+    return UsersMapper.toResponseDto(user) as UserResponseDto;
+  }
+
+  async update(id: string, dto: UpdateUserDto): Promise<UserResponseDto> {
+    this.logger.log(`Updating user: ${id}`, this.logContext);
+    const updateInput = UsersMapper.toUpdateInput(dto);
+    const user = await this.repository.update(id, updateInput);
+    this.logger.log(`User updated: ${id}`, this.logContext);
+    return UsersMapper.toResponseDto(user) as UserResponseDto;
+  }
+
+  async remove(id: string): Promise<DeletedResourceDto> {
+    this.logger.log(`Soft deleting user: ${id}`, this.logContext);
+    const deleted = await this.repository.softDelete(id);
+    this.logger.log(`User soft deleted: ${id}`, this.logContext);
+    return deleted;
+  }
+}

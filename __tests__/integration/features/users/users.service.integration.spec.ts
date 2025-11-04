@@ -1,6 +1,6 @@
 // __tests__/integration/features/users/users.service.integration.spec.ts
 import { PrismaService } from '@/database/prisma.service';
-import { UsersService } from '@/features/users/users.service';
+import { UsersService } from '@/features/users/services/users.service';
 import { LoggerService } from '@/logger/logger.service';
 import { createTestModule } from '../../../helpers/test-module.factory';
 import { cleanupDatabase, disconnectDatabase } from '../../../helpers/test-database';

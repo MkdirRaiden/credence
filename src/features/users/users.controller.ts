@@ -14,7 +14,7 @@ import { UserRole } from '@prisma/client';
 import { JwtAuthGuard, RolesGuard } from '@/features/auth/guards';
 import { Roles } from '@/common/decorators';
 import { ParseUuidPipe } from '@/common/pipes';
-import { UsersService } from '@/features/users/users.service';
+import { UserCrudService, UserLookupService } from '@/features/users/services';
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -30,7 +30,10 @@ import { FieldSelectorContext } from '@/common/interfaces';
  */
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly crudService: UserCrudService,
+    private readonly lookupService: UserLookupService,
+  ) {}
 
   /**
    * Get user by ID (public visibility)
@@ -41,7 +44,7 @@ export class UsersController {
     @Param('id', ParseUuidPipe) id: string,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>> {
-    return this.usersService.findById(id, context);
+    return this.lookupService.findById(id, context);
   }
 
   /**
@@ -53,7 +56,7 @@ export class UsersController {
     @Param('username') username: string,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>> {
-    return this.usersService.findByUsername(username, context);
+    return this.lookupService.findByUsername(username, context);
   }
 
   /**
@@ -67,7 +70,7 @@ export class UsersController {
     @Param('email') email: string,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>> {
-    return this.usersService.findByEmail(email, context);
+    return this.lookupService.findByEmail(email, context);
   }
 
   /**
@@ -81,7 +84,7 @@ export class UsersController {
     @Param('phone') phone: string,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>> {
-    return this.usersService.findByPhone(phone, context);
+    return this.lookupService.findByPhone(phone, context);
   }
 
   /**
@@ -91,12 +94,11 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
-    return this.usersService.create(dto);
+    return this.crudService.create(dto);
   }
 
   /**
    * Update user (authenticated users)
-   * Service layer handles owner/admin authorization
    */
   @Put(':id')
   @UseGuards(JwtAuthGuard)
@@ -104,19 +106,18 @@ export class UsersController {
     @Param('id', ParseUuidPipe) id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    return this.usersService.update(id, dto);
+    return this.crudService.update(id, dto);
   }
 
   /**
    * Delete user (authenticated users)
-   * Service layer handles owner/admin authorization
    */
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async remove(
     @Param('id', ParseUuidPipe) id: string,
   ): Promise<DeletedResourceDto> {
-    return this.usersService.remove(id);
+    return this.crudService.remove(id);
   }
 
   /**
@@ -128,7 +129,7 @@ export class UsersController {
     @Query() query: PaginationQueryDto,
     @GetVisibilityContext() context: FieldSelectorContext,
   ): Promise<Partial<UserResponseDto>[]> {
-    return this.usersService.findAll({
+    return this.lookupService.findAll({
       ...context,
       skip: query.skip,
       take: query.take,

@@ -1,5 +1,5 @@
 // src/features/auth/helpers/validate-credentials.ts
-import { BaseUserService } from '@/features/users/base-user.service';
+import { BaseAuthService } from '@/features/users/contracts';
 import { UserResponseDto } from '@/features/users/dtos';
 import { verifyPassword } from '@/features/auth/helpers';
 
@@ -10,7 +10,7 @@ import { verifyPassword } from '@/features/auth/helpers';
 export async function validateUserCredentials(
   emailOrUsername: string,
   password: string,
-  userService: BaseUserService,
+  userService: BaseAuthService,
 ): Promise<Partial<UserResponseDto> | null> {
   try {
     let user;

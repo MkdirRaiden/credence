@@ -1,4 +1,4 @@
-// src/features/auth/helpers/hash-verify-generate.ts
+// src/features/auth/helpers/auth.helpers.ts
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JWT_EXPIRATION, JWT_REFRESH_EXPIRATION } from '@/common/constants';

@@ -2,12 +2,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import { AuthService } from '@/features/auth/auth.service';
+import { CredentialsService } from '@/features/auth/services';
 import { extractLoginIdentifier } from '@/features/auth/helpers';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) {
+  constructor(private credentialsService: CredentialsService) {
     super({
       usernameField: 'email',
       passwordField: 'password',
@@ -15,22 +15,21 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  /**
-   * Passport calls this with the request object.
-   * Delegates identifier extraction and validation to helpers.
-   */
   async validate(
     req: { body?: Record<string, unknown> },
     email: string,
     password: string,
   ): Promise<any> {
-    // Extract email or username using utility
     const emailOrUsername = extractLoginIdentifier(email, req.body);
+    const user = await this.credentialsService.validate(
+      emailOrUsername,
+      password,
+    );
 
-    const user = await this.authService.validateUser(emailOrUsername, password);
     if (!user) {
       throw new UnauthorizedException('Invalid email, username, or password');
     }
+
     return user;
   }
 }

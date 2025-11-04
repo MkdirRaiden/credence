@@ -1,6 +1,6 @@
 // __tests__/unit/features/users/users.service.spec.ts
-import { UsersService } from '@/features/users/users.service';
-import { UsersRepository } from '@/features/users/users.repository';
+import { UsersService } from '@/features/users/services/users.service';
+import { UsersRepository } from '@/features/users/repositories/users.repository';
 import { LoggerService } from '@/logger/logger.service';
 import {
   mockUser,

@@ -7,7 +7,7 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { AuthService } from '@/features/auth/auth.service';
+import { AuthService } from '@/features/auth/services/auth.service';
 import { CurrentUser } from '@/common/decorators';
 import { LocalAuthGuard, JwtAuthGuard } from '@/features/auth/guards';
 import {
@@ -19,7 +19,7 @@ import {
 } from '@/features/auth/dtos';
 
 /**
- * Authentication endpoints for register, login, refresh, and profile
+ * Authentication endpoints for register, login, refresh, logout, and profile
  */
 @Controller('auth')
 export class AuthController {
@@ -27,8 +27,6 @@ export class AuthController {
 
   /**
    * Register a new user account with password
-   * @param registerDto - User data + password
-   * @returns AuthResponseDto with tokens and user info
    */
   @Post('register')
   async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
@@ -37,35 +35,39 @@ export class AuthController {
 
   /**
    * Login with email/username and password
-   * LocalAuthGuard validates credentials via LocalStrategy before reaching handler
-   * @param _loginDto - Validates input format (email/username + password)
-   * @param req - Contains validated user from LocalStrategy
-   * @returns AuthResponseDto with tokens and user info
+   * LocalAuthGuard validates credentials via LocalStrategy
    */
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  login(
+  async login(
     @Body() _loginDto: LoginDto,
     @Request() req: { user: UserResponseDto },
-  ): AuthResponseDto {
+  ): Promise<AuthResponseDto> {
     return this.authService.login(req.user);
   }
 
   /**
    * Refresh expired access token using refresh token
-   * @param refreshTokenDto - Valid refresh token
-   * @returns AuthResponseDto with new tokens (no user data)
    */
   @Post('refresh')
-  refresh(@Body() refreshTokenDto: RefreshTokenDto): AuthResponseDto {
+  async refresh(
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ): Promise<AuthResponseDto> {
     return this.authService.refresh(refreshTokenDto);
   }
 
   /**
+   * Logout by revoking refresh token
+   */
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Body() refreshTokenDto: RefreshTokenDto): Promise<void> {
+    return this.authService.logout(refreshTokenDto.refreshToken);
+  }
+
+  /**
    * Get current authenticated user profile
-   * JwtAuthGuard validates JWT token via JwtStrategy before reaching handler
-   * @param user - Decoded JWT payload from JwtStrategy
-   * @returns UserResponseDto with current user info
+   * JwtAuthGuard validates JWT token via JwtStrategy
    */
   @Get('me')
   @UseGuards(JwtAuthGuard)

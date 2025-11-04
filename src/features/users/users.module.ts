@@ -1,24 +1,34 @@
 // src/features/users/users.module.ts
 import { Module } from '@nestjs/common';
 import { UsersController } from '@/features/users/users.controller';
-import { UsersService } from '@/features/users/users.service';
-import { UsersRepository } from '@/features/users/users.repository';
-import { BaseUserService } from '@/features/users/base-user.service';
+import { UsersRepository } from '@/features/users/repositories/users.repository';
+import {
+  UserAuthService,
+  UserCrudService,
+  UserLookupService,
+} from '@/features/users/services';
+import { BaseAuthService, BaseCrudService } from '@/features/users/contracts';
 
 /**
  * Users module: user management, visibility, and auth integration.
- * Exports BaseUserService for Auth module to use.
+ * Exports contracts for Auth module to use.
  */
 @Module({
   controllers: [UsersController],
   providers: [
-    UsersService,
+    UserAuthService,
+    UserCrudService,
+    UserLookupService,
     UsersRepository,
     {
-      provide: BaseUserService,
-      useClass: UsersService,
+      provide: BaseAuthService,
+      useClass: UserAuthService,
+    },
+    {
+      provide: BaseCrudService,
+      useClass: UserCrudService,
     },
   ],
-  exports: [BaseUserService],
+  exports: [BaseAuthService, BaseCrudService],
 })
 export class UsersModule {}

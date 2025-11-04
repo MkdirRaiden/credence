@@ -1,4 +1,4 @@
-// src/features/users/users.repository.ts
+// src/features/users/repositories/users.repository.ts
 import {
   USER_FIELD_VISIBILITY_CONFIG,
   AUTH_USER_SELECT,

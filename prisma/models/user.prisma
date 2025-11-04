@@ -1,48 +1,43 @@
+// prisma/models/user.prisma
+
 model User {
-  // Core fields
+  // Core identity fields
   id           String   @id @default(uuid())
   email        String   @unique
+  username     String?  @unique
   phone        String?  @unique
   passwordHash String?
-  role         UserRole @default(USER)
 
-  // Display & profile fields
-  name         String?
-  avatarUrl    String?
+  // Profile
+  name      String?
+  avatarUrl String?
 
-  // Verification status
+  // Verification
   emailVerified Boolean @default(false)
   phoneVerified Boolean @default(false)
 
-  // Self-referral graph
+  // Authorization
+  role UserRole @default(USER)
+
+  // Referral tracking - who referred this user
   referredById String?
-  referredBy   User?   @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  referrals    User[]  @relation("Referrals")
-
-  // Redemptions
-  redemptionsAsReferrer ReferralRedemption[] @relation("Referrer")
-  redemptionsAsReferee  ReferralRedemption[] @relation("Referee")
-
-  // Referral codes owned by this user
-  referralCodes ReferralCode[]
-
-  // OTPs
-  otps OtpCode[]
-
-  // refresh tokens
-  refreshTokens RefreshToken[] 
-
-  // Ledger
-  credits CreditLedger[]
-
-  // Soft delete support
-  deletedAt DateTime?
 
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
-  // Indexes for performance
+  // Relations (no columns, only for queries)
+  referredBy              User?                  @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals               User[]                 @relation("Referrals")
+  redemptionsAsReferrer   ReferralRedemption[]   @relation("Referrer")
+  redemptionsAsReferee    ReferralRedemption[]   @relation("Referee")
+  referralCodes           ReferralCode[]
+  otps                    OtpCode[]
+  refreshTokens           RefreshToken[]
+  credits                 CreditLedger[]
+
+  // Indexes
   @@index([deletedAt])
   @@index([email, deletedAt])
 }

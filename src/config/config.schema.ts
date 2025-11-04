@@ -34,11 +34,11 @@ export const configValidationSchema = Joi.object({
   ALLOWED_ORIGINS: Joi.string()
     .pattern(
       /^https?:\/\/[a-zA-Z0-9.-]+(:\d+)?(\/.*)?(,[^,]+)*$/,
-      'comma-separated URLs'
+      'comma-separated URLs',
     )
     .default(DEFAULT_ALLOWED_ORIGINS.join(',')),
 
   JWT_SECRET: Joi.string().trim().required(),
-  
+
   JWT_REFRESH_SECRET: Joi.string().trim().required(),
 }).unknown(true);

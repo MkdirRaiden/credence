@@ -1,6 +1,7 @@
 // __tests__/integration/logger.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
 import { LoggerService } from '@/logger/logger.service';
+import { requestContext } from '@/common/utils/async-storage';
 import { createTestModule } from '../helpers/test-module.factory';
 
 describe('LoggerModule (Integration)', () => {
@@ -50,5 +51,27 @@ describe('LoggerModule (Integration)', () => {
     logger.error('Error occurred', error, 'ErrorContext');
     expect(errorSpy).toHaveBeenCalled();
     errorSpy.mockRestore();
+  });
+
+  it('includes requestId when available in context', () => {
+    const logSpy = jest.spyOn(console, 'log').mockImplementation();
+    requestContext.run({ requestId: 'req_test_123' }, () => {
+      logger.log('With request ID', 'TestCtx');
+      const output = logSpy.mock.calls[0][0];
+      const parsed = JSON.parse(output);
+      expect(parsed.requestId).toBe('req_test_123');
+    });
+    logSpy.mockRestore();
+  });
+
+  it('omits requestId when context is empty', () => {
+    const logSpy = jest.spyOn(console, 'log').mockImplementation();
+    requestContext.run({}, () => {
+      logger.log('Without request ID', 'TestCtx');
+      const output = logSpy.mock.calls[0][0];
+      const parsed = JSON.parse(output);
+      expect(parsed.requestId).toBeUndefined();
+    });
+    logSpy.mockRestore();
   });
 });

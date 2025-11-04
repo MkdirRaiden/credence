@@ -11,13 +11,15 @@ export class ShutdownService {
 
   registerHandlers(app: INestApplication): void {
     ['SIGTERM', 'SIGINT'].forEach((signal) => {
-      process.on(signal, async () => {
+      process.on(signal, () => {
         this.logger.log(
           `${signal} received, shutting down gracefully...`,
           'Bootstrap.Shutdown',
         );
-        await app.close();
-        process.exit(0);
+        app
+          .close()
+          .then(() => process.exit(0))
+          .catch(() => process.exit(1));
       });
     });
   }

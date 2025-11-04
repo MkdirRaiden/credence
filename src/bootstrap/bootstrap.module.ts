@@ -8,11 +8,13 @@ import {
   ReadinessService,
   ShutdownService,
 } from '@/bootstrap/services';
+import { HealthModule } from '@/health/health.module';
 
 /**
  * Provides initialization and startup services for NestJS application bootstrap.
  */
 @Module({
+  imports: [HealthModule],
   providers: [
     BootstrapService,
     MiddlewareSetupService,
@@ -21,6 +23,6 @@ import {
     ReadinessService,
     ShutdownService,
   ],
-  exports: [BootstrapService, ShutdownService],
+  exports: [BootstrapService],
 })
 export class BootstrapModule {}

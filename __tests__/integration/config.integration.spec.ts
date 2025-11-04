@@ -1,7 +1,7 @@
 // __tests__/integration/config.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createTestModule } from '../helpers/test-module.factory';
+import { closeTestApp, createTestModule } from '../helpers/test-module.factory';
 import type { AppConfig } from '@/common/interfaces/app-config.interface';
 
 describe('ConfigModule (Integration)', () => {
@@ -16,22 +16,49 @@ describe('ConfigModule (Integration)', () => {
   });
 
   afterAll(async () => {
-    if (app) await app.close();
+    if (app) await closeTestApp(app);
   });
 
-  it('loads all required config properties', () => {
+  it('loads all required environment variables', () => {
     const keys: (keyof AppConfig)[] = [
-      'nodeEnv', 'port', 'appName', 'appVersion', 'host',
-      'globalPrefix', 'database', 'allowedOrigins', 'jwtSecret', 'jwtRefreshSecret',
+      'nodeEnv',
+      'port',
+      'appName',
+      'appVersion',
+      'host',
+      'globalPrefix',
+      'database',
+      'allowedOrigins',
+      'jwtSecret',
+      'jwtRefreshSecret',
     ];
-    keys.forEach(key => expect(configService.get(key)).toBeDefined());
+
+    keys.forEach((key) => {
+      const value = configService.get(key);
+      expect(value).toBeDefined();
+    });
   });
 
   it('loads JWT secrets from environment', () => {
     const jwtSecret = configService.get('jwtSecret');
     const jwtRefreshSecret = configService.get('jwtRefreshSecret');
+
     expect(jwtSecret).toBeDefined();
     expect(jwtRefreshSecret).toBeDefined();
     expect(jwtSecret).not.toBe(jwtRefreshSecret);
+  });
+
+  it('database configuration is valid', () => {
+    const database = configService.get('database');
+    expect(database).toBeDefined();
+    expect(typeof database).toBe('object');
+    expect(database).toHaveProperty('url');
+    expect((database as any).url).toMatch(/^postgres/);
+  });
+
+  it('allowed origins are configured', () => {
+    const allowedOrigins = configService.get('allowedOrigins');
+    expect(allowedOrigins).toBeDefined();
+    expect(Array.isArray(allowedOrigins)).toBe(true);
   });
 });

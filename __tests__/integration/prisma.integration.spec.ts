@@ -1,7 +1,7 @@
 // __tests__/integration/prisma.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
-import { createTestModule } from '../helpers/test-module.factory';
+import { closeTestApp, createTestModule } from '../helpers/test-module.factory';
 
 jest.setTimeout(30000);
 
@@ -17,10 +17,10 @@ describe('PrismaService (Integration)', () => {
   });
 
   afterAll(async () => {
-    if (app) await app.close();
+    if (app) await closeTestApp(app);  // ← Use helper
   });
 
-  it('connects to database', async () => {
+  it('connects to database on module init', () => {
     expect(db).toBeDefined();
     expect(db.$queryRaw).toBeDefined();
   });

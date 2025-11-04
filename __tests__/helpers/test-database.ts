@@ -1,22 +1,35 @@
-// __tests__/integration/__helpers__/test-database.ts
+// __tests__/integration/helpers/test-database.ts
 import { PrismaService } from '@/database/prisma.service';
 
-export async function cleanupDatabase(prisma: PrismaService | undefined) {
+/**
+ * Cleans up database by deleting test records.
+ */
+export async function cleanupDatabase(
+  prisma: PrismaService | undefined,
+): Promise<void> {
   if (!prisma) return;
+
   try {
-    if (prisma?.user) {
-      await prisma.user.deleteMany({});
-    }
+    await prisma.user.deleteMany({});
+    // Add other models as you grow
   } catch (err) {
     console.error('Database cleanup error:', err);
+    throw err;
   }
 }
 
-export async function disconnectDatabase(prisma: PrismaService | undefined) {
+/**
+ * Disconnects from database gracefully.
+ */
+export async function disconnectDatabase(
+  prisma: PrismaService | undefined,
+): Promise<void> {
   if (!prisma) return;
+
   try {
     await prisma.$disconnect();
   } catch (err) {
     console.error('Database disconnect error:', err);
+    throw err;
   }
 }

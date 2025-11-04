@@ -1,20 +1,16 @@
 model OtpCode {
-  // Core fields
-  id      String     @id @default(uuid())
-  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId  String
-  channel OtpChannel
+  id          String     @id @default(uuid())
+  userId      String
+  channel     OtpChannel
+  codeHash    String
+  attempts    Int        @default(0)
+  expiresAt   DateTime
+  consumedAt  DateTime?
+  createdAt   DateTime   @default(now())
 
-  // Store only hash of OTP
-  codeHash   String
-  attempts   Int       @default(0)
-  expiresAt  DateTime
-  consumedAt DateTime?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Timestamps
-  createdAt DateTime @default(now())
-
-  // Indexes for efficient lookups and cleanup
   @@index([userId, expiresAt])
   @@index([expiresAt])
+  @@index([userId, createdAt])  // For rate limit check
 }

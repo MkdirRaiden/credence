@@ -5,52 +5,76 @@ import { BootstrapLogger } from '@/logger/bootstrap-logger';
 describe('handleBootstrapError', () => {
   let logger: BootstrapLogger;
   let errorSpy: jest.SpyInstance;
+  let logSpy: jest.SpyInstance;
   let exitSpy: jest.SpyInstance;
 
   beforeEach(() => {
     logger = new BootstrapLogger();
     errorSpy = jest.spyOn(logger, 'error').mockImplementation();
-    exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+    logSpy = jest.spyOn(logger, 'log').mockImplementation();
+    exitSpy = jest.spyOn(process, 'exit').mockImplementation(
+      () => undefined as never,
+    );
   });
 
   afterEach(() => {
     errorSpy.mockRestore();
+    logSpy.mockRestore();
     exitSpy.mockRestore();
   });
 
-  it('handles Error instances with stack trace', () => {
-    const error = new Error('Test error');
+  it('logs Error with stack trace', () => {
+    const error = new Error('Database connection failed');
 
     handleBootstrapError(error, logger, null);
 
     expect(errorSpy).toHaveBeenCalledWith(
-      'Bootstrap failed: Test error',
+      'Bootstrap failed: Database connection failed',
       error.stack,
-      'Bootstrap.error',
+      'Bootstrap',
     );
     expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
-  it('handles string errors without stack trace', () => {
-    handleBootstrapError('String error', logger, null);
+  it('logs string errors without stack', () => {
+    handleBootstrapError('String error message', logger, null);
 
     expect(errorSpy).toHaveBeenCalledWith(
-      'Bootstrap failed: String error',
+      'Bootstrap failed: String error message',
       undefined,
-      'Bootstrap.error',
+      'Bootstrap',
     );
     expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
-  it('gracefully closes app if provided', async () => {
+  it('closes app gracefully on error', async () => {
     const mockApp = { close: jest.fn().mockResolvedValue(undefined) } as any;
-    const logSpy = jest.spyOn(logger, 'log').mockImplementation();
 
     await handleBootstrapError(new Error('Test'), logger, mockApp);
 
     expect(mockApp.close).toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith('App closed gracefully', 'Bootstrap.error');
+    expect(logSpy).toHaveBeenCalledWith('App closed gracefully', 'Bootstrap');
     expect(exitSpy).toHaveBeenCalledWith(1);
-    logSpy.mockRestore();
+  });
+
+  it('handles app close errors gracefully', async () => {
+    const mockApp = {
+      close: jest.fn().mockRejectedValue(new Error('Close failed')),
+    } as any;
+
+    await handleBootstrapError(new Error('Test'), logger, mockApp);
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      'Error closing app: Close failed',
+      undefined,
+      'Bootstrap',
+    );
+    expect(exitSpy).toHaveBeenCalledWith(1);
+  });
+
+  it('exits with code 1', () => {
+    handleBootstrapError(new Error('Fatal'), logger, null);
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
   });
 });

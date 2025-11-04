@@ -5,8 +5,7 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { asyncHandler, retry } from '@/common/utils';
-import { CoreExceptionFactories } from '@/common/exceptions';
+import { retry } from '@/common/utils';
 import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '@/common/constants';
 import { LoggerService } from '@/logger/logger.service';
 
@@ -26,22 +25,21 @@ export class PrismaService
   }
 
   async onModuleInit() {
-    await asyncHandler(
-      () =>
-        retry(() => this.$connect(), {
-          retries: DATABASE_MAX_RETRIES,
-          delay: DATABASE_RETRY_DELAY,
-          context: 'PrismaConnection',
-          exponentialBackoff: true,
-          logger: this.logger,
-        }),
-      {
-        context: 'PrismaService.onModuleInit',
-        errorFactory: CoreExceptionFactories.databaseConnection,
-      },
-    );
-
-    this.logger.log('Database connected successfully', 'PrismaService');
+    try {
+      await retry(() => this.$connect(), {
+        retries: DATABASE_MAX_RETRIES,
+        delay: DATABASE_RETRY_DELAY,
+        exponentialBackoff: true,
+      });
+      this.logger.log('Database connected successfully', 'PrismaService');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      this.logger.error(
+        `Database connection failed: ${message}`,
+        'PrismaService',
+      );
+      throw err; // Re-throw to block app startup
+    }
   }
 
   async onApplicationShutdown() {

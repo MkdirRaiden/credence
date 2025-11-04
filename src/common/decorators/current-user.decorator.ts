@@ -1,5 +1,6 @@
 // src/common/decorators/current-user.decorator.ts
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { Request } from 'express';
 import { UserResponseDto } from '@/features/users/dtos';
 
 /**
@@ -8,7 +9,9 @@ import { UserResponseDto } from '@/features/users/dtos';
  */
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): UserResponseDto => {
-    const request = ctx.switchToHttp().getRequest();
+    const request = ctx
+      .switchToHttp()
+      .getRequest<Request & { user: UserResponseDto }>();
     return request.user;
   },
 );

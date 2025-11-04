@@ -3,7 +3,6 @@ import { NestFactory } from '@nestjs/core';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '@/app.module';
 import { BootstrapService } from '@/bootstrap/bootstrap.service';
-import { ShutdownService } from '@/bootstrap/services';
 import { BootstrapLogger } from '@/logger/bootstrap-logger';
 import { LoggerService } from '@/logger/logger.service';
 import { validatePreConfig } from '@/config/helpers';
@@ -34,20 +33,16 @@ async function bootstrap(): Promise<void> {
   const logger = app.get(LoggerService);
   app.useLogger(logger);
 
-  // Phase 3: Configure middleware, pipes, filters, interceptors
+  // Phase 3: Configure middleware, pipes, filters, interceptors, shutdown handlers
   const bootstrapService = app.get(BootstrapService);
   bootstrapService.init(app);
 
   // Phase 4-5: Run readiness checks and start server
   await bootstrapService.start(app);
-
-  // Phase 6: Register graceful shutdown handlers
-  const shutdownService = app.get(ShutdownService);
-  shutdownService.registerHandlers(app);
 }
 
 // Execute bootstrap with centralized error handling
 void bootstrap().catch(
   (err: unknown): Promise<never> =>
-   handleBootstrapError(err, bootstrapLogger, app),
+    handleBootstrapError(err, bootstrapLogger, app),
 );

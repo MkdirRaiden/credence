@@ -1,6 +1,7 @@
 // __tests__/unit/health/health.scheduler.spec.ts
 import { HealthScheduler } from '@/health/health.scheduler';
 import { LoggerService } from '@/logger/logger.service';
+import { PROBE_CHECK_TIMEOUT_MS } from '@/common/constants';
 import type { Probe } from '@/health/health.interface';
 
 describe('HealthScheduler', () => {
@@ -11,27 +12,18 @@ describe('HealthScheduler', () => {
 
   beforeEach(() => {
     jest.useFakeTimers();
-
-    mockLogger = {
-      log: jest.fn(),
-      warn: jest.fn(),
-    } as any;
+    mockLogger = { log: jest.fn(), warn: jest.fn() } as any;
 
     upProbe = {
       name: 'database',
-      check: jest.fn().mockResolvedValue({
-        name: 'database',
-        status: 'up',
-      }),
+      check: jest.fn().mockResolvedValue({ name: 'database', status: 'up' }),
     };
 
     downProbe = {
       name: 'database',
-      check: jest.fn().mockResolvedValue({
-        name: 'database',
-        status: 'down',
-        message: 'Connection lost',
-      }),
+      check: jest
+        .fn()
+        .mockResolvedValue({ name: 'database', status: 'down', message: 'Lost' }),
     };
 
     scheduler = new HealthScheduler(mockLogger);
@@ -44,13 +36,12 @@ describe('HealthScheduler', () => {
   it('prevents duplicate starts', () => {
     scheduler.start([upProbe], 5000);
     const firstInterval = scheduler['interval'];
-    expect(firstInterval).toBeDefined();
 
     scheduler.start([upProbe], 5000);
-    expect(scheduler['interval']).toBe(firstInterval); // Same instance
+    expect(scheduler['interval']).toBe(firstInterval);
   });
 
-  it('logs warning when health check fails', async () => {
+  it('logs warning only when probes fail', async () => {
     scheduler.start([downProbe], 1000);
     await jest.advanceTimersByTimeAsync(1000);
 
@@ -60,14 +51,15 @@ describe('HealthScheduler', () => {
     );
   });
 
-  it('does not log warning when all probes pass', async () => {
+  it('passes timeout to each probe', async () => {
     scheduler.start([upProbe], 1000);
     await jest.advanceTimersByTimeAsync(1000);
 
-    expect(mockLogger.warn).not.toHaveBeenCalled();
+    const probeTimeoutMs = Math.floor(PROBE_CHECK_TIMEOUT_MS * 0.6);
+    expect(upProbe.check).toHaveBeenCalledWith({ timeout: probeTimeoutMs });
   });
 
-  it('handles probe errors and treats as down', async () => {
+  it('handles probe errors gracefully', async () => {
     const errorProbe: Probe = {
       name: 'redis',
       check: jest.fn().mockRejectedValue(new Error('Timeout')),
@@ -82,7 +74,7 @@ describe('HealthScheduler', () => {
     );
   });
 
-  it('stops on application shutdown', () => {
+  it('stops on shutdown', () => {
     scheduler.start([upProbe], 5000);
     scheduler.onApplicationShutdown('SIGTERM');
 

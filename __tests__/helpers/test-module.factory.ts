@@ -1,11 +1,16 @@
-// __tests__/integration/__helpers__/test-module.factory.ts
+// __tests__/integration/helpers/test-module.factory.ts
 import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@/config/config.module';
 import { LoggerModule } from '@/logger/logger.module';
 import { DatabaseModule } from '@/database/database.module';
+import { HealthScheduler } from '@/health/health.scheduler';
 import { ModuleMetadata } from '@nestjs/common';
 
-// __tests__/integration/__helpers__/test-module.factory.ts
+/**
+ * Creates a test module with core dependencies (Config, Logger, Database).
+ * Validates NODE_ENV=test to prevent accidental database mutations.
+ */
 export async function createTestModule(
   metadata: ModuleMetadata = {},
 ): Promise<TestingModule> {
@@ -24,4 +29,26 @@ export async function createTestModule(
     providers: metadata.providers || [],
     controllers: metadata.controllers || [],
   }).compile();
+}
+
+/**
+ * Closes test application and explicitly stops scheduler.
+ * Prevents Jest from hanging due to open handles.
+ */
+export async function closeTestApp(app: INestApplication): Promise<void> {
+  try {
+    const scheduler = app.get<HealthScheduler>(HealthScheduler, {
+      strict: false,
+    });
+    scheduler?.onApplicationShutdown('SIGTERM');
+  } catch {
+    // Ignore if not available
+  }
+
+  try {
+    await app.close();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  } catch (err) {
+    console.error('Error closing test app:', err);
+  }
 }

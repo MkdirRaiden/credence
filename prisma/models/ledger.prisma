@@ -1,31 +1,25 @@
+// prisma/models/ledger.prisma
+
 model CreditLedger {
-  // Core fields
-  id     String      @id @default(uuid())
-  user   User        @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  userId String
-  amount Int
-  event  CreditEvent
-
-  // Self-relation for compensations/expirations referencing an original entry
-  sourceLedgerId String?
-  sourceLedger   CreditLedger?  @relation("SourceLedger", fields: [sourceLedgerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  compensations  CreditLedger[] @relation("SourceLedger")
-
-  // Optional origin from a referral redemption (bidirectional relation)
+  id                   String               @id @default(uuid())
+  userId               String
+  amount               Int
+  event                CreditEvent
+  sourceLedgerId       String?
+  operationId          String?
   referralRedemptionId String?
-  referralRedemption   ReferralRedemption? @relation("RedemptionLedger", fields: [referralRedemptionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  metadata             Json?
+  expiresAt            DateTime?
+  createdAt            DateTime             @default(now())
 
-  // Domain-level idempotency boundary
-  operationId String?
-  metadata    Json?
+  // Relations
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Restrict)
+  sourceLedger         CreditLedger?        @relation("SourceLedger", fields: [sourceLedgerId], references: [id], onDelete: SetNull)
+  compensations        CreditLedger[]       @relation("SourceLedger")
+  referralRedemption   ReferralRedemption?  @relation("RedemptionLedger", fields: [referralRedemptionId], references: [id], onDelete: SetNull)
 
-  // Optional expiration for issued credits
-  expiresAt DateTime?
-  createdAt DateTime  @default(now())
-
-  // Enforce per-user uniqueness of a domain operation
+  // Constraints
   @@unique([userId, operationId], name: "uniq_user_operation")
-  // Indexes for efficient queries
   @@index([userId, createdAt])
   @@index([expiresAt])
   @@index([referralRedemptionId])

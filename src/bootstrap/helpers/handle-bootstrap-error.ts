@@ -10,23 +10,24 @@ export async function handleBootstrapError(
   logger: BootstrapLogger,
   app: INestApplication | null,
 ): Promise<never> {
-  const errorMessage = err instanceof Error ? err.message : String(err);
-  const errorStack = err instanceof Error ? err.stack : undefined;
-  const context = (err as any)?.context; // Extract context from AppException
-  const message = `Bootstrap failed: ${errorMessage}`;
+  const message = err instanceof Error ? err.message : String(err);
+  const stack = err instanceof Error ? err.stack : undefined;
 
-  const contextStr = context ? JSON.stringify(context, null, 2) : undefined;
-  logger.error(message, contextStr || errorStack, 'Bootstrap.error');
+  logger.error(`Bootstrap failed: ${message}`, stack, 'Bootstrap');
 
   // Graceful cleanup if app was created
   if (app) {
     try {
       await app.close();
-      logger.log('App closed gracefully', 'Bootstrap.error');
+      logger.log('App closed gracefully', 'Bootstrap');
     } catch (closeErr) {
       const closeMessage =
         closeErr instanceof Error ? closeErr.message : String(closeErr);
-      logger.error('Error closing app', closeMessage, 'Bootstrap.error');
+      logger.error(
+        `Error closing app: ${closeMessage}`,
+        undefined,
+        'Bootstrap',
+      );
     }
   }
 

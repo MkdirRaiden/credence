@@ -3,22 +3,29 @@ import { Injectable, INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
 import compression from 'compression';
 import { EXCLUDE_PREFIX_ARRAY } from '@/common/constants';
+import { RequestIdMiddleware } from '@/common/middlewares';
 
 /**
- * Configures global middleware for security, compression, and CORS.
+ * Configures global middleware for security, compression, CORS, and request tracing.
+ * Order matters: RequestId → Security → Compression → CORS → GlobalPrefix
  */
 @Injectable()
 export class MiddlewareSetupService {
-  // Order: Helmet → Compression → CORS → Global Prefix
   setup(
     app: INestApplication,
     allowedOrigins: string[],
     globalPrefix: string,
   ): void {
+    this.setupRequestId(app);
     this.setupSecurity(app);
     this.setupCompression(app);
     this.setupCors(app, allowedOrigins);
     this.setupGlobalPrefix(app, globalPrefix);
+  }
+
+  private setupRequestId(app: INestApplication): void {
+    const middleware = new RequestIdMiddleware();
+    app.use(middleware.use.bind(middleware));
   }
 
   private setupSecurity(app: INestApplication): void {

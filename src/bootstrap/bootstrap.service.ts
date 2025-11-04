@@ -10,6 +10,7 @@ import {
   GlobalSetupService,
   ServerService,
   ReadinessService,
+  ShutdownService,
 } from '@/bootstrap/services';
 
 /**
@@ -23,6 +24,7 @@ export class BootstrapService {
     private readonly globalSetup: GlobalSetupService,
     private readonly readiness: ReadinessService,
     private readonly server: ServerService,
+    private readonly shutdown: ShutdownService, // ← Add
   ) {}
 
   // Order: Middleware → Pipes/Interceptors/Filters → Shutdown hooks
@@ -35,13 +37,14 @@ export class BootstrapService {
       serverConfig.globalPrefix,
     );
     this.globalSetup.setup(app, moduleRef);
+    this.shutdown.registerHandlers(app);
     app.enableShutdownHooks();
   }
 
   // Order: Readiness checks → Start HTTP server
   async start(app: INestApplication): Promise<void> {
     const serverConfig = this.getServerConfig();
-    await this.readiness.run(app);
+    await this.readiness.run();
     await this.server.start(app, serverConfig);
   }
 

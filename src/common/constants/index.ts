@@ -15,11 +15,7 @@ export const PORT = 5000;
 export const HOST = 'localhost';
 export const GLOBAL_PREFIX = 'api/v1';
 export const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000'];
-export const EXCLUDE_PREFIX_ARRAY = [
-  '/',
-  'health/live',
-  'health/ready',
-];
+export const EXCLUDE_PREFIX_ARRAY = ['/', 'health/live', 'health/ready'];
 
 // Application
 export const APP_NAME = 'Credence API';
@@ -30,7 +26,7 @@ export const HEALTH_CHECK_INTERVAL_MS = 60000;
 
 // Database
 export const PROBES_TOKEN = Symbol('PROBES');
-export const PRISMA_PROBE_TIMEOUT_MS = 5000;
+export const PROBE_CHECK_TIMEOUT_MS = 5000; // 5 seconds
 export const DATABASE_MAX_RETRIES = 5;
 export const DATABASE_RETRY_DELAY = 2000;
 

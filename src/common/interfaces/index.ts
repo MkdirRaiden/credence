@@ -1,4 +1,4 @@
 // src/common/interfaces/index.ts
-export * from './app-config.interface';
-export * from './response-config.interface';
-export * from './user-config.interface';
+export { AppConfig } from './app-config.interface';
+export {StandardResponse} from './response-config.interface';
+export {type VisibilityLevel, FieldSelectorContext, AuthenticatedUser, RequestWithContext, FieldVisibility} from './user-config.interface';

@@ -2,7 +2,7 @@
 import { Injectable, INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import { AppConfig } from '@/common/interfaces/app-config.interface';
+import { AppConfig } from '@/common/interfaces';
 import { ServerConfig } from '@/bootstrap/bootstrap.interface';
 import { extractConfig } from '@/common/utils';
 import {

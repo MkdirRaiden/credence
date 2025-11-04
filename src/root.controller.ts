@@ -2,7 +2,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { extractConfig } from '@/common/utils';
-import type { AppConfig } from '@/common/interfaces/app-config.interface';
+import type { AppConfig } from '@/common/interfaces';
 
 @Controller()
 export class RootController {

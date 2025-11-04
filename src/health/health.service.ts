@@ -9,8 +9,7 @@ import {
 import { Probe } from '@/health/health.interface';
 import { HealthScheduler } from '@/health/health.scheduler';
 import { PROBES_TOKEN, PROBE_CHECK_TIMEOUT_MS } from '@/common/constants';
-import { getLiveness, getReadiness } from '@/health/helpers';
-import { createTimeoutPromise } from '@/health/helpers';
+import { getLiveness, getReadiness, createTimeoutPromise } from '@/health/helpers';
 
 /**
  * Orchestrates health checks across all probes.

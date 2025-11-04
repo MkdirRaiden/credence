@@ -1,3 +1,5 @@
+// prisma/models/otp.prisma
+
 model OtpCode {
   id          String     @id @default(uuid())
   userId      String

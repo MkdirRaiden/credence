@@ -1,6 +1,6 @@
 // src/common/utils/extract-config.ts
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from '@/common/interfaces/app-config.interface';
+import { AppConfig } from '@/common/interfaces';
 
 /**
  * Extracts typed config keys from ConfigService as Pick<AppConfig, K>.

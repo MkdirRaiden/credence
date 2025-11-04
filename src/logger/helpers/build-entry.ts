@@ -2,7 +2,7 @@
 import { LogEntry, BuildOptions, LogLevel } from '@/logger/logger.interface';
 import { safeSerialize } from '@/logger/helpers';
 import { NODE_ENV, DEFAULT_CONTEXT } from '@/common/constants';
-import { requestContext } from '@/common/utils/async-storage';
+import { requestContext } from '@/common/utils';
 
 /**
  * Builds structured LogEntry from logging parameters.

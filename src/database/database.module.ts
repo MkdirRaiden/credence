@@ -3,7 +3,7 @@ import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/database/prisma.service';
 import { LoggerService } from '@/logger/logger.service';
-import type { AppConfig } from '@/common/interfaces/app-config.interface';
+import type { AppConfig } from '@/common/interfaces';
 
 /**
  * Global database module providing PrismaService singleton.

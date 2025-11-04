@@ -2,8 +2,9 @@
 import type {
   ReadinessStatus,
   DependencyStatus,
+  Probe, 
+  ProbeResult
 } from '@/health/health.interface';
-import type { Probe, ProbeResult } from '@/health/health.interface';
 
 /**
  * Checks all probes and returns aggregated readiness status.

@@ -1,4 +1,4 @@
-// src/bootstrap/bootstrap.service.ts
+// src/bootstrap/services/bootstrap.service.ts
 import { Injectable, INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';

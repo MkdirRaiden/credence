@@ -1,5 +1,5 @@
 // __tests__/unit/logger/base-logger.spec.ts
-import { BaseLogger } from '@/logger/base-logger';
+import { BaseLogger } from '@/logger/base/base-logger';
 import * as loggerHelpers from '@/logger/helpers';
 
 jest.mock('@/logger/helpers', () => ({

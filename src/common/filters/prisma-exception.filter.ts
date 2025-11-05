@@ -2,7 +2,7 @@
 import { Catch, ArgumentsHost, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 
 /**
  * Handles Prisma-specific database errors and maps to HTTP responses.

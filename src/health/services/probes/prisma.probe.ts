@@ -1,4 +1,4 @@
-// src/health/probes/prisma.probe.ts
+// src/health/services/probes/prisma.probe.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
 import { createTimeoutPromise } from '@/health/helpers';
@@ -8,7 +8,7 @@ import { Probe, ProbeResult } from '@/health/health.interface';
  * Health probe for database connectivity via Prisma.
  */
 @Injectable()
-export class PrismaProbe implements Probe {
+export class PrismaProbeService implements Probe {
   readonly name = 'database';
 
   constructor(private readonly db: PrismaService) {}

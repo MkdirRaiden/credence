@@ -1,13 +1,13 @@
 // src/app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@/config/config.module';
-import { DatabaseModule } from '@/database/database.module';
-import { UsersModule } from '@/features/users/users.module';
-import { HealthModule } from '@/health/health.module';
 import { LoggerModule } from '@/logger/logger.module';
-import { RootController } from '@/root.controller';
 import { CommonModule } from '@/common/modules/common.module';
+import { DatabaseModule } from '@/database/database.module';
 import { BootstrapModule } from '@/bootstrap/bootstrap.module';
+import { HealthModule } from '@/health/health.module';
+import { UsersModule } from '@/features/users/users.module';
+import { RootController } from '@/root.controller';
 import { AuthModule } from './features/auth/auth.module';
 
 /**

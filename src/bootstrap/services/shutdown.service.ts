@@ -1,6 +1,6 @@
 // src/bootstrap/services/shutdown.service.ts
 import { Injectable, INestApplication } from '@nestjs/common';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 
 /**
  * Registers graceful shutdown handlers for SIGTERM and SIGINT signals.

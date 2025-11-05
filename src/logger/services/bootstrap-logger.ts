@@ -1,6 +1,6 @@
-// src/logger/bootstrap-logger.ts
+// src/logger/services/bootstrap-logger.ts
 import { NODE_ENV } from '@/common/constants';
-import { BaseLogger } from '@/logger/base-logger';
+import { BaseLogger } from '@/logger/base/base-logger';
 
 /**
  * Bootstrap logger for pre-DI initialization phase in main.ts.

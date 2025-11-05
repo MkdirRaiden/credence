@@ -3,7 +3,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { BaseCrudService } from '@/features/users/contracts';
 import { RefreshTokenService } from '@/features/refresh-tokens/refresh-token.service';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 import {
   RegisterDto,
   AuthResponseDto,

@@ -1,6 +1,6 @@
-// src/health/health.scheduler.ts
+// src/health/services/scheduler.service.ts
 import { Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services';
 import {
   HEALTH_CHECK_INTERVAL_MS,
   PROBE_CHECK_TIMEOUT_MS,
@@ -12,7 +12,7 @@ import { Probe } from '@/health/health.interface';
  * Logs failures but doesn't affect service availability.
  */
 @Injectable()
-export class HealthScheduler implements OnApplicationShutdown {
+export class SchedulerService implements OnApplicationShutdown {
   private interval?: NodeJS.Timeout;
 
   constructor(private readonly logger: LoggerService) {}

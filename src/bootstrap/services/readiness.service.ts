@@ -1,7 +1,7 @@
 // src/bootstrap/services/readiness.service.ts
-import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@/logger/logger.service';
-import { HealthService } from '@/health/health.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { LoggerService } from '@/logger/services/logger.service';
+import { BaseHealthService } from '@/health/contracts/base-health.service';
 
 /**
  * Runs critical readiness checks before accepting traffic.
@@ -9,8 +9,8 @@ import { HealthService } from '@/health/health.service';
 @Injectable()
 export class ReadinessService {
   constructor(
+    @Inject(BaseHealthService) private readonly health: BaseHealthService,
     private readonly logger: LoggerService,
-    private readonly health: HealthService,
   ) {}
 
   async run(): Promise<void> {

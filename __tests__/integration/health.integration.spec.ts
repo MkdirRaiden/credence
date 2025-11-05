@@ -1,6 +1,6 @@
 // __tests__/integration/health.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
-import { HealthService } from '@/health/health.service';
+import { HealthService } from '@/health/services/health.service';
 import { HealthModule } from '@/health/health.module';
 import { PROBE_CHECK_TIMEOUT_MS } from '@/common/constants';
 import { closeTestApp, createTestModule } from '../helpers/test-module.factory';

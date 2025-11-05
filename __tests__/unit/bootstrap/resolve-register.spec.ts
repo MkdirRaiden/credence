@@ -1,7 +1,7 @@
 // __tests__/unit/bootstrap/helpers/resolve-register.spec.ts
-import { resolveAndRegister } from '@/bootstrap/helpers/resolve-register';
+import { resolveAndRegister } from '@/bootstrap/helpers';
 import { ModuleRef } from '@nestjs/core';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services';
 import { CRITICAL_PROVIDERS } from '@/common/modules/common.config';
 
 describe('resolveAndRegister', () => {

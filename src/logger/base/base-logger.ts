@@ -1,4 +1,4 @@
-// src/logger/base-logger.ts
+// src/logger/base/base-logger.ts
 import { LoggerService as NestLogger } from '@nestjs/common';
 import { formatLogJson, logWriter } from '@/logger/helpers';
 

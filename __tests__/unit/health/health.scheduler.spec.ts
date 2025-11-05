@@ -1,11 +1,11 @@
-// __tests__/unit/health/health.scheduler.spec.ts
-import { HealthScheduler } from '@/health/health.scheduler';
-import { LoggerService } from '@/logger/logger.service';
+// __tests__/unit/health/scheduler.service.spec.ts
+import { SchedulerService } from '@/health/services';
+import { LoggerService } from '@/logger/services/logger.service';
 import { PROBE_CHECK_TIMEOUT_MS } from '@/common/constants';
 import type { Probe } from '@/health/health.interface';
 
 describe('HealthScheduler', () => {
-  let scheduler: HealthScheduler;
+  let scheduler: SchedulerService;
   let mockLogger: jest.Mocked<LoggerService>;
   let upProbe: Probe;
   let downProbe: Probe;
@@ -26,7 +26,7 @@ describe('HealthScheduler', () => {
         .mockResolvedValue({ name: 'database', status: 'down', message: 'Lost' }),
     };
 
-    scheduler = new HealthScheduler(mockLogger);
+    scheduler = new SchedulerService(mockLogger);
   });
 
   afterEach(() => {

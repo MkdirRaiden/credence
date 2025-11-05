@@ -1,6 +1,6 @@
 // src/health/health.controller.ts
 import { Controller, Get } from '@nestjs/common';
-import { HealthService } from '@/health/health.service';
+import { HealthService } from '@/health/services';
 
 /**
  * Health check endpoints for Kubernetes probes.

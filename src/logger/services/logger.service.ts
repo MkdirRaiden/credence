@@ -1,8 +1,8 @@
-// src/logger/logger.service.ts
+// src/logger/services/logger.service.ts
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { BaseLogger } from '@/logger/base-logger';
-import { AppConfig } from '@/common/interfaces/app-config.interface';
+import { BaseLogger } from '@/logger/base/base-logger';
+import { AppConfig } from '@/common/interfaces';
 
 /**
  * DI-backed logger service injected throughout the app after bootstrap.

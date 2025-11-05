@@ -1,7 +1,7 @@
 // src/features/users/services/user-auth.service.ts
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 import { UsersRepository } from '@/features/users/repositories/users.repository';
 import { BaseAuthService } from '@/features/users/contracts';
 

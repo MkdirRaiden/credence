@@ -1,6 +1,6 @@
 // __tests__/integration/logger.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 import { requestContext } from '@/common/utils/async-storage';
 import { createTestModule } from '../helpers/test-module.factory';
 

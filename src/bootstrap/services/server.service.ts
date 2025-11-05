@@ -1,6 +1,6 @@
 // src/bootstrap/services/server.service.ts
 import { Injectable, INestApplication } from '@nestjs/common';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 import { startServerAndLog } from '@/bootstrap/helpers';
 import { ServerConfig } from '@/bootstrap/bootstrap.interface';
 

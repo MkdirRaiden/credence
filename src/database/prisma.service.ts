@@ -7,7 +7,7 @@ import {
 import { PrismaClient } from '@prisma/client';
 import { retry } from '@/common/utils';
 import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '@/common/constants';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services';
 
 /**
  * Extended PrismaClient with retry logic and graceful shutdown.

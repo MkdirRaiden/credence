@@ -8,7 +8,7 @@ import {
   GLOBAL_PREFIX,
   HOST,
 } from '@/common/constants';
-import { AppConfig } from '@/common/interfaces/app-config.interface';
+import { AppConfig } from '@/common/interfaces';
 import { splitStringToArray } from '@/config/helpers';
 
 /**

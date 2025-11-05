@@ -2,7 +2,7 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@/database/prisma.service';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services';
 import type { AppConfig } from '@/common/interfaces';
 
 /**

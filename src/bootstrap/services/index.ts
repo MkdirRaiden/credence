@@ -4,3 +4,4 @@ export { GlobalSetupService } from '@/bootstrap/services/global-setup.service';
 export { ServerService } from '@/bootstrap/services/server.service';
 export { ReadinessService } from '@/bootstrap/services/readiness.service';
 export { ShutdownService } from '@/bootstrap/services/shutdown.service';
+export { BootstrapService } from '@/bootstrap/services/bootstrap.service';

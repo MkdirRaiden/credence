@@ -1,4 +1,4 @@
-// src/health/health.service.ts
+// src/health/services/health.service.ts
 import {
   Injectable,
   HttpException,
@@ -7,13 +7,14 @@ import {
   Inject,
 } from '@nestjs/common';
 import { Probe } from '@/health/health.interface';
-import { HealthScheduler } from '@/health/health.scheduler';
+import { SchedulerService } from '@/health/services';
 import { PROBES_TOKEN, PROBE_CHECK_TIMEOUT_MS } from '@/common/constants';
 import {
   getLiveness,
   getReadiness,
   createTimeoutPromise,
 } from '@/health/helpers';
+import { BaseHealthService } from '@/health/contracts/base-health.service';
 
 /**
  * Orchestrates health checks across all probes.
@@ -21,11 +22,13 @@ import {
  * Ongoing health checks via scheduler + periodic probing.
  */
 @Injectable()
-export class HealthService implements OnModuleInit {
+export class HealthService extends BaseHealthService implements OnModuleInit {
   constructor(
     @Inject(PROBES_TOKEN) private readonly probes: Probe[],
-    private readonly scheduler: HealthScheduler,
-  ) {}
+    private readonly scheduler: SchedulerService,
+  ) {
+    super();
+  }
 
   onModuleInit() {
     this.scheduler.start(this.probes);
@@ -50,6 +53,7 @@ export class HealthService implements OnModuleInit {
     return readiness;
   }
 
+  // used for app readiness check
   async assertReadiness(): Promise<void> {
     const readiness = await this.executeReadinessCheck();
 

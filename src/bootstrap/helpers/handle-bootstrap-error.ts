@@ -1,6 +1,6 @@
 // src/bootstrap/helpers/handle-bootstrap-error.ts
 import { INestApplication } from '@nestjs/common';
-import { BootstrapLogger } from '@/logger/bootstrap-logger';
+import { BootstrapLogger } from '@/logger/services';
 
 /**
  * Centralized bootstrap error handler with graceful cleanup and process exit.
@@ -20,9 +20,9 @@ export async function handleBootstrapError(
     try {
       await app.close();
       logger.log('App closed gracefully', 'Bootstrap');
-    } catch (closeErr) {
-      const closeMessage =
-        closeErr instanceof Error ? closeErr.message : String(closeErr);
+    } catch (closeErr) {    
+      const closeMessage = 
+      closeErr instanceof Error ? closeErr.message : String(closeErr);
       logger.error(
         `Error closing app: ${closeMessage}`,
         undefined,
@@ -30,6 +30,6 @@ export async function handleBootstrapError(
       );
     }
   }
-
+  
   process.exit(1);
 }

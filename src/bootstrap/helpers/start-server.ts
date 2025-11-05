@@ -1,5 +1,5 @@
 // src/bootstrap/helpers/start-server.ts
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services';
 import { INestApplication } from '@nestjs/common';
 import { ServerConfig } from '@/bootstrap/bootstrap.interface';
 

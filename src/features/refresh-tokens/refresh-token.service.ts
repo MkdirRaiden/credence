@@ -1,6 +1,6 @@
 // src/features/refresh-tokens/refresh-token.service.ts
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 import { RefreshTokenRepository } from '@/features/refresh-tokens/refresh-token.repository';
 import {
   validateRefreshToken,

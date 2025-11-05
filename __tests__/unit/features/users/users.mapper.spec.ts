@@ -4,7 +4,7 @@ import {
   toUpdateInput,
   toResponseDto,
   toResponseDtoList,
-} from '@/features/users/users.mapper';
+} from '@/features/users/mappers';
 import {
   mockUser,
   mockAdminUser,

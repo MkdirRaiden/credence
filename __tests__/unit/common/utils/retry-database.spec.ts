@@ -1,6 +1,6 @@
 // __tests__/unit/common/utils/retry-database.spec.ts
 import { retry } from '@/common/utils';
-import type { LoggerService } from '@/logger/logger.service';
+import type { LoggerService } from '@/logger/services';
 
 describe('retry utility', () => {
   const createMockLogger = (): Partial<LoggerService> => ({

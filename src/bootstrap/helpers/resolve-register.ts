@@ -1,7 +1,7 @@
 // src/bootstrap/helpers/resolve-register.ts
 import { Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services';
 import { CRITICAL_PROVIDERS } from '@/common/modules/common.config';
 
 /**

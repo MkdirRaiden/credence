@@ -1,6 +1,6 @@
 // __tests__/unit/bootstrap/helpers/start-server.spec.ts
 import { startServerAndLog } from '@/bootstrap/helpers';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services';
 import { ServerConfig } from '@/bootstrap/bootstrap.interface';
 import type { INestApplication } from '@nestjs/common';
 

@@ -7,7 +7,7 @@ import {
   ExceptionFilter,
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 import { resolveAndRegister } from '@/bootstrap/helpers';
 import {
   GLOBAL_INTERCEPTORS,

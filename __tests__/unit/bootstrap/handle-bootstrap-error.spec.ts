@@ -1,6 +1,6 @@
 // __tests__/unit/bootstrap/helpers/handle-bootstrap-error.spec.ts
 import { handleBootstrapError } from '@/bootstrap/helpers';
-import { BootstrapLogger } from '@/logger/bootstrap-logger';
+import { BootstrapLogger } from '@/logger/services';
 
 describe('handleBootstrapError', () => {
   let logger: BootstrapLogger;

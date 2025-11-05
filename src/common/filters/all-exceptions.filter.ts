@@ -7,7 +7,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from '@/logger/services/logger.service';
 import { Response, Request } from 'express';
 
 /**

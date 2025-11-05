@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@/config/config.module';
 import { LoggerModule } from '@/logger/logger.module';
 import { DatabaseModule } from '@/database/database.module';
-import { HealthScheduler } from '@/health/health.scheduler';
+import { SchedulerService } from '@/health/services';
 import { ModuleMetadata } from '@nestjs/common';
 
 /**
@@ -37,7 +37,7 @@ export async function createTestModule(
  */
 export async function closeTestApp(app: INestApplication): Promise<void> {
   try {
-    const scheduler = app.get<HealthScheduler>(HealthScheduler, {
+    const scheduler = app.get<SchedulerService>(SchedulerService, {
       strict: false,
     });
     scheduler?.onApplicationShutdown('SIGTERM');

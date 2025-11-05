@@ -1,9 +1,8 @@
 // __tests__/integration/bootstrap.integration.spec.ts
 import { INestApplication } from '@nestjs/common';
-import { BootstrapService } from '@/bootstrap/bootstrap.service';
-import { ReadinessService } from '@/bootstrap/services/readiness.service';
-import { ShutdownService } from '@/bootstrap/services/shutdown.service';
-import { HealthService } from '@/health/health.service';
+import { BootstrapService, ReadinessService, ShutdownService } 
+from '@/bootstrap/services';
+import { HealthService } from '@/health/services';
 import { AppModule } from '@/app.module';
 import { closeTestApp, createTestModule } from '../helpers/test-module.factory';
 

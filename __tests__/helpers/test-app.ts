@@ -2,8 +2,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '@/app.module';
-import { BootstrapService } from '@/bootstrap/bootstrap.service';
-import { HealthScheduler } from '@/health/health.scheduler';
+import { BootstrapService } from '@/bootstrap/services/bootstrap.service';
+import { SchedulerService } from '@/health/services';
 
 /**
  * Creates a fully configured test application instance
@@ -31,7 +31,7 @@ export async function createTestApp(): Promise<INestApplication> {
 export async function closeTestApp(app: INestApplication): Promise<void> {
   try {
     // Explicitly trigger scheduler shutdown
-    const scheduler = app.get<HealthScheduler>(HealthScheduler, {
+    const scheduler = app.get<SchedulerService>(SchedulerService, {
       strict: false,
     });
     if (scheduler) {

@@ -1,10 +1,9 @@
 // src/health/health.module.ts
 import { Module } from '@nestjs/common';
 import { HealthController } from '@/health/health.controller';
-import { HealthService } from '@/health/health.service';
-import { HealthScheduler } from '@/health/health.scheduler';
-import { PrismaProbe } from '@/health/probes/prisma.probe';
+import { SchedulerService, PrismaProbeService, HealthService } from '@/health/services';
 import { PROBES_TOKEN } from '@/common/constants';
+import { BaseHealthService } from '@/health/contracts/base-health.service';
 
 /**
  * Health check module with extensible probe architecture.
@@ -13,17 +12,21 @@ import { PROBES_TOKEN } from '@/common/constants';
   controllers: [HealthController],
   providers: [
     HealthService,
-    HealthScheduler,
-    PrismaProbe,
+    SchedulerService,
+    PrismaProbeService,
+    {
+      provide: BaseHealthService,
+      useClass: HealthService
+    },
     {
       provide: PROBES_TOKEN,
-      useFactory: (prismaProbe: PrismaProbe) => [
+      useFactory: (prismaProbe: PrismaProbeService) => [
         prismaProbe,
         // Add more probes here: redisProbe, mongoProbe, etc.
       ],
-      inject: [PrismaProbe],
+      inject: [PrismaProbeService],
     },
   ],
-  exports: [HealthService],
+  exports: [BaseHealthService],
 })
 export class HealthModule {}

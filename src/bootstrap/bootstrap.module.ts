@@ -1,7 +1,7 @@
 // src/bootstrap/bootstrap.module.ts
 import { Module } from '@nestjs/common';
-import { BootstrapService } from '@/bootstrap/bootstrap.service';
 import {
+  BootstrapService,
   MiddlewareSetupService,
   GlobalSetupService,
   ServerService,

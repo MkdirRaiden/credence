@@ -1,5 +1,5 @@
 // src/logger/services/bootstrap-logger.ts
-import { NODE_ENV } from '@/common/constants';
+import { NODE_ENV } from '@/config/factory';
 import { BaseLogger } from '@/logger/base/base-logger';
 
 /**
@@ -8,6 +8,6 @@ import { BaseLogger } from '@/logger/base/base-logger';
  */
 export class BootstrapLogger extends BaseLogger {
   constructor() {
-    super(process.env.NODE_ENV || NODE_ENV);
+    super(NODE_ENV);
   }
 }

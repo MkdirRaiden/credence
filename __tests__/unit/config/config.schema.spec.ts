@@ -1,5 +1,5 @@
 // __tests__/unit/config/config.schema.spec.ts
-import { configValidationSchema } from '@/config/config.schema';
+import { configValidationSchema } from '@/config/schemas/config.schema';
 import { validEnv, invalidEnv, partialEnv } from './__fixtures__/env.fixtures';
 import { DEFAULT_ALLOWED_ORIGINS } from '@/common/constants';
 

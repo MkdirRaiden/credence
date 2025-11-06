@@ -1,7 +1,7 @@
 // src/bootstrap/services/readiness.service.ts
 import { Inject, Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services/logger.service';
-import { BaseHealthService } from '@/health/contracts/base-health.service';
+import { BaseHealthService } from '@/health/contracts';
 
 /**
  * Runs critical readiness checks before accepting traffic.

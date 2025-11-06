@@ -14,7 +14,7 @@ export function resolveAndRegister<T>(
   logger?: LoggerService,
 ) {
   providers.forEach((provider) => {
-    const instance = moduleRef.get(provider, { strict: false });
+    const instance = moduleRef.get(provider, { strict: true });
     if (instance) {
       registerFn(instance);
     } else {

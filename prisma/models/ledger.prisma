@@ -12,15 +12,20 @@ model CreditLedger {
   expiresAt            DateTime?
   createdAt            DateTime             @default(now())
 
-  // Relations
   user                 User                 @relation(fields: [userId], references: [id], onDelete: Restrict)
   sourceLedger         CreditLedger?        @relation("SourceLedger", fields: [sourceLedgerId], references: [id], onDelete: SetNull)
   compensations        CreditLedger[]       @relation("SourceLedger")
   referralRedemption   ReferralRedemption?  @relation("RedemptionLedger", fields: [referralRedemptionId], references: [id], onDelete: SetNull)
 
-  // Constraints
-  @@unique([userId, operationId], name: "uniq_user_operation")
-  @@index([userId, createdAt])
-  @@index([expiresAt])
-  @@index([referralRedemptionId])
+  // Unique Constraints
+  @@unique([userId, operationId], name: "uniq_user_operation")  // Idempotency: one operation per user
+  
+  // Indexes for Query Performance
+  @@index([userId, createdAt])               // User transaction history
+  @@index([userId, event, createdAt])        // User credits by event type (ISSUE, REFUND, etc.)
+  @@index([event, createdAt])                // System reporting: all ISSUEs, all REVOKEs, etc.
+  @@index([expiresAt])                       // Cleanup: find expired credits
+  @@index([referralRedemptionId])            // Find ledger entries for a referral
+  @@index([sourceLedgerId])                  // Find reversals/compensations of a transaction
+
 }

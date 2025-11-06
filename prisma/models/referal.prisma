@@ -11,13 +11,13 @@ model ReferralCode {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  // Relations
   owner           User     @relation(fields: [ownerUserId], references: [id], onDelete: Restrict)
   redemptions     ReferralRedemption[]
 
-  // Indexes
   @@index([ownerUserId])
   @@index([active, startsAt, endsAt])
+  @@index([code])  // For direct code lookups during redemption
+  
 }
 
 model ReferralRedemption {
@@ -27,18 +27,22 @@ model ReferralRedemption {
   referralCodeId String
   status         RedemptionStatus   @default(PENDING)
   reason         String?
-  idempotencyKey String?
+  idempotencyKey String?            @unique  // Prevent duplicate processing
   createdAt      DateTime           @default(now())
   decidedAt      DateTime?
 
-  // Relations
   referrer       User               @relation("Referrer", fields: [referrerId], references: [id], onDelete: Restrict)
   referee        User               @relation("Referee", fields: [refereeId], references: [id], onDelete: Restrict)
   referralCode   ReferralCode       @relation(fields: [referralCodeId], references: [id], onDelete: Restrict)
   ledgerEntries  CreditLedger[]     @relation("RedemptionLedger")
 
-  // Constraints
-  @@unique([referralCodeId, refereeId], name: "uniq_code_referee")
-  @@index([referrerId, createdAt])
-  @@index([refereeId, createdAt])
+  // Unique Constraints
+  @@unique([referralCodeId, refereeId], name: "uniq_code_referee")  // One redemption per referee per code
+  
+  // Indexes
+  @@index([referrerId, createdAt])  // For "my referrals" queries
+  @@index([refereeId, createdAt])   // For "my referrers" queries
+  @@index([referralCodeId])         // For "code redemptions" queries
+  @@index([status, createdAt])      // For pending/approved/rejected reporting
+  
 }

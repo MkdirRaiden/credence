@@ -1,13 +1,14 @@
-// src/config/helpers/critical-schema.ts
-import Joi from 'joi';
-import { CRITICAL_ENV_VARS } from '@/common/constants';
-import { configValidationSchema } from '@/config/config.schema';
+// src/config/schemas/critical-schema.ts
+import * as Joi from 'joi';
+import { CRITICAL_ENV_VARS } from '@/config/factory';
+import { configValidationSchema } from '@/config/schemas';
 
 /**
  * Extracts critical environment variables schema for pre-validation.
  * Fails fast before DI container initializes if required vars are missing.
  */
 export function getCriticalSchema(): Joi.ObjectSchema {
+  // Extract ONLY critical vars - no need to worry about unknowns
   return Joi.object(
     Object.fromEntries(
       CRITICAL_ENV_VARS.map((key) => [
@@ -15,5 +16,5 @@ export function getCriticalSchema(): Joi.ObjectSchema {
         configValidationSchema.extract(key).required(),
       ]),
     ),
-  ).unknown();
+  );
 }

@@ -8,13 +8,13 @@ import {
 } from '@nestjs/common';
 import { Probe } from '@/health/health.interface';
 import { SchedulerService } from '@/health/services';
-import { PROBES_TOKEN, PROBE_CHECK_TIMEOUT_MS } from '@/common/constants';
+import { PROBES_TOKEN, PROBE_CHECK_TIMEOUT_MS } from '@/config/factory';
 import {
   getLiveness,
   getReadiness,
   createTimeoutPromise,
 } from '@/health/helpers';
-import { BaseHealthService } from '@/health/contracts/base-health.service';
+import { BaseHealthService } from '@/health/contracts';
 
 /**
  * Orchestrates health checks across all probes.

@@ -1,7 +1,7 @@
 // src/features/auth/helpers/auth.helpers.ts
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { JWT_EXPIRATION, JWT_REFRESH_EXPIRATION } from '@/common/constants';
+import { JWT_EXPIRATION, JWT_REFRESH_EXPIRATION } from '@/config/factory';
 
 export const hashPassword = async (password: string): Promise<string> => {
   return bcrypt.hash(password, 10);

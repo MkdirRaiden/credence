@@ -1,4 +1,5 @@
 // prisma/enums/enums.prisma
+
 enum UserRole {
   USER
   ADMIN
@@ -13,13 +14,15 @@ enum RedemptionStatus {
   PENDING
   APPROVED
   REJECTED
+  CANCELLED    // Admin revokes an approved redemption
 }
 
 enum CreditEvent {
-  ISSUE
-  REVOKE
-  REFUND
-  EXPIRE
+  ISSUE        // Referral bonus issued
+  REVOKE       // Credits removed (user delete, term violation)
+  REFUND       // Credits returned to user
+  EXPIRE       // Auto-expiration
+  ADJUSTMENT   // Admin manual correction/dispute resolution
 }
 
 enum IdempotencyScope {

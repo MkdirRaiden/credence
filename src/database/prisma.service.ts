@@ -5,13 +5,10 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { retry } from '@/common/utils';
-import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '@/common/constants';
+import { retry } from '@/common/utils/retry';
+import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '@/config/factory';
 import { LoggerService } from '@/logger/services';
 
-/**
- * Extended PrismaClient with retry logic and graceful shutdown.
- */
 @Injectable()
 export class PrismaService
   extends PrismaClient
@@ -30,15 +27,17 @@ export class PrismaService
         retries: DATABASE_MAX_RETRIES,
         delay: DATABASE_RETRY_DELAY,
         exponentialBackoff: true,
+        logger: this.logger,
+        context: 'DatabaseConnection',
       });
       this.logger.log('Database connected successfully', 'PrismaService');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       this.logger.error(
-        `Database connection failed: ${message}`,
+        `Database connection failed: ${message}. Aborting startup.`,
         'PrismaService',
       );
-      throw err; // Re-throw to block app startup
+      throw err;
     }
   }
 

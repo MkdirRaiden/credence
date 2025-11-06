@@ -1,4 +1,4 @@
 // src/health/services/probes/prisma.probe.ts
-export { SchedulerService} from '@/health/services/scheduler.service';
-export { PrismaProbeService } from '@/health/services/probes/prisma.probe';
-export { HealthService } from '@/health/services/health.service'
+export * from '@/health/services/scheduler.service';
+export * from '@/health/services/probes/prisma.probe';
+export * from '@/health/services/health.service';

@@ -1,9 +1,13 @@
 // src/health/health.module.ts
 import { Module } from '@nestjs/common';
 import { HealthController } from '@/health/health.controller';
-import { SchedulerService, PrismaProbeService, HealthService } from '@/health/services';
-import { PROBES_TOKEN } from '@/common/constants';
-import { BaseHealthService } from '@/health/contracts/base-health.service';
+import {
+  SchedulerService,
+  PrismaProbeService,
+  HealthService,
+} from '@/health/services';
+import { PROBES_TOKEN } from '@/config/factory';
+import { BaseHealthService } from '@/health/contracts';
 
 /**
  * Health check module with extensible probe architecture.
@@ -16,7 +20,7 @@ import { BaseHealthService } from '@/health/contracts/base-health.service';
     PrismaProbeService,
     {
       provide: BaseHealthService,
-      useClass: HealthService
+      useClass: HealthService,
     },
     {
       provide: PROBES_TOKEN,

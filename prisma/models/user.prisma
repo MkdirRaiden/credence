@@ -40,4 +40,5 @@ model User {
   // Indexes
   @@index([deletedAt])
   @@index([email, deletedAt])
+  
 }

@@ -1,7 +1,7 @@
 // __tests__/unit/config/critical-schema.spec.ts
-import { getCriticalSchema } from '@/config/helpers/critical-schema';
+import { getCriticalSchema } from '@/config/schemas/critical-schema';
 import { CRITICAL_ENV_VARS } from '@/common/constants';
-import { configValidationSchema } from '@/config/config.schema';
+import { configValidationSchema } from '@/config/schemas/config.schema';
 
 describe('getCriticalSchema', () => {
   it('marks all critical vars as required', () => {

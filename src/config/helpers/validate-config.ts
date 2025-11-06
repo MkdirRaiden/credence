@@ -1,7 +1,6 @@
 // src/config/helpers/validate-config.ts
-import { configValidationSchema } from '@/config/config.schema';
+import { configValidationSchema, getCriticalSchema } from '@/config/schemas';
 import { BootstrapLogger } from '@/logger/services';
-import { getCriticalSchema } from '@/config/helpers';
 
 /**
  * Pre-validates critical environment variables before DI initialization.

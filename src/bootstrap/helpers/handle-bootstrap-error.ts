@@ -20,9 +20,9 @@ export async function handleBootstrapError(
     try {
       await app.close();
       logger.log('App closed gracefully', 'Bootstrap');
-    } catch (closeErr) {    
-      const closeMessage = 
-      closeErr instanceof Error ? closeErr.message : String(closeErr);
+    } catch (closeErr) {
+      const closeMessage =
+        closeErr instanceof Error ? closeErr.message : String(closeErr);
       logger.error(
         `Error closing app: ${closeMessage}`,
         undefined,
@@ -30,6 +30,6 @@ export async function handleBootstrapError(
       );
     }
   }
-  
+
   process.exit(1);
 }

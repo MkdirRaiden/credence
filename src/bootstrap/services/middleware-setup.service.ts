@@ -2,7 +2,7 @@
 import { Injectable, INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
 import compression from 'compression';
-import { EXCLUDE_PREFIX_ARRAY } from '@/common/constants';
+import { EXCLUDE_PREFIX_ARRAY } from '@/config/factory';
 import { RequestIdMiddleware } from '@/common/middlewares';
 
 /**

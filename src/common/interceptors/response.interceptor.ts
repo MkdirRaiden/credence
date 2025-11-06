@@ -9,7 +9,7 @@ import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { buildResponse } from '@/common/utils';
-import { APP_VERSION } from '@/common/constants';
+import { APP_VERSION } from '@/config/factory';
 import { StandardResponse } from '@/common/interfaces';
 
 /**

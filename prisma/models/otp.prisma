@@ -15,4 +15,5 @@ model OtpCode {
   @@index([userId, expiresAt])
   @@index([expiresAt])
   @@index([userId, createdAt])  // For rate limit check
+  
 }

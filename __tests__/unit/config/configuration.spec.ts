@@ -1,5 +1,5 @@
 // __tests__/unit/config/configuration.spec.ts
-import configuration from '@/config/configuration';
+import configuration from '@/config/factory/configuration';
 import { DEFAULT_ALLOWED_ORIGINS } from '@/common/constants';
 import { validEnv, partialEnv } from './__fixtures__/env.fixtures';
 

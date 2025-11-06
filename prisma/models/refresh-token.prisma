@@ -15,4 +15,5 @@ model RefreshToken {
   // Indexes
   @@index([userId, expiresAt])
   @@index([userId, isRevoked])
+  @@index([expiresAt])  // For background cleanup jobs
 }

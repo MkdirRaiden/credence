@@ -16,7 +16,7 @@ import {
 import { UsersModule } from '@/features/users/users.module';
 import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.module';
 import type { AppConfig } from '@/common/interfaces/app-config.interface';
-import { JWT_EXPIRATION } from '@/common/constants';
+import { JWT_EXPIRATION } from '@/config/factory';
 
 @Module({
   imports: [

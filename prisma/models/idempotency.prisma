@@ -12,6 +12,15 @@ model IdempotencyRecord {
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
 
-  @@unique([idempotencyKey], name: "uniq_idempotency_key")
-  @@index([updatedAt])
+  // Unique Constraints
+  @@unique([scope, idempotencyKey], name: "uniq_scope_idempotency_key")
+  // Idempotency keys are unique per scope, not globally
+  // e.g., API scope can have "req-123", JOB scope can also have "req-123"
+  
+  // Indexes for Query Performance
+  @@index([expiresAt])                        // Cleanup: find expired records
+  @@index([status, createdAt])                // Find hanging requests: WHERE status = 'STARTED' AND createdAt < ?
+  @@index([scope, status, createdAt])         // Find pending requests per scope
+  @@index([updatedAt])                        // Time-based queries
+  
 }

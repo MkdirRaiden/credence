@@ -4,7 +4,7 @@ import { LoggerService } from '@/logger/services';
 import {
   HEALTH_CHECK_INTERVAL_MS,
   PROBE_CHECK_TIMEOUT_MS,
-} from '@/common/constants';
+} from '@/config/factory';
 import { Probe } from '@/health/health.interface';
 
 /**

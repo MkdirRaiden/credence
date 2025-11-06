@@ -1,5 +1,5 @@
 // src/config/helpers/env-paths.ts
-import { NODE_ENV } from '@/common/constants';
+import { NODE_ENV } from '@/config/factory';
 import * as path from 'path';
 import * as fs from 'fs';
 

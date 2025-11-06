@@ -10,6 +10,5 @@ export abstract class BaseHealthService {
    * Create a new user with optional password hash
    * Used by: AuthModule.register(), admin user creation
    */
-    abstract assertReadiness(): Promise<void>;
-
+  abstract assertReadiness(): Promise<void>;
 }

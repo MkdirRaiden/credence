@@ -1,7 +1,6 @@
 // src/root.controller.ts
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { extractConfig } from '@/common/utils';
 import type { AppConfig } from '@/common/interfaces';
 
 @Controller()
@@ -9,20 +8,33 @@ export class RootController {
   constructor(private readonly configService: ConfigService<AppConfig, true>) {}
 
   /**
-   * Returns application metadata from environment configuration.
+   * Returns application metadata and configuration.
    */
   @Get()
-  getInfo(): { name: string; version: string; environment: string } {
-    const { appName, appVersion, nodeEnv } = extractConfig(this.configService, [
-      'appName',
-      'appVersion',
-      'nodeEnv',
-    ] as const);
+  getInfo() {
+    const appInfo = this.configService.get('app', { infer: true });
+    const serverInfo = this.configService.get('server', { infer: true });
+    const databaseInfo = this.configService.get('database', { infer: true });
+    const jwtInfo = this.configService.get('jwt', { infer: true });
+
+    const configuration = {
+      server: serverInfo,
+      database: {
+        url: databaseInfo.url,
+        maxRetries: databaseInfo.maxRetries,
+        healthCheckIntervalMs: databaseInfo.healthCheckIntervalMs,
+      },
+      jwt: {
+        jwtExpiration: jwtInfo.jwtExpiration,
+        jwtRefreshExpiration: jwtInfo.jwtRefreshExpiration,
+      },
+    };
 
     return {
-      name: appName,
-      version: appVersion,
-      environment: nodeEnv,
+      name: appInfo.appName,
+      version: appInfo.appVersion,
+      environment: serverInfo.nodeEnv,
+      config: configuration,
     };
   }
 }

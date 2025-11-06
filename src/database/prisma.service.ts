@@ -5,8 +5,7 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { retry } from '@/common/utils/retry';
-import { DATABASE_MAX_RETRIES, DATABASE_RETRY_DELAY } from '@/config/factory';
+import { retry } from '@/common/utils';
 import { LoggerService } from '@/logger/services';
 
 @Injectable()
@@ -16,6 +15,8 @@ export class PrismaService
 {
   constructor(
     dbUrl: string,
+    private readonly maxRetries: number,
+    private readonly retryDelays: number,
     private readonly logger: LoggerService,
   ) {
     super({ datasources: { db: { url: dbUrl } } });
@@ -24,8 +25,8 @@ export class PrismaService
   async onModuleInit() {
     try {
       await retry(() => this.$connect(), {
-        retries: DATABASE_MAX_RETRIES,
-        delay: DATABASE_RETRY_DELAY,
+        retries: this.maxRetries,
+        delay: this.retryDelays,
         exponentialBackoff: true,
         logger: this.logger,
         context: 'DatabaseConnection',

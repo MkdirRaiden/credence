@@ -2,6 +2,7 @@
 import { plainToClass } from 'class-transformer';
 import { TrimTransform } from '@/common/decorators/trim-transform.decorator';
 
+
 class TestDTO {
   @TrimTransform
   name: string;
@@ -13,41 +14,48 @@ class TestDTO {
   optional?: string;
 }
 
+
 describe('TrimTransform Decorator', () => {
   it('trims whitespace from strings', () => {
-    const input = {
+    const result = plainToClass(TestDTO, {
       name: '  hello world  ',
-      count: 42,
       optional: '\t  spaced  \n',
-    };
-
-    const result = plainToClass(TestDTO, input);
+      count: 42,
+    });
 
     expect(result.name).toBe('hello world');
-    expect(result.count).toBe(42);
     expect(result.optional).toBe('spaced');
   });
 
-  it('handles empty strings', () => {
-    const input = {
+
+  it('handles empty and whitespace-only strings', () => {
+    const result = plainToClass(TestDTO, {
       name: '   ',
       count: 0,
-    };
-
-    const result = plainToClass(TestDTO, input);
+    });
 
     expect(result.name).toBe('');
   });
 
+
   it('leaves non-string values unchanged', () => {
-    const input = {
+    const result = plainToClass(TestDTO, {
       name: 'test',
       count: 123,
-    };
-
-    const result = plainToClass(TestDTO, input);
+      optional: null,
+    });
 
     expect(result.count).toBe(123);
-    expect(typeof result.count).toBe('number');
+    expect(result.optional).toBeNull();
+  });
+
+
+  it('preserves internal whitespace', () => {
+    const result = plainToClass(TestDTO, {
+      name: '  hello   world  ',
+      count: 0,
+    });
+
+    expect(result.name).toBe('hello   world');
   });
 });

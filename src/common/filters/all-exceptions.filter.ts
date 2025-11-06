@@ -1,18 +1,13 @@
 // src/common/filters/all-exceptions.filter.ts
+import { Catch, ArgumentsHost, Injectable } from '@nestjs/common';
+import { Response } from 'express';
+import { BaseExceptionFilter } from '@/common/filters/base/base-exception.filter';
+import { LoggerService } from '@/logger/services';
 import {
-  Catch,
-  HttpException,
-  HttpStatus,
-  ArgumentsHost,
-  Injectable,
-} from '@nestjs/common';
-import { BaseExceptionFilter } from '@/common/filters/base-exception.filter';
-import { LoggerService } from '@/logger/services/logger.service';
-import { Response, Request } from 'express';
+  resolveExceptionDetails,
+  isFaviconRequest,
+} from '@/common/filters/helpers/resolve-exception-details';
 
-/**
- * Catch-all global exception filter for unhandled errors.
- */
 @Injectable()
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
@@ -20,56 +15,17 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     super(logger);
   }
 
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const req = ctx.getRequest<Request>();
+    const req = ctx.getRequest<{ url: string }>();
     const res = ctx.getResponse<Response>();
 
-    // Skip favicon requests (noisy in logs)
-    if (this.isFaviconRequest(req)) {
-      return res.status(204).send();
+    if (isFaviconRequest(req.url)) {
+      res.status(204).send();
+      return;
     }
 
-    const { status, message } = this.resolveExceptionDetails(exception);
+    const { status, message } = resolveExceptionDetails(exception);
     this.handleResponse(host, status, message, exception);
-  }
-
-  private isFaviconRequest(req: Request): boolean {
-    return req.url === '/favicon.ico';
-  }
-
-  private resolveExceptionDetails(exception: unknown): {
-    status: number;
-    message: string;
-  } {
-    let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
-
-    if (exception instanceof HttpException) {
-      status = exception.getStatus();
-      const resData = exception.getResponse();
-      message = this.extractHttpExceptionMessage(resData);
-    } else if (exception instanceof Error) {
-      message = exception.message;
-    }
-
-    return { status, message };
-  }
-
-  private extractHttpExceptionMessage(responseBody: unknown): string {
-    if (typeof responseBody === 'string') {
-      return responseBody;
-    }
-
-    if (
-      responseBody &&
-      typeof responseBody === 'object' &&
-      'message' in responseBody
-    ) {
-      const msg = (responseBody as { message?: string }).message;
-      if (msg) return msg;
-    }
-
-    return 'Internal server error';
   }
 }

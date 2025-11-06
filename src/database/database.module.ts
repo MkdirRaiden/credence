@@ -18,8 +18,8 @@ import type { AppConfig } from '@/common/interfaces';
         logger: LoggerService,
       ) => {
         const database = configService.get('database', { infer: true });
-        const databaseUrl = database.url;
-        return new PrismaService(databaseUrl, logger);
+        const { url, maxRetries, retryDelays } = database;
+        return new PrismaService(url, maxRetries, retryDelays, logger);
       },
       inject: [ConfigService, LoggerService],
     },

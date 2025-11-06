@@ -2,7 +2,7 @@
 import { LogEntry, BuildOptions, LogLevel } from '@/logger/logger.interface';
 import { safeSerialize } from '@/logger/helpers';
 import { DEFAULT_CONTEXT } from '@/common/constants';
-import { NODE_ENV } from '@/config/factory';
+import { NODE_ENV } from '@/config/constants';
 import { requestContext } from '@/common/utils';
 
 /**

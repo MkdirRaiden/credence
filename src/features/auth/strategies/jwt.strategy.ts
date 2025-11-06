@@ -9,10 +9,11 @@ import type { AppConfig } from '@/common/interfaces/app-config.interface';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(configService: ConfigService<AppConfig, true>) {
+    const jwtConfig = configService.get('jwt', { infer: true });
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get('jwtSecret', { infer: true }),
+      secretOrKey: jwtConfig.jwtSecret,
     });
   }
 

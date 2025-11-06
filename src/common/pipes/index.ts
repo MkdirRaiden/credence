@@ -1,2 +1,2 @@
 // src/common/pipes/index.ts
-export { ParseUuidPipe } from './parse-uuid.pipe';
+export * from './parse-uuid.pipe';

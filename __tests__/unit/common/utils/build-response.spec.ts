@@ -1,28 +1,32 @@
-// __tests__/unit/common/utils/build-response.spec.ts
-import { buildResponse } from '@/common/utils/response-builder';
+// __tests__/unit/common/utils/response-builder.spec.ts
+import { buildResponse } from '@/common/utils';
 
-describe('buildResponse', () => {
-  it('builds success response with defaults', () => {
-    const result = buildResponse({ id: 1 }, '/test', 200);
+
+describe('buildResponse Utility', () => {
+  it('builds success response (statusCode < 400)', () => {
+    const result = buildResponse({ id: 1 }, '/test', 200, 'Custom message');
 
     expect(result.success).toBe(true);
     expect(result.statusCode).toBe(200);
-    expect(result.message).toBe('Request successful');
+    expect(result.message).toBe('Custom message');
     expect(result.data).toEqual({ id: 1 });
     expect(result.path).toBe('/test');
     expect(result.timestamp).toBeDefined();
   });
 
-  it('builds error response with custom message', () => {
-    const result = buildResponse(null, '/fail', 500, 'DB error');
+  it('builds error response (statusCode >= 400)', () => {
+    const resultWithMessage = buildResponse(null, '/fail', 500, 'DB error');
+    expect(resultWithMessage.success).toBe(false);
+    expect(resultWithMessage.message).toBe('DB error');
+    expect(resultWithMessage.data).toBeUndefined();
 
-    expect(result.success).toBe(false);
-    expect(result.message).toBe('DB error');
-    expect(result.data).toBeUndefined();
+    const resultDefault = buildResponse(null, '/fail', 400);
+    expect(resultDefault.success).toBe(false);
+    expect(resultDefault.message).toBe('Internal server error');
   });
 
-  it('uses default error message when not provided', () => {
-    const result = buildResponse(null, '/fail', 500);
-    expect(result.message).toBe('Internal server error');
+  it('uses default success message when not provided', () => {
+    const result = buildResponse({ test: true }, '/api', 201);
+    expect(result.message).toBe('Request successful');
   });
 });

@@ -1,5 +1,5 @@
 // __tests__/unit/health/helpers/get-readiness.spec.ts
-import { getReadiness } from '@/health/helpers/get-readiness';
+import { getReadiness } from '@/health/helpers';
 import type { Probe } from '@/health/health.interface';
 
 describe('getReadiness', () => {

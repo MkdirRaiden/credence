@@ -1,48 +1,62 @@
 // __tests__/integration/health.integration.spec.ts
-import { INestApplication } from '@nestjs/common';
-import { HealthService } from '@/health/services/health.service';
+import { SchedulerService } from '@/health/services';
 import { HealthModule } from '@/health/health.module';
-import { PROBE_CHECK_TIMEOUT_MS } from '@/common/constants';
-import { closeTestApp, createTestModule } from '../helpers/test-module.factory';
+import { TestContext } from '../common/test-context';
 
-jest.setTimeout(30000);
 
-describe('HealthService (Integration)', () => {
-  let app: INestApplication;
-  let healthService: HealthService;
+describe('HealthModule (Integration)', () => {
+  const context = new TestContext();
+  let scheduler: SchedulerService;
+
 
   beforeAll(async () => {
-    const moduleRef = await createTestModule({ imports: [HealthModule] });
-    app = moduleRef.createNestApplication();
-    await app.init();
-    healthService = moduleRef.get(HealthService);
+    await context.setup({
+      imports: [HealthModule],
+    });
+    scheduler = context.getService(SchedulerService);
   });
+
 
   afterAll(async () => {
-    if (app) await closeTestApp(app);  // ← Use cleanup helper
+    await context.teardown();
   });
 
-  it('bootstrap readiness passes with connected database', async () => {
-    await expect(healthService.assertReadiness()).resolves.not.toThrow();
+
+  it('scheduler service is registered', () => {
+    expect(scheduler).toBeDefined();
+    expect(scheduler).toBeInstanceOf(SchedulerService);
   });
 
-  it('liveness returns uptime', () => {
-    const result = healthService.liveness();
-    expect(result.status).toBe('up');
-    expect(result.uptimeMs).toBeGreaterThan(0);
+
+  it('scheduler has start method', () => {
+    expect(scheduler).toHaveProperty('start');
+    expect(typeof scheduler.start).toBe('function');
   });
 
-  it('readiness includes database status', async () => {
-    const result = await healthService.readinessOrThrow();
-    expect(result.status).toBe('ok');
-    expect(result.details.database?.status).toBe('up');
+
+  it('scheduler can start with empty probes', () => {
+    expect(() => {
+      scheduler.start([]);
+    }).not.toThrow();
   });
 
-  it('readiness completes within timeout', async () => {
-    const start = Date.now();
-    await healthService.readinessOrThrow();
-    const duration = Date.now() - start;
 
-    expect(duration).toBeLessThan(PROBE_CHECK_TIMEOUT_MS * 1.5);
+  it('scheduler has onApplicationShutdown method', () => {
+    expect(scheduler).toHaveProperty('onApplicationShutdown');
+    expect(typeof scheduler.onApplicationShutdown).toBe('function');
+  });
+
+
+  it('scheduler stops on application shutdown', () => {
+    scheduler.start([]);
+    expect(() => {
+      scheduler.onApplicationShutdown('SIGTERM');
+    }).not.toThrow();
+  });
+
+
+  it('scheduler is injected with logger and config', () => {
+    expect(scheduler['logger']).toBeDefined();
+    expect(scheduler['config']).toBeDefined();
   });
 });

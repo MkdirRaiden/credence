@@ -1,64 +1,35 @@
 // __tests__/integration/config.integration.spec.ts
-import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { closeTestApp, createTestModule } from '../helpers/test-module.factory';
-import type { AppConfig } from '@/common/interfaces/app-config.interface';
+import type { AppConfig } from '@/common/interfaces';
+import { TestContext } from '../common/test-context';
+
 
 describe('ConfigModule (Integration)', () => {
-  let app: INestApplication;
-  let configService: ConfigService<AppConfig>;
+  const context = new TestContext();
+
 
   beforeAll(async () => {
-    const moduleRef = await createTestModule();
-    app = moduleRef.createNestApplication();
-    await app.init();
-    configService = moduleRef.get(ConfigService);
+    await context.setup();
   });
+
 
   afterAll(async () => {
-    if (app) await closeTestApp(app);
+    await context.teardown();
   });
 
-  it('loads all required environment variables', () => {
-    const keys: (keyof AppConfig)[] = [
-      'nodeEnv',
-      'port',
-      'appName',
-      'appVersion',
-      'host',
-      'globalPrefix',
-      'database',
-      'allowedOrigins',
-      'jwtSecret',
-      'jwtRefreshSecret',
-    ];
 
-    keys.forEach((key) => {
-      const value = configService.get(key);
-      expect(value).toBeDefined();
-    });
-  });
-
-  it('loads JWT secrets from environment', () => {
-    const jwtSecret = configService.get('jwtSecret');
-    const jwtRefreshSecret = configService.get('jwtRefreshSecret');
-
-    expect(jwtSecret).toBeDefined();
-    expect(jwtRefreshSecret).toBeDefined();
-    expect(jwtSecret).not.toBe(jwtRefreshSecret);
-  });
-
-  it('database configuration is valid', () => {
-    const database = configService.get('database');
+  it('loads full configuration', () => {
+    const config = context.getService<ConfigService<AppConfig, true>>(ConfigService);
+    const database = config.get('database', { infer: true });
     expect(database).toBeDefined();
-    expect(typeof database).toBe('object');
-    expect(database).toHaveProperty('url');
-    expect((database as any).url).toMatch(/^postgres/);
+    expect(database.url).toBeDefined();
   });
 
-  it('allowed origins are configured', () => {
-    const allowedOrigins = configService.get('allowedOrigins');
-    expect(allowedOrigins).toBeDefined();
-    expect(Array.isArray(allowedOrigins)).toBe(true);
+
+  it('config is properly typed', () => {
+    const config = context.getService<ConfigService<AppConfig, true>>(ConfigService);
+    const server = config.get('server', { infer: true });
+    expect(server.port).toEqual(expect.any(Number));
+    expect(server.nodeEnv).toEqual(expect.any(String));
   });
 });

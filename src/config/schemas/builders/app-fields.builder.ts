@@ -1,6 +1,6 @@
 // src/config/schemas/builders/app-fields.builder.ts
 import * as Joi from 'joi';
-import { APP_NAME, APP_VERSION } from '@/config/factory';
+import { APP_NAME, APP_VERSION } from '@/config/constants';
 
 /**
  * Builds application metadata configuration fields schema.

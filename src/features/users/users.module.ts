@@ -1,7 +1,14 @@
 // src/features/users/users.module.ts
 import { Module } from '@nestjs/common';
-import { UsersController } from '@/features/users/users.controller';
-import { UsersRepository } from '@/features/users/repositories/users.repository';
+import {
+  UsersLookupController,
+  UsersCrudController,
+} from '@/features/users/controllers';
+import {
+  UsersAuthRepository,
+  UsersLookupRepository,
+  UsersCrudRepository,
+} from '@/features/users/repositories';
 import {
   UserAuthService,
   UserCrudService,
@@ -14,12 +21,14 @@ import { BaseAuthService, BaseCrudService } from '@/features/users/contracts';
  * Exports contracts for Auth module to use.
  */
 @Module({
-  controllers: [UsersController],
+  controllers: [UsersLookupController, UsersCrudController],
   providers: [
     UserAuthService,
     UserCrudService,
     UserLookupService,
-    UsersRepository,
+    UsersAuthRepository,
+    UsersCrudRepository,
+    UsersLookupRepository,
     {
       provide: BaseAuthService,
       useClass: UserAuthService,

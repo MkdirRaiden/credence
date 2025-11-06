@@ -2,8 +2,8 @@
 import { Injectable, INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
 import compression from 'compression';
-import { EXCLUDE_PREFIX_ARRAY } from '@/config/factory';
 import { RequestIdMiddleware } from '@/common/middlewares';
+import type { AppConfig } from '@/common/interfaces';
 
 /**
  * Configures global middleware for security, compression, CORS, and request tracing.
@@ -11,16 +11,16 @@ import { RequestIdMiddleware } from '@/common/middlewares';
  */
 @Injectable()
 export class MiddlewareSetupService {
-  setup(
-    app: INestApplication,
-    allowedOrigins: string[],
-    globalPrefix: string,
-  ): void {
+  setup(app: INestApplication, serverConfig: AppConfig['server']): void {
     this.setupRequestId(app);
     this.setupSecurity(app);
     this.setupCompression(app);
-    this.setupCors(app, allowedOrigins);
-    this.setupGlobalPrefix(app, globalPrefix);
+    this.setupCors(app, serverConfig.allowedOrigins);
+    this.setupGlobalPrefix(
+      app,
+      serverConfig.globalPrefix,
+      serverConfig.excludePrefixArray,
+    );
   }
 
   private setupRequestId(app: INestApplication): void {
@@ -43,7 +43,11 @@ export class MiddlewareSetupService {
     });
   }
 
-  private setupGlobalPrefix(app: INestApplication, globalPrefix: string): void {
-    app.setGlobalPrefix(globalPrefix, { exclude: EXCLUDE_PREFIX_ARRAY });
+  private setupGlobalPrefix(
+    app: INestApplication,
+    globalPrefix: string,
+    excludePrefixArray: string[],
+  ): void {
+    app.setGlobalPrefix(globalPrefix, { exclude: excludePrefixArray });
   }
 }

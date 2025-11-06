@@ -1,8 +1,8 @@
 // src/bootstrap/services/server.service.ts
 import { Injectable, INestApplication } from '@nestjs/common';
-import { LoggerService } from '@/logger/services/logger.service';
+import { LoggerService } from '@/logger/services';
 import { startServerAndLog } from '@/bootstrap/helpers';
-import { ServerConfig } from '@/bootstrap/bootstrap.interface';
+import type { AppConfig } from '@/common/interfaces';
 
 /**
  * Starts HTTP server and logs the listening URL.
@@ -11,7 +11,10 @@ import { ServerConfig } from '@/bootstrap/bootstrap.interface';
 export class ServerService {
   constructor(private readonly logger: LoggerService) {}
 
-  async start(app: INestApplication, config: ServerConfig): Promise<void> {
-    await startServerAndLog(config, app, this.logger);
+  async start(
+    app: INestApplication,
+    serverConfig: AppConfig['server'],
+  ): Promise<void> {
+    await startServerAndLog(serverConfig, app, this.logger);
   }
 }

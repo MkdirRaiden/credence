@@ -1,8 +1,8 @@
 // src/features/users/services/user-auth.service.ts
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { LoggerService } from '@/logger/services/logger.service';
-import { UsersRepository } from '@/features/users/repositories/users.repository';
+import { LoggerService } from '@/logger/services';
+import { UsersAuthRepository } from '@/features/users/repositories';
 import { BaseAuthService } from '@/features/users/contracts';
 
 /**
@@ -13,7 +13,7 @@ export class UserAuthService extends BaseAuthService {
   private readonly logContext = 'UserAuthService';
 
   constructor(
-    private readonly repository: UsersRepository,
+    private readonly repository: UsersAuthRepository,
     private readonly logger: LoggerService,
   ) {
     super();

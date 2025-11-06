@@ -1,38 +1,42 @@
 // __tests__/integration/prisma.integration.spec.ts
-import { INestApplication } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
-import { closeTestApp, createTestModule } from '../helpers/test-module.factory';
+import { TestContext } from '../common/test-context';
+
 
 jest.setTimeout(30000);
 
+
 describe('PrismaService (Integration)', () => {
-  let app: INestApplication;
-  let db: PrismaService;
+  const context = new TestContext();
+  let prisma: PrismaService;
+
 
   beforeAll(async () => {
-    const moduleRef = await createTestModule();
-    app = moduleRef.createNestApplication();
-    await app.init();
-    db = moduleRef.get(PrismaService);
+    await context.setup();
+    prisma = context.prisma as PrismaService;
+    expect(prisma).toBeDefined();
   });
+
 
   afterAll(async () => {
-    if (app) await closeTestApp(app);  // ← Use helper
+    await context.teardown();
   });
+
 
   it('connects to database on module init', () => {
-    expect(db).toBeDefined();
-    expect(db.$queryRaw).toBeDefined();
+    expect(prisma).toBeDefined();
   });
 
+
   it('executes simple raw SQL queries', async () => {
-    const result = await db.$queryRaw<[{ result: number }]>`SELECT 1 as result`;
+    const result = await prisma.$queryRaw<[{ result: number }]>`SELECT 1 as result`;
     expect(result).toHaveLength(1);
     expect(result[0].result).toBe(1);
   });
 
+
   it('handles transactions with temp tables', async () => {
-    await db.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       await tx.$executeRaw`CREATE TEMP TABLE test_table (id SERIAL, name TEXT)`;
       await tx.$executeRaw`INSERT INTO test_table (name) VALUES ('test')`;
       const rows = await tx.$queryRaw<{ name: string }[]>`
@@ -43,8 +47,9 @@ describe('PrismaService (Integration)', () => {
     });
   });
 
+
   it('handles multiple queries in transaction', async () => {
-    await db.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       await tx.$executeRaw`CREATE TEMP TABLE users (id SERIAL, email TEXT UNIQUE)`;
       await tx.$executeRaw`INSERT INTO users (email) VALUES ('user1@test.com')`;
       await tx.$executeRaw`INSERT INTO users (email) VALUES ('user2@test.com')`;
@@ -56,9 +61,10 @@ describe('PrismaService (Integration)', () => {
     });
   });
 
+
   it('rolls back on transaction error', async () => {
     try {
-      await db.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx) => {
         await tx.$executeRaw`CREATE TEMP TABLE rollback_test (id INT)`;
         await tx.$executeRaw`INSERT INTO rollback_test VALUES (1)`;
         throw new Error('Intentional error');

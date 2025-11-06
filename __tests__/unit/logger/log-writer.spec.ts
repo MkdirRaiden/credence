@@ -1,5 +1,5 @@
 // __tests__/unit/logger/log-writer.spec.ts
-import { logWriter } from '@/logger/helpers/log-writer';
+import { logWriter } from '@/logger/helpers';
 
 describe('logWriter', () => {
   let errorSpy: jest.SpyInstance;

@@ -1,3 +1,3 @@
 // src/features/users/mappers/index.ts
-export { toCreateInput, toUpdateInput } from './to-prisma';
-export { toResponseDto, toResponseDtoList } from './to-response';
+export * from './to-prisma';
+export * from './to-response';

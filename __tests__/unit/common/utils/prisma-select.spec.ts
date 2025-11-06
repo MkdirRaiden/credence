@@ -2,7 +2,8 @@
 import { createPrismaSelect } from '@/common/utils/prisma-select';
 import type { FieldVisibility, FieldSelectorContext } from '@/common/interfaces';
 
-describe('createPrismaSelect utility', () => {
+
+describe('createPrismaSelect Utility', () => {
   const fieldVisibility: FieldVisibility = {
     id: ['public', 'self', 'admin'],
     name: ['public', 'self', 'admin'],
@@ -12,66 +13,32 @@ describe('createPrismaSelect utility', () => {
     internalNotes: ['admin'],
   };
 
-  it('returns correct select for public visibility level', () => {
-    const context: FieldSelectorContext = {
-      level: 'public',
-    };
+  it('filters fields based on visibility level', () => {
+    const testCases = [
+      {
+        level: 'public' as const,
+        expected: { id: true, name: true, email: false, password: false, role: false, internalNotes: false },
+      },
+      {
+        level: 'self' as const,
+        expected: { id: true, name: true, email: true, password: false, role: false, internalNotes: false },
+      },
+      {
+        level: 'admin' as const,
+        expected: { id: true, name: true, email: true, password: true, role: true, internalNotes: true },
+      },
+    ];
 
-    const result = createPrismaSelect(fieldVisibility, context);
-
-    expect(result).toEqual({
-      id: true,
-      name: true,
-      email: false,
-      password: false,
-      role: false,
-      internalNotes: false,
-    });
-  });
-
-  it('returns correct select for self visibility level', () => {
-    const context: FieldSelectorContext = {
-      level: 'self',
-      requesterId: 'user-456',
-    };
-
-    const result = createPrismaSelect(fieldVisibility, context);
-
-    expect(result).toEqual({
-      id: true,
-      name: true,
-      email: true,
-      password: false,
-      role: false,
-      internalNotes: false,
-    });
-  });
-
-  it('returns correct select for admin visibility level', () => {
-    const context: FieldSelectorContext = {
-      level: 'admin',
-      requesterId: 'admin-789',
-    };
-
-    const result = createPrismaSelect(fieldVisibility, context);
-
-    expect(result).toEqual({
-      id: true,
-      name: true,
-      email: true,
-      password: true,
-      role: true,
-      internalNotes: true,
+    testCases.forEach(({ level, expected }) => {
+      const context: FieldSelectorContext = { level };
+      const result = createPrismaSelect(fieldVisibility, context);
+      expect(result).toEqual(expected);
     });
   });
 
   it('handles empty field visibility', () => {
-    const context: FieldSelectorContext = {
-      level: 'public',
-    };
-
+    const context: FieldSelectorContext = { level: 'public' };
     const result = createPrismaSelect({}, context);
-
     expect(result).toEqual({});
   });
 });

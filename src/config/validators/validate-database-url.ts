@@ -47,7 +47,7 @@ export function validateDatabaseUrl(url: string): string {
   // Username should ideally exist (warning only, don't fail)
   if (!parsedUrl.username) {
     console.warn(
-      '⚠️  DATABASE_URL does not contain username. This may indicate a misconfiguration.',
+      'DATABASE_URL does not contain username. This may indicate a misconfiguration.',
     );
   }
 

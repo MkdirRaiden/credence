@@ -1,5 +1,5 @@
 // __tests__/unit/logger/format-log-json.spec.ts
-import { formatLogJson } from '@/logger/helpers/format-log-json';
+import { formatLogJson } from '@/logger/helpers';
 
 describe('formatLogJson', () => {
   it('formats basic log with required fields', () => {
@@ -36,7 +36,8 @@ describe('formatLogJson', () => {
     circular.self = circular;
     const circularParsed = JSON.parse(formatLogJson('DEBUG', circular));
 
-    expect(circularParsed.message).toBe('[Unserializable Object]'); 
+    expect(circularParsed.message).toBe('[Unserializable Object]');
+    expect(circularParsed.serializationError).toBeUndefined(); 
   });
 
   it('uses custom context and env when provided', () => {

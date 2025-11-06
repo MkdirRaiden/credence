@@ -1,3 +1,3 @@
 // src/features/auth/strategies/index.ts
-export { JwtStrategy } from './jwt.strategy';
-export { LocalStrategy } from './local.strategy';
+export * from './jwt.strategy';
+export * from './local.strategy';

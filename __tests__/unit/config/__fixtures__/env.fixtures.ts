@@ -1,25 +1,19 @@
 // __tests__/unit/config/__fixtures__/env.fixtures.ts
 export const validEnv = {
-  NODE_ENV: 'development',
-  PORT: '4000',
-  DATABASE_URL: 'postgresql://localhost:5432/credence',
+  NODE_ENV: 'test',
+  PORT: '5000',
   APP_NAME: 'Credence',
   APP_VERSION: '1.0.0',
-  ALLOWED_ORIGINS: 'http://localhost:3000,https://credence.app',
-  JWT_SECRET: 'super-secret-jwt-key-for-testing-only',
-  JWT_REFRESH_SECRET: 'super-secret-refresh-key-for-testing-only',
+  ALLOWED_ORIGINS: 'http://localhost:3000,http://localhost:4200',
+  DATABASE_URL: 'postgresql://test_user:test_password@localhost:5432/credence_test',
+  JWT_SECRET: 'aB3xY9mK2pL5qRsT8vW1nO4jU6hG7fD0eC',
+  JWT_REFRESH_SECRET: 'pO9wMl1uClWKODvDmSQ69RUcHY9ii2eP1Ld6KWWdes',
 };
 
-export const invalidEnv = {
-  NODE_ENV: 'invalid_env',
-  DATABASE_URL: 'not_a_url',
-  ALLOWED_ORIGINS: 'not_a_url',
-  JWT_SECRET: '',
-  JWT_REFRESH_SECRET: '',
-};
 
-export const partialEnv = {
-  DATABASE_URL: 'postgresql://localhost:5432/credence',
-  JWT_SECRET: 'secret',
-  JWT_REFRESH_SECRET: 'refresh-secret',
+export const criticalErrorEnv = {
+  PORT: '5000',
+  APP_NAME: 'Credence',
+  APP_VERSION: '1.0.0',
+  // Missing critical: DATABASE_URL, JWT_SECRET, JWT_REFRESH_SECRET
 };

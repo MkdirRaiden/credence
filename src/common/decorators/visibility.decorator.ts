@@ -6,12 +6,6 @@ import { VISIBILITY_KEY } from '@/common/constants';
 /**
  * Decorator to mark endpoint visibility level
  * Used by VisibilityInterceptor to determine FieldSelectorContext
- *
- * @param level - 'public' | 'admin'
- *
- * @example
- * @Get(':id')
- * @Visibility('public')
  * async findById(@Param('id') id: string) { }
  */
 export const Visibility = (level: VisibilityLevel) =>

@@ -1,5 +1,5 @@
 // __tests__/unit/logger/error-meta.spec.ts
-import { errorMeta } from '@/logger/helpers/error-meta';
+import { errorMeta } from '@/logger/helpers';
 
 describe('errorMeta', () => {
   it('returns name and trace for Error', () => {

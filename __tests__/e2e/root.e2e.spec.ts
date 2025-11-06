@@ -1,8 +1,10 @@
 // __tests__/e2e/root.e2e.spec.ts
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { createTestApp, closeTestApp } from '../helpers/test-app';
+import { createTestApp, closeTestApp } from '../common/test-app';
 
+
+// __tests__/e2e/root.e2e.spec.ts
 describe('Root Controller (E2E)', () => {
   let app: INestApplication;
 
@@ -15,36 +17,25 @@ describe('Root Controller (E2E)', () => {
   });
 
   describe('GET /', () => {
-    it('returns API information', async () => {
+    it('returns raw API info (not wrapped)', async () => {
       const response = await request(app.getHttpServer())
         .get('/')
         .expect(200)
         .expect('Content-Type', /json/);
 
-      expect(response.body).toHaveProperty('success', true);
-      expect(response.body).toHaveProperty('statusCode', 200);
-      expect(response.body).toHaveProperty('data');
-      expect(response.body.data).toHaveProperty('name');
-      expect(response.body.data).toHaveProperty('version');
-      expect(response.body.data).toHaveProperty('environment');
-      expect(response.body.data.environment).toBe('test');
+      // Excluded routes return RAW data (no wrapper)
+      expect(response.body).toHaveProperty('name');
+      expect(response.body).toHaveProperty('version');
+      expect(response.body).toHaveProperty('environment');
+      expect(response.body.environment).toBe('test');
     });
 
-    it('has correct response structure', async () => {
+    it('includes config info', async () => {
       const response = await request(app.getHttpServer()).get('/').expect(200);
 
-      // Check wrapper structure
-      expect(response.body).toHaveProperty('success', true);
-      expect(response.body).toHaveProperty('statusCode', 200);
-      expect(response.body).toHaveProperty('message');
-      expect(response.body).toHaveProperty('data');
-      expect(response.body).toHaveProperty('timestamp');
-      expect(response.body).toHaveProperty('path', '/');
-
-      // Check data content
-      expect(typeof response.body.data.name).toBe('string');
-      expect(typeof response.body.data.version).toBe('string');
-      expect(typeof response.body.data.environment).toBe('string');
+      expect(response.body).toHaveProperty('config');
+      expect(response.body.config).toHaveProperty('database');
+      expect(response.body.config).toHaveProperty('jwt');
     });
   });
 });

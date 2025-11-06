@@ -7,12 +7,9 @@ import {
   ExceptionFilter,
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { LoggerService } from '@/logger/services/logger.service';
+import { LoggerService } from '@/logger/services';
 import { resolveAndRegister } from '@/bootstrap/helpers';
-import {
-  GLOBAL_INTERCEPTORS,
-  GLOBAL_FILTERS,
-} from '@/common/modules/common.config';
+import { GLOBAL_INTERCEPTORS, GLOBAL_FILTERS } from '@/common/modules';
 
 /**
  * Configures global pipes, interceptors, and exception filters after DI initialization.

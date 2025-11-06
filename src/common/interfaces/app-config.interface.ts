@@ -1,13 +1,28 @@
 // src/common/interfaces/app-config.interface.ts
 export interface AppConfig {
-  nodeEnv: string;
-  port: number;
-  appName: string;
-  appVersion: string;
-  host: string;
-  globalPrefix: string;
-  database: { url: string };
-  allowedOrigins: string[];
-  jwtSecret: string;
-  jwtRefreshSecret: string;
+  server: {
+    nodeEnv: string;
+    port: number;
+    host: string;
+    globalPrefix: string;
+    allowedOrigins: string[];
+    excludePrefixArray: string[];
+  };
+  app: {
+    appName: string;
+    appVersion: string;
+  };
+  database: {
+    url: string;
+    maxRetries: number;
+    retryDelays: number;
+    healthCheckIntervalMs: number;
+    probeCheckTimeoutMs: number;
+  };
+  jwt: {
+    jwtSecret: string;
+    jwtRefreshSecret: string;
+    jwtExpiration: number;
+    jwtRefreshExpiration: number;
+  };
 }

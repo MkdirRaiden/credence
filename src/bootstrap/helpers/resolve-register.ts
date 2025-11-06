@@ -2,7 +2,7 @@
 import { Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from '@/logger/services';
-import { CRITICAL_PROVIDERS } from '@/common/modules/common.config';
+import { CRITICAL_PROVIDERS } from '@/common/modules';
 
 /**
  * Dynamically resolves and registers providers from DI container after initialization.
@@ -14,7 +14,7 @@ export function resolveAndRegister<T>(
   logger?: LoggerService,
 ) {
   providers.forEach((provider) => {
-    const instance = moduleRef.get(provider, { strict: true });
+    const instance = moduleRef.get(provider, { strict: false });
     if (instance) {
       registerFn(instance);
     } else {

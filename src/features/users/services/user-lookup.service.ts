@@ -1,6 +1,6 @@
 // src/features/users/services/user-lookup.service.ts
 import { Injectable } from '@nestjs/common';
-import { UsersRepository } from '@/features/users/repositories/users.repository';
+import { UsersLookupRepository } from '@/features/users/repositories';
 import { UserResponseDto } from '@/features/users/dtos';
 import { FieldSelectorContext } from '@/common/interfaces';
 import * as UsersMapper from '@/features/users/mappers';
@@ -10,7 +10,7 @@ import * as UsersMapper from '@/features/users/mappers';
  */
 @Injectable()
 export class UserLookupService {
-  constructor(private readonly repository: UsersRepository) {}
+  constructor(private readonly repository: UsersLookupRepository) {}
 
   async findAll(
     context: FieldSelectorContext,

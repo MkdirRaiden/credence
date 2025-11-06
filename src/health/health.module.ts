@@ -1,12 +1,8 @@
 // src/health/health.module.ts
 import { Module } from '@nestjs/common';
 import { HealthController } from '@/health/health.controller';
-import {
-  SchedulerService,
-  PrismaProbeService,
-  HealthService,
-} from '@/health/services';
-import { PROBES_TOKEN } from '@/config/factory';
+import * as services from '@/health/services';
+import { PROBES_TOKEN } from '@/health/symbols';
 import { BaseHealthService } from '@/health/contracts';
 
 /**
@@ -15,20 +11,20 @@ import { BaseHealthService } from '@/health/contracts';
 @Module({
   controllers: [HealthController],
   providers: [
-    HealthService,
-    SchedulerService,
-    PrismaProbeService,
+    services.HealthService,
+    services.SchedulerService,
+    services.PrismaProbeService,
     {
       provide: BaseHealthService,
-      useClass: HealthService,
+      useClass: services.HealthService,
     },
     {
       provide: PROBES_TOKEN,
-      useFactory: (prismaProbe: PrismaProbeService) => [
+      useFactory: (prismaProbe: services.PrismaProbeService) => [
         prismaProbe,
         // Add more probes here: redisProbe, mongoProbe, etc.
       ],
-      inject: [PrismaProbeService],
+      inject: [services.PrismaProbeService],
     },
   ],
   exports: [BaseHealthService],

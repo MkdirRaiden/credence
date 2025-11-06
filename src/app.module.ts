@@ -8,7 +8,7 @@ import { BootstrapModule } from '@/bootstrap/bootstrap.module';
 import { HealthModule } from '@/health/health.module';
 import { UsersModule } from '@/features/users/users.module';
 import { RootController } from '@/root.controller';
-import { AuthModule } from './features/auth/auth.module';
+import { AuthModule } from '@/features/auth/auth.module';
 
 /**
  * Root application module with strict initialization order:

@@ -8,13 +8,11 @@ import {
 } from '@nestjs/common';
 import { Probe } from '@/health/health.interface';
 import { SchedulerService } from '@/health/services';
-import { PROBES_TOKEN, PROBE_CHECK_TIMEOUT_MS } from '@/config/factory';
-import {
-  getLiveness,
-  getReadiness,
-  createTimeoutPromise,
-} from '@/health/helpers';
+import { PROBES_TOKEN } from '@/health/symbols';
+import * as helpers from '@/health/helpers';
 import { BaseHealthService } from '@/health/contracts';
+import { ConfigService } from '@nestjs/config';
+import type { AppConfig } from '@/common/interfaces';
 
 /**
  * Orchestrates health checks across all probes.
@@ -26,6 +24,7 @@ export class HealthService extends BaseHealthService implements OnModuleInit {
   constructor(
     @Inject(PROBES_TOKEN) private readonly probes: Probe[],
     private readonly scheduler: SchedulerService,
+    private readonly config: ConfigService<AppConfig, true>,
   ) {
     super();
   }
@@ -35,7 +34,7 @@ export class HealthService extends BaseHealthService implements OnModuleInit {
   }
 
   liveness() {
-    return getLiveness();
+    return helpers.getLiveness();
   }
 
   async readinessOrThrow() {
@@ -65,12 +64,16 @@ export class HealthService extends BaseHealthService implements OnModuleInit {
   }
 
   private async executeReadinessCheck() {
-    const probeTimeoutMs = Math.floor(PROBE_CHECK_TIMEOUT_MS * 0.8);
-    const serviceTimeoutHandle = createTimeoutPromise(PROBE_CHECK_TIMEOUT_MS);
+    const { probeCheckTimeoutMs } = this.config.get('database', {
+      infer: true,
+    });
+    const probeTimeoutMs = Math.floor(probeCheckTimeoutMs * 0.8);
+    const serviceTimeoutHandle =
+      helpers.createTimeoutPromise(probeCheckTimeoutMs);
 
     try {
       return await Promise.race([
-        getReadiness(this.probes, { timeout: probeTimeoutMs }),
+        helpers.getReadiness(this.probes, { timeout: probeTimeoutMs }),
         serviceTimeoutHandle.promise,
       ]);
     } finally {

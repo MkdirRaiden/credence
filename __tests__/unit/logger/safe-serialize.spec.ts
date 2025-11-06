@@ -1,5 +1,5 @@
 // __tests__/unit/logger/safe-serialize.spec.ts
-import { safeSerialize } from '@/logger/helpers/safe-serialize';
+import { safeSerialize } from '@/logger/helpers';
 
 describe('safeSerialize', () => {
   it('returns string unchanged', () => {

@@ -2,8 +2,11 @@
 import { INestApplication } from '@nestjs/common';
 import { BootstrapLogger } from '@/logger/services';
 
+const APP_CLOSE_TIMEOUT_MS = 5000; // 5 second graceful close timeout
+
 /**
- * Centralized bootstrap error handler with graceful cleanup and process exit.
+ * Centralized error handler for bootstrap phase.
+ * Gracefully closes app with timeout, then exits.
  */
 export async function handleBootstrapError(
   err: unknown,
@@ -11,23 +14,30 @@ export async function handleBootstrapError(
   app: INestApplication | null,
 ): Promise<never> {
   const message = err instanceof Error ? err.message : String(err);
-  const stack = err instanceof Error ? err.stack : undefined;
 
-  logger.error(`Bootstrap failed: ${message}`, stack, 'Bootstrap');
+  logger.error(
+    `Bootstrap failed: ${message}`,
+    err instanceof Error ? err.stack : undefined,
+    'Bootstrap',
+  );
 
-  // Graceful cleanup if app was created
+  // Graceful cleanup with timeout
   if (app) {
     try {
-      await app.close();
+      await Promise.race([
+        app.close(),
+        new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error('App close timeout')),
+            APP_CLOSE_TIMEOUT_MS,
+          ),
+        ),
+      ]);
       logger.log('App closed gracefully', 'Bootstrap');
     } catch (closeErr) {
-      const closeMessage =
+      const closeMsg =
         closeErr instanceof Error ? closeErr.message : String(closeErr);
-      logger.error(
-        `Error closing app: ${closeMessage}`,
-        undefined,
-        'Bootstrap',
-      );
+      logger.warn(`App close timeout/error: ${closeMsg}`, 'Bootstrap');
     }
   }
 

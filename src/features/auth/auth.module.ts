@@ -5,8 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { AuthController } from '@/features/auth/auth.controller';
 import { AuthService, CredentialsService } from '@/features/auth/services';
-import { LocalStrategy } from '@/features/auth/strategies/local.strategy';
-import { JwtStrategy } from '@/features/auth/strategies/jwt.strategy';
+import { LocalStrategy, JwtStrategy } from '@/features/auth/strategies';
 import {
   LocalAuthGuard,
   JwtAuthGuard,
@@ -15,8 +14,7 @@ import {
 } from '@/features/auth/guards';
 import { UsersModule } from '@/features/users/users.module';
 import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.module';
-import type { AppConfig } from '@/common/interfaces/app-config.interface';
-import { JWT_EXPIRATION } from '@/config/factory';
+import type { AppConfig } from '@/common/interfaces';
 
 @Module({
   imports: [
@@ -24,9 +22,10 @@ import { JWT_EXPIRATION } from '@/config/factory';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService<AppConfig, true>) => {
+        const jwtConfig = configService.get('jwt', { infer: true });
         return {
-          secret: configService.get('jwtSecret', { infer: true }),
-          signOptions: { expiresIn: JWT_EXPIRATION },
+          secret: jwtConfig.jwtSecret,
+          signOptions: { expiresIn: jwtConfig.jwtExpiration },
         };
       },
     }),

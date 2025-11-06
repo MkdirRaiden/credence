@@ -1,7 +1,7 @@
 // src/features/users/services/user-crud.service.ts
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@/logger/services/logger.service';
-import { UsersRepository } from '@/features/users/repositories/users.repository';
+import { LoggerService } from '@/logger/services';
+import { UsersCrudRepository } from '@/features/users/repositories';
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -19,7 +19,7 @@ export class UserCrudService extends BaseCrudService {
   private readonly logContext = 'UserCrudService';
 
   constructor(
-    private readonly repository: UsersRepository,
+    private readonly repository: UsersCrudRepository,
     private readonly logger: LoggerService,
   ) {
     super();

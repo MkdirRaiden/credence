@@ -9,7 +9,7 @@ import {
   IsUrl,
 } from 'class-validator';
 import { TrimTransform } from '@/common/decorators';
-import { USER_VALIDATION } from '@/features/users/users.config';
+import { USER_VALIDATION } from '@/features/users/constants';
 
 export class CreateUserDto {
   @IsEmail({}, { message: 'Invalid email format' })

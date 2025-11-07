@@ -2,10 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services/logger.service';
 import { RefreshTokenRepository } from '@/features/refresh-tokens/refresh-token.repository';
-import {
-  validateRefreshToken,
-  hashToken,
-} from '@/features/refresh-tokens/helpers';
+import { validateRefreshToken, hashToken } from '@/features/refresh-tokens/helpers';
 
 /**
  * Manages refresh token lifecycle (create, verify, revoke)

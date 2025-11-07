@@ -1,4 +1,4 @@
-// src/features/auth/auth.config.ts
+// src/features/auth/constants/index.ts
 /**
  * Validation constraints for authentication fields.
  */

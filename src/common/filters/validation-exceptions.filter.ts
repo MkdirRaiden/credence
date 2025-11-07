@@ -1,4 +1,4 @@
-// src/common/filters/validation-exception.filter.ts
+// src/common/filters/validation-exceptions.filter.ts
 import {
   Catch,
   BadRequestException,

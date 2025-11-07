@@ -13,12 +13,7 @@ import { JwtAuthGuard, RolesGuard } from '@/features/auth/guards';
 import { Roles } from '@/common/decorators';
 import { ParseUuidPipe } from '@/common/pipes';
 import { UserCrudService } from '@/features/users/services';
-import {
-  CreateUserDto,
-  UpdateUserDto,
-  UserResponseDto,
-  DeletedResourceDto,
-} from '@/features/users/dtos';
+import * as userDtos from '@/features/users/dtos';
 
 /**
  * User management endpoints with role-based access control
@@ -33,7 +28,8 @@ export class UsersCrudController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
+  async create(@Body() dto: userDtos.CreateUserDto): 
+  Promise<userDtos.UserResponseDto> {
     return this.crudService.create(dto);
   }
 
@@ -44,8 +40,8 @@ export class UsersCrudController {
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', ParseUuidPipe) id: string,
-    @Body() dto: UpdateUserDto,
-  ): Promise<UserResponseDto> {
+    @Body() dto: userDtos.UpdateUserDto,
+  ): Promise<userDtos.UserResponseDto> {
     return this.crudService.update(id, dto);
   }
 
@@ -56,7 +52,7 @@ export class UsersCrudController {
   @UseGuards(JwtAuthGuard)
   async remove(
     @Param('id', ParseUuidPipe) id: string,
-  ): Promise<DeletedResourceDto> {
+  ): Promise<userDtos.DeletedResourceDto> {
     return this.crudService.remove(id);
   }
 }

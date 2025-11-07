@@ -1,10 +1,5 @@
 // src/health/helpers/get-readiness.ts
-import type {
-  ReadinessStatus,
-  DependencyStatus,
-  Probe,
-  ProbeResult,
-} from '@/health/health.interface';
+import * as interfaces from '@/health/health.interface';
 
 /**
  * Checks all probes and returns aggregated readiness status.
@@ -12,12 +7,12 @@ import type {
  * Returns 'ok' only if all probes are up.
  */
 export async function getReadiness(
-  probes: Probe[],
+  probes: interfaces.Probe[],
   options?: { timeout?: number },
-): Promise<ReadinessStatus> {
+): Promise<interfaces.ReadinessStatus> {
   const results = await Promise.all(probes.map((p) => p.check(options)));
 
-  const details: Record<string, DependencyStatus> = {};
+  const details: Record<string, interfaces.DependencyStatus> = {};
   let hasError = false;
 
   for (const result of results) {
@@ -33,7 +28,9 @@ export async function getReadiness(
   };
 }
 // Maps individual probe result to dependency status
-function mapProbeResult(result: ProbeResult): DependencyStatus {
+function mapProbeResult(
+  result: interfaces.ProbeResult,
+): interfaces.DependencyStatus {
   return result.status === 'up'
     ? { status: 'up' }
     : { status: 'down', message: result.message };

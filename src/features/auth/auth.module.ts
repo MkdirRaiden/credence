@@ -4,14 +4,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { AuthController } from '@/features/auth/auth.controller';
-import { AuthService, CredentialsService } from '@/features/auth/services';
-import { LocalStrategy, JwtStrategy } from '@/features/auth/strategies';
-import {
-  LocalAuthGuard,
-  JwtAuthGuard,
-  RolesGuard,
-  OptionalJwtAuthGuard,
-} from '@/features/auth/guards';
+import * as services from '@/features/auth/services';
+import * as strategies from '@/features/auth/strategies';
+import * as guards from '@/features/auth/guards';
 import { UsersModule } from '@/features/users/users.module';
 import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.module';
 import type { AppConfig } from '@/common/interfaces';
@@ -34,21 +29,21 @@ import type { AppConfig } from '@/common/interfaces';
   ],
   controllers: [AuthController],
   providers: [
-    AuthService,
-    CredentialsService,
-    LocalStrategy,
-    JwtStrategy,
-    LocalAuthGuard,
-    JwtAuthGuard,
-    RolesGuard,
-    OptionalJwtAuthGuard,
+    services.AuthService,
+    services.CredentialsService,
+    strategies.LocalStrategy,
+    strategies.JwtStrategy,
+    guards.LocalAuthGuard,
+    guards.JwtAuthGuard,
+    guards.RolesGuard,
+    guards.OptionalJwtAuthGuard,
   ],
   exports: [
-    AuthService,
-    LocalAuthGuard,
-    JwtAuthGuard,
-    RolesGuard,
-    OptionalJwtAuthGuard,
+    services.AuthService,
+    guards.LocalAuthGuard,
+    guards.JwtAuthGuard,
+    guards.RolesGuard,
+    guards.OptionalJwtAuthGuard,
   ],
 })
 export class AuthModule {}

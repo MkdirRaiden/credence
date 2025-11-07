@@ -7,16 +7,10 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { AuthService } from '@/features/auth/services/auth.service';
+import { AuthService } from '@/features/auth/services';
 import { CurrentUser } from '@/common/decorators';
 import { LocalAuthGuard, JwtAuthGuard } from '@/features/auth/guards';
-import {
-  RegisterDto,
-  LoginDto,
-  AuthResponseDto,
-  RefreshTokenDto,
-  UserResponseDto,
-} from '@/features/auth/dtos';
+import * as authDtos from '@/features/auth/dtos';
 
 /**
  * Authentication endpoints for register, login, refresh, logout, and profile
@@ -29,7 +23,7 @@ export class AuthController {
    * Register a new user account with password
    */
   @Post('register')
-  async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
+  async register(@Body() registerDto: authDtos.RegisterDto): Promise<authDtos.AuthResponseDto> {
     return this.authService.register(registerDto);
   }
 
@@ -40,9 +34,9 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(
-    @Body() _loginDto: LoginDto,
-    @Request() req: { user: UserResponseDto },
-  ): Promise<AuthResponseDto> {
+    @Body() _loginDto: authDtos.LoginDto,
+    @Request() req: { user: authDtos.UserResponseDto },
+  ): Promise<authDtos.AuthResponseDto> {
     return this.authService.login(req.user);
   }
 
@@ -51,8 +45,8 @@ export class AuthController {
    */
   @Post('refresh')
   async refresh(
-    @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<AuthResponseDto> {
+    @Body() refreshTokenDto: authDtos.RefreshTokenDto,
+  ): Promise<authDtos.AuthResponseDto> {
     return this.authService.refresh(refreshTokenDto);
   }
 
@@ -61,7 +55,7 @@ export class AuthController {
    */
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  async logout(@Body() refreshTokenDto: RefreshTokenDto): Promise<void> {
+  async logout(@Body() refreshTokenDto: authDtos.RefreshTokenDto): Promise<void> {
     return this.authService.logout(refreshTokenDto.refreshToken);
   }
 
@@ -71,7 +65,7 @@ export class AuthController {
    */
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  getMe(@CurrentUser() user: UserResponseDto): UserResponseDto {
+  getMe(@CurrentUser() user: authDtos.UserResponseDto): authDtos.UserResponseDto {
     return user;
   }
 }

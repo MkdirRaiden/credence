@@ -2,7 +2,7 @@
 import { TrimTransform } from '@/common/decorators';
 import { CreateUserDto } from '@/features/users/dtos';
 import { IsString, MinLength, Matches } from 'class-validator';
-import { AUTH_VALIDATION } from '@/features/auth/auth.config';
+import { AUTH_VALIDATION } from '@/features/auth/constants';
 
 /**
  * DTO for user registration

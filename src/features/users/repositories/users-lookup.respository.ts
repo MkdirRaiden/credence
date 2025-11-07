@@ -1,8 +1,5 @@
 // src/features/users/repositories/users-lookup.repository.ts
-import {
-  USER_FIELD_VISIBILITY_CONFIG,
-  PAGINATION_LIMITS,
-} from '@/features/users/users.config';
+import { USER_FIELD_VISIBILITY_CONFIG, PAGINATION_LIMITS } from '@/features/users/constants';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
 import { User } from '@prisma/client';

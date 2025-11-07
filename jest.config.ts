@@ -18,7 +18,15 @@ const config: Config = {
   forceExit: true,
   testTimeout: 10000,
   maxWorkers: 1,  // Single worker = cleaner cleanup
-  detectOpenHandles: false,  // Disable warning once fixed
+  coverageThreshold: {
+    "global": {
+      "branches": 75,
+      "functions": 70,
+      "lines": 80,
+      "statements": 80
+    }
+  }
+
 };
 
 export default config;

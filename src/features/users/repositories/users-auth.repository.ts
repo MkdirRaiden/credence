@@ -1,5 +1,5 @@
 // src/features/users/repositories/users-auth.repository.ts
-import { AUTH_USER_SELECT } from '@/features/users/users.config';
+import { AUTH_USER_SELECT } from '@/features/users/constants';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/database/prisma.service';
 import { User } from '@prisma/client';

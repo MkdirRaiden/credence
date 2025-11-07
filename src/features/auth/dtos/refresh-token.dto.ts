@@ -1,7 +1,7 @@
 // src/features/auth/dtos/requests/refresh-token.dto.ts
 import { IsString, IsNotEmpty, MinLength } from 'class-validator';
 import { TrimTransform } from '@/common/decorators';
-import { AUTH_VALIDATION } from '@/features/auth/auth.config';
+import { AUTH_VALIDATION } from '@/features/auth/constants';
 
 /**
  * Refresh token request

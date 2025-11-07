@@ -1,43 +1,35 @@
 // src/features/users/users.module.ts
 import { Module } from '@nestjs/common';
-import {
-  UsersLookupController,
-  UsersCrudController,
-} from '@/features/users/controllers';
-import {
-  UsersAuthRepository,
-  UsersLookupRepository,
-  UsersCrudRepository,
-} from '@/features/users/repositories';
-import {
-  UserAuthService,
-  UserCrudService,
-  UserLookupService,
-} from '@/features/users/services';
-import { BaseAuthService, BaseCrudService } from '@/features/users/contracts';
+import * as controllers from '@/features/users/controllers';
+import * as repositories from '@/features/users/repositories';
+import * as services from '@/features/users/services';
+import * as contracts from '@/features/users/contracts';
 
 /**
  * Users module: user management, visibility, and auth integration.
  * Exports contracts for Auth module to use.
  */
 @Module({
-  controllers: [UsersLookupController, UsersCrudController],
+  controllers: [
+    controllers.UsersLookupController, 
+    controllers.UsersCrudController
+  ],
   providers: [
-    UserAuthService,
-    UserCrudService,
-    UserLookupService,
-    UsersAuthRepository,
-    UsersCrudRepository,
-    UsersLookupRepository,
+    services.UserAuthService,
+    services.UserCrudService,
+    services.UserLookupService,
+    repositories.UsersAuthRepository,
+    repositories.UsersCrudRepository,
+    repositories.UsersLookupRepository,
     {
-      provide: BaseAuthService,
-      useClass: UserAuthService,
+      provide: contracts.BaseAuthService,
+      useClass: services.UserAuthService,
     },
     {
-      provide: BaseCrudService,
-      useClass: UserCrudService,
+      provide: contracts.BaseCrudService,
+      useClass: services.UserCrudService,
     },
   ],
-  exports: [BaseAuthService, BaseCrudService],
+  exports: [contracts.BaseAuthService, contracts.BaseCrudService],
 })
 export class UsersModule {}

@@ -1,4 +1,4 @@
-// src/common/filters/prisma-exception.filter.ts
+// src/common/filters/prisma-exceptions.filter.ts
 import { Catch, ArgumentsHost, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BaseExceptionFilter } from '@/common/filters/base/base-exception.filter';

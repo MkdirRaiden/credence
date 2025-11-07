@@ -1,7 +1,7 @@
 // src/features/users/dtos/pagination-query.dto.ts
 import { IsOptional, Min, Max, IsInt } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PAGINATION_LIMITS } from '@/features/users/users.config';
+import { PAGINATION_LIMITS } from '@/features/users/constants';
 
 export class PaginationQueryDto {
   @IsOptional()

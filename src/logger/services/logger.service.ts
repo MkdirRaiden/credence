@@ -12,6 +12,7 @@ import { AppConfig } from '@/common/interfaces';
 export class LoggerService extends BaseLogger {
   constructor(config: ConfigService<AppConfig, true>) {
     const serverConfig = config.get('server', { infer: true });
-    super(serverConfig.nodeEnv);
+    const appConfig = config.get('app', { infer: true });
+    super(serverConfig.nodeEnv, appConfig.logLevel);
   }
 }

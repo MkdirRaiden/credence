@@ -2,7 +2,6 @@
 import { ParseUuidPipe } from '@/common/pipes/parse-uuid.pipe';
 import { BadRequestException } from '@nestjs/common';
 
-
 describe('ParseUuidPipe', () => {
   let pipe: ParseUuidPipe;
 
@@ -24,11 +23,11 @@ describe('ParseUuidPipe', () => {
 
   it('rejects invalid UUID formats', () => {
     const invalidUuids = [
-      '550e8400e29b41d4a716446655440000',      // no hyphens
-      '550e8400-e29b-41d4-a716',               // wrong length
+      '550e8400e29b41d4a716446655440000', // no hyphens
+      '550e8400-e29b-41d4-a716', // wrong length
       '550e8400-e29b-41d4-a716-446655440zzz', // non-hex chars
-      '',                                       // empty
-      '550e8400-e29b-41d4-a716-44665544000',  // missing digit
+      '', // empty
+      '550e8400-e29b-41d4-a716-44665544000', // missing digit
     ];
 
     invalidUuids.forEach((uuid) => {

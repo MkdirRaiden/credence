@@ -3,8 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { createTestApp, closeTestApp } from '../common/test-app';
 
-
-// __tests__/e2e/middleware.e2e.spec.ts
 describe('Global Middleware (E2E)', () => {
   let app: INestApplication;
 
@@ -38,4 +36,3 @@ describe('Global Middleware (E2E)', () => {
     });
   });
 });
-

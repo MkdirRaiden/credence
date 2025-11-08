@@ -5,10 +5,6 @@ import type {
   AuthenticatedUser,
 } from '@/common/interfaces';
 
-/**
- * Builds visibility context based on user role and resource ownership.
- * Pure function — no dependencies.
- */
 export function buildVisibilityContext(
   declaredLevel: VisibilityLevel,
   user: AuthenticatedUser | undefined,

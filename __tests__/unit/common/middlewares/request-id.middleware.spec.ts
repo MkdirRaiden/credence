@@ -3,7 +3,6 @@ import { RequestIdMiddleware } from '@/common/middlewares/request-id.middleware'
 import { requestContext } from '@/common/utils';
 import type { Request, Response, NextFunction } from 'express';
 
-
 describe('RequestIdMiddleware', () => {
   let middleware: RequestIdMiddleware;
   let mockRequest: Partial<Request>;

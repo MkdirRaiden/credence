@@ -1,7 +1,5 @@
 // src/common/utils/filter-undefined.ts
-/**
- * Removes undefined and null values from object.
- */
+
 export const filterUndefined = <T extends Record<string, any>>(
   obj: T,
 ): Partial<T> => {

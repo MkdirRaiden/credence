@@ -23,7 +23,9 @@ export class AuthController {
    * Register a new user account with password
    */
   @Post('register')
-  async register(@Body() registerDto: authDtos.RegisterDto): Promise<authDtos.AuthResponseDto> {
+  async register(
+    @Body() registerDto: authDtos.RegisterDto,
+  ): Promise<authDtos.AuthResponseDto> {
     return this.authService.register(registerDto);
   }
 
@@ -55,7 +57,9 @@ export class AuthController {
    */
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  async logout(@Body() refreshTokenDto: authDtos.RefreshTokenDto): Promise<void> {
+  async logout(
+    @Body() refreshTokenDto: authDtos.RefreshTokenDto,
+  ): Promise<void> {
     return this.authService.logout(refreshTokenDto.refreshToken);
   }
 
@@ -65,7 +69,9 @@ export class AuthController {
    */
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  getMe(@CurrentUser() user: authDtos.UserResponseDto): authDtos.UserResponseDto {
+  getMe(
+    @CurrentUser() user: authDtos.UserResponseDto,
+  ): authDtos.UserResponseDto {
     return user;
   }
 }

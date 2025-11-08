@@ -1,9 +1,5 @@
 // src/config/validators/validate-jwt-secrets.ts
-/**
- * Pure function to validate JWT secret strength.
- * HS256 requires minimum 32 characters (256 bits).
- * Returns the secret if valid, throws error if invalid.
- */
+
 export function validateJwtSecret(secret: string): string {
   if (!secret || !secret.trim()) {
     throw new Error('JWT secret cannot be empty');

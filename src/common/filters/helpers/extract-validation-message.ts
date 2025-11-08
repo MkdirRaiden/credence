@@ -1,7 +1,5 @@
 // src/common/filters/helpers/extract-validation-message.ts
-/**
- * Pure function — extract validation message from BadRequestException.
- */
+
 export function extractValidationMessage(responseBody: unknown): string {
   let messages: string[] = [];
 

@@ -1,9 +1,6 @@
 // src/logger/helpers/log-writer.ts
-import { LogLevel } from '@/logger/logger.interface';
+import { LogLevel } from '@/common/interfaces';
 
-/**
- * Routes log entries to appropriate console method.
- */
 export function logWriter(level: LogLevel, json: string): void {
   switch (level) {
     case 'ERROR':

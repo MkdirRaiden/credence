@@ -1,9 +1,6 @@
 // src/common/filters/helpers/resolve-exception-details.ts
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-/**
- * Pure function — extract HTTP status and message from any exception.
- */
 export function resolveExceptionDetails(exception: unknown): {
   status: number;
   message: string;

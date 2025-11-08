@@ -6,7 +6,7 @@ import { LoggerService } from '@/logger/services';
 import {
   resolveExceptionDetails,
   isFaviconRequest,
-} from '@/common/filters/helpers/resolve-exception-details';
+} from '@/common/filters/helpers';
 
 @Injectable()
 @Catch()

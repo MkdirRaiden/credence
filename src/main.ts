@@ -6,6 +6,7 @@ import { BootstrapService } from '@/bootstrap/services';
 import { BootstrapLogger, LoggerService } from '@/logger/services';
 import { validatePreConfig } from '@/config/helpers';
 import { handleBootstrapError } from '@/bootstrap/helpers';
+import { LOG_CONTEXTS } from '@/logger/constants';
 
 const nodeEnv = process.env.NODE_ENV;
 const bootstrapLogger = new BootstrapLogger();
@@ -16,7 +17,10 @@ let app: INestApplication | null = null;
  * Logger swap happens after app creation because LoggerService requires the DI container.
  */
 async function bootstrap(): Promise<void> {
-  bootstrapLogger.log(`Bootstrapping app, Env: ${nodeEnv}...`, 'Bootstrap.app');
+  bootstrapLogger.log(
+    `Bootstrapping app, Env: ${nodeEnv}...`,
+    LOG_CONTEXTS.BOOTSTRAP,
+  );
 
   // phase 1: Fail fast on missing/invalid env vars before creating NestJS app
   await validatePreConfig(bootstrapLogger);

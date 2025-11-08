@@ -6,7 +6,6 @@ import {
 } from '@/common/filters/helpers/resolve-exception-details';
 import { HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 
-
 describe('Exception Resolution Helpers', () => {
   describe('resolveExceptionDetails', () => {
     it('extracts status and message from HttpException', () => {

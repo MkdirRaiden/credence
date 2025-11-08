@@ -12,7 +12,7 @@ describe('createExternalValidator', () => {
     const validator = createExternalValidator<string>(mockValidator);
 
     const result = await validator('test-value');
-    expect(result).toBe('test-value');  // Returns validated value, not undefined
+    expect(result).toBe('test-value'); // Returns validated value, not undefined
     expect(mockValidator).toHaveBeenCalledWith('test-value');
   });
 
@@ -20,9 +20,14 @@ describe('createExternalValidator', () => {
     const mockValidator = jest.fn(() => {
       throw new Error('Invalid value');
     });
-    const validator = createExternalValidator<string>(mockValidator, 'JWT_SECRET');
+    const validator = createExternalValidator<string>(
+      mockValidator,
+      'JWT_SECRET',
+    );
 
-    await expect(validator('test')).rejects.toThrow('JWT_SECRET: Invalid value');
+    await expect(validator('test')).rejects.toThrow(
+      'JWT_SECRET: Invalid value',
+    );
   });
 
   it('throws error without prefix if not provided', async () => {
@@ -40,7 +45,9 @@ describe('createExternalValidator', () => {
     });
     const validator = createExternalValidator<string>(mockValidator, 'CONFIG');
 
-    await expect(validator('test')).rejects.toThrow('CONFIG: Validation failed');
+    await expect(validator('test')).rejects.toThrow(
+      'CONFIG: Validation failed',
+    );
   });
 
   it('passes value through to validator', async () => {

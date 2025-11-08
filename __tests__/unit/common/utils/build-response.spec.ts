@@ -1,7 +1,6 @@
 // __tests__/unit/common/utils/response-builder.spec.ts
 import { buildResponse } from '@/common/utils';
 
-
 describe('buildResponse Utility', () => {
   it('builds success response (statusCode < 400)', () => {
     const result = buildResponse({ id: 1 }, '/test', 200, 'Custom message');

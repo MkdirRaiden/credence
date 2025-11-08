@@ -3,12 +3,15 @@ import { mapPrismaError } from '@/common/filters/helpers';
 import { Prisma } from '@prisma/client';
 import { HttpStatus } from '@nestjs/common';
 
-
 describe('mapPrismaError Helper', () => {
   it('maps P2002 (unique constraint) to CONFLICT', () => {
     const exception = new Prisma.PrismaClientKnownRequestError(
       'Unique constraint failed',
-      { code: 'P2002', clientVersion: '5.0.0', meta: { target: ['email', 'username'] } },
+      {
+        code: 'P2002',
+        clientVersion: '5.0.0',
+        meta: { target: ['email', 'username'] },
+      },
     );
 
     const result = mapPrismaError(exception);
@@ -41,10 +44,10 @@ describe('mapPrismaError Helper', () => {
   });
 
   it('defaults to 500 for unknown Prisma codes', () => {
-    const exception = new Prisma.PrismaClientKnownRequestError(
-      'Some error',
-      { code: 'P9999', clientVersion: '5.0.0' },
-    );
+    const exception = new Prisma.PrismaClientKnownRequestError('Some error', {
+      code: 'P9999',
+      clientVersion: '5.0.0',
+    });
 
     const result = mapPrismaError(exception);
 

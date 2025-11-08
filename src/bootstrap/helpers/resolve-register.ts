@@ -3,6 +3,7 @@ import { Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from '@/logger/services';
 import { CRITICAL_PROVIDERS } from '@/common/modules';
+import { LOG_CONTEXTS } from '@/logger/constants';
 
 /**
  * Dynamically resolves and registers providers from DI container after initialization.
@@ -23,7 +24,7 @@ export function resolveAndRegister<T>(
       if (isCritical) {
         throw new Error(`CRITICAL: ${message}`);
       } else {
-        logger?.warn(message, 'Bootstrap');
+        logger?.warn(message, LOG_CONTEXTS.BOOTSTRAP);
       }
     }
   });

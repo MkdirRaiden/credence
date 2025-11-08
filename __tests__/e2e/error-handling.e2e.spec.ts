@@ -3,7 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { createTestApp, closeTestApp } from '../common/test-app';
 
-// __tests__/e2e/error-handling.e2e.spec.ts
 describe('Global Error Handling (E2E)', () => {
   let app: INestApplication;
 
@@ -32,4 +31,3 @@ describe('Global Error Handling (E2E)', () => {
   //     .expect(400);
   // });
 });
-

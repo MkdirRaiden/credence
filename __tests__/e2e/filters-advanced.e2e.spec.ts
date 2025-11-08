@@ -1,8 +1,6 @@
 // __tests__/e2e/filters-advanced.e2e.spec.ts
 import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
 import { createTestApp, closeTestApp } from '../common/test-app';
-
 
 // __tests__/e2e/filters-advanced.e2e.spec.ts
 describe('Exception Filters (E2E)', () => {

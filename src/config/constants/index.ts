@@ -3,6 +3,10 @@
 // critcal constants
 export * from '@/config/constants/critical-config';
 
+// logger constants
+export const LOG_LEVEL = 'INFO';
+export const VALID_LOG_LEVELS = ['ERROR', 'WARN', 'INFO', 'DEBUG', 'VERBOSE'];
+
 // Server defaults
 export const NODE_ENV = 'development';
 export const VALID_NODE_ENVS = ['development', 'test', 'production'];

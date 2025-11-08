@@ -1,7 +1,9 @@
 // __tests__/unit/common/utils/prisma-select.spec.ts
 import { createPrismaSelect } from '@/common/utils/prisma-select';
-import type { FieldVisibility, FieldSelectorContext } from '@/common/interfaces';
-
+import type {
+  FieldVisibility,
+  FieldSelectorContext,
+} from '@/common/interfaces';
 
 describe('createPrismaSelect Utility', () => {
   const fieldVisibility: FieldVisibility = {
@@ -17,15 +19,36 @@ describe('createPrismaSelect Utility', () => {
     const testCases = [
       {
         level: 'public' as const,
-        expected: { id: true, name: true, email: false, password: false, role: false, internalNotes: false },
+        expected: {
+          id: true,
+          name: true,
+          email: false,
+          password: false,
+          role: false,
+          internalNotes: false,
+        },
       },
       {
         level: 'self' as const,
-        expected: { id: true, name: true, email: true, password: false, role: false, internalNotes: false },
+        expected: {
+          id: true,
+          name: true,
+          email: true,
+          password: false,
+          role: false,
+          internalNotes: false,
+        },
       },
       {
         level: 'admin' as const,
-        expected: { id: true, name: true, email: true, password: true, role: true, internalNotes: true },
+        expected: {
+          id: true,
+          name: true,
+          email: true,
+          password: true,
+          role: true,
+          internalNotes: true,
+        },
       },
     ];
 

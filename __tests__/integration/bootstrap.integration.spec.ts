@@ -1,12 +1,10 @@
 // __tests__/integration/bootstrap.integration.spec.ts
 import { BootstrapService } from '@/bootstrap/services';
-import { BootstrapModule } from '@/bootstrap/bootstrap.module'; 
+import { BootstrapModule } from '@/bootstrap/bootstrap.module';
 import { TestContext } from '../common/test-context';
-
 
 describe('BootstrapModule (Integration)', () => {
   const context = new TestContext();
-
 
   beforeAll(async () => {
     await context.setup({
@@ -14,11 +12,9 @@ describe('BootstrapModule (Integration)', () => {
     });
   });
 
-
   afterAll(async () => {
     await context.teardown();
   });
-
 
   it('initializes bootstrap service', () => {
     const bootstrap = context.getService(BootstrapService);

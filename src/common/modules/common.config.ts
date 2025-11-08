@@ -6,6 +6,11 @@ import * as filters from '@/common/filters';
 // Export these!
 export const GLOBAL_INTERCEPTORS = [ResponseInterceptor, VisibilityInterceptor];
 
+/**
+ * CRITICAL: Filter order matters!
+ * Specific filters first → Generic filter last
+ * AllExceptionsFilter MUST be last to catch unhandled exceptions
+ */
 export const GLOBAL_FILTERS = [
   filters.ValidationExceptionFilter,
   filters.PrismaClientExceptionFilter,

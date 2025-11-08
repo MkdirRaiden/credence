@@ -2,7 +2,6 @@
 import { plainToClass } from 'class-transformer';
 import { TrimTransform } from '@/common/decorators/trim-transform.decorator';
 
-
 class TestDTO {
   @TrimTransform
   name: string;
@@ -13,7 +12,6 @@ class TestDTO {
   @TrimTransform
   optional?: string;
 }
-
 
 describe('TrimTransform Decorator', () => {
   it('trims whitespace from strings', () => {
@@ -27,7 +25,6 @@ describe('TrimTransform Decorator', () => {
     expect(result.optional).toBe('spaced');
   });
 
-
   it('handles empty and whitespace-only strings', () => {
     const result = plainToClass(TestDTO, {
       name: '   ',
@@ -36,7 +33,6 @@ describe('TrimTransform Decorator', () => {
 
     expect(result.name).toBe('');
   });
-
 
   it('leaves non-string values unchanged', () => {
     const result = plainToClass(TestDTO, {
@@ -48,7 +44,6 @@ describe('TrimTransform Decorator', () => {
     expect(result.count).toBe(123);
     expect(result.optional).toBeNull();
   });
-
 
   it('preserves internal whitespace', () => {
     const result = plainToClass(TestDTO, {

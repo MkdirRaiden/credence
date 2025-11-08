@@ -16,6 +16,8 @@ export const mockUser: User = {
   emailVerified: true,
   phoneVerified: false,
   role: 'USER',
+  authProvider: 'LOCAL', // NEW
+  lastLoginAt: new Date('2024-01-01T12:00:00.000Z'), // NEW
   referredById: '660e8400-e29b-41d4-a716-446655440000',
   deletedAt: null,
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
@@ -27,6 +29,8 @@ export const mockAdminUser: User = {
   id: '770e8400-e29b-41d4-a716-446655440000',
   email: 'admin@example.com',
   role: 'ADMIN',
+  authProvider: 'LOCAL',
+  lastLoginAt: new Date('2024-01-02T12:00:00.000Z'),
 };
 
 export const mockUserList: User[] = [mockUser, mockAdminUser];

@@ -2,7 +2,6 @@
 import { extractResourceId } from '@/common/utils';
 import type { Request } from 'express';
 
-
 describe('extractResourceId Utility', () => {
   it('extracts ID from params.id', () => {
     const mockRequest = {

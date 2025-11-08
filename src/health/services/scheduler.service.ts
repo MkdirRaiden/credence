@@ -4,6 +4,7 @@ import { LoggerService } from '@/logger/services';
 import { Probe } from '@/health/health.interface';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '@/common/interfaces';
+import { LOG_CONTEXTS } from '@/logger/constants';
 
 /**
  * Runs periodic health checks on all probes.
@@ -46,7 +47,7 @@ export class SchedulerService implements OnApplicationShutdown {
     if (failures.length > 0) {
       this.logger.warn(
         `Health check failures: ${JSON.stringify(failures)}`,
-        'HealthScheduler',
+        LOG_CONTEXTS.HEALTH,
       );
     }
   }
@@ -61,7 +62,7 @@ export class SchedulerService implements OnApplicationShutdown {
       this.interval = undefined;
       this.logger.log(
         `HealthScheduler stopped. Signal: ${signal}`,
-        'HealthScheduler',
+        LOG_CONTEXTS.HEALTH,
       );
     }
   }

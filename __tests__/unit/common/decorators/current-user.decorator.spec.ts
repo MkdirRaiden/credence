@@ -2,7 +2,6 @@
 import { ExecutionContext } from '@nestjs/common';
 import type { UserResponseDto } from '@/features/users/dtos';
 
-
 describe('CurrentUser Decorator', () => {
   /**
    * Simulates the decorator callback logic
@@ -15,7 +14,9 @@ describe('CurrentUser Decorator', () => {
     return request.user;
   };
 
-  const createMockUser = (overrides?: Partial<UserResponseDto>): UserResponseDto => ({
+  const createMockUser = (
+    overrides?: Partial<UserResponseDto>,
+  ): UserResponseDto => ({
     id: 'user_123',
     email: 'test@example.com',
     emailVerified: true,

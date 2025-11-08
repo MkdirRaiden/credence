@@ -14,27 +14,11 @@ export class RootController {
   getInfo() {
     const appInfo = this.configService.get('app', { infer: true });
     const serverInfo = this.configService.get('server', { infer: true });
-    const databaseInfo = this.configService.get('database', { infer: true });
-    const jwtInfo = this.configService.get('jwt', { infer: true });
-
-    const configuration = {
-      server: serverInfo,
-      database: {
-        url: databaseInfo.url,
-        maxRetries: databaseInfo.maxRetries,
-        healthCheckIntervalMs: databaseInfo.healthCheckIntervalMs,
-      },
-      jwt: {
-        jwtExpiration: jwtInfo.jwtExpiration,
-        jwtRefreshExpiration: jwtInfo.jwtRefreshExpiration,
-      },
-    };
 
     return {
       name: appInfo.appName,
       version: appInfo.appVersion,
       environment: serverInfo.nodeEnv,
-      config: configuration,
     };
   }
 }

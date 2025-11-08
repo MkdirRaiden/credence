@@ -3,9 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@/app.module';
 
-
 let testModule: TestingModule;
-
 
 export async function createTestApp(): Promise<INestApplication> {
   testModule = await Test.createTestingModule({
@@ -17,7 +15,6 @@ export async function createTestApp(): Promise<INestApplication> {
 
   return app;
 }
-
 
 export async function closeTestApp(app: INestApplication): Promise<void> {
   // Close app

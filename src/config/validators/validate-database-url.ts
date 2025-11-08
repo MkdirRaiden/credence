@@ -1,9 +1,5 @@
 // src/config/validators/validate-database-url.ts
-/**
- * Pure function to validate PostgreSQL connection URL.
- * Ensures: correct protocol, host exists, database name exists.
- * Returns the URL if valid, throws error if invalid.
- */
+
 export function validateDatabaseUrl(url: string): string {
   if (!url || !url.trim()) {
     throw new Error('DATABASE_URL cannot be empty');

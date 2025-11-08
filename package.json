@@ -29,13 +29,14 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+
     "test": "jest --passWithNoTests --runInBand --detectOpenHandles",
     "test:watch": "jest --watch --runInBand",
     "test:cov": "jest --coverage --runInBand",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:unit": "jest --config ./__tests__/jest-unit.json --detectOpenHandles",
-    "test:integration": "jest --config ./__tests__/jest-integration.json --detectOpenHandles --runInBand",
-    "test:e2e": "jest --config ./__tests__/jest-e2e.json --detectOpenHandles --runInBand",
+    "test:unit": "jest --testRegex='__tests__/unit/.*\\.spec\\.ts$' --passWithNoTests --detectOpenHandles",
+    "test:integration": "jest --testRegex='__tests__/integration/.*\\.integration\\.spec\\.ts$' --passWithNoTests --detectOpenHandles --runInBand",
+    "test:e2e": "jest --testRegex='__tests__/e2e/.*\\.e2e\\.spec\\.ts$' --passWithNoTests --detectOpenHandles --runInBand",
+
     "prisma:gen": "bash ./scripts/prisma/commands/merge-generate.sh",
     "prisma:fmt": "bash ./scripts/prisma/commands/format-validate.sh",
     "prisma:seed": "bash ./scripts/prisma/commands/seed.sh",

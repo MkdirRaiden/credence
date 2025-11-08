@@ -1,7 +1,5 @@
 // src/config/helpers/string-to-array.ts
-/**
- * Parses comma-separated string into trimmed array of values.
- */
+
 export function splitStringToArray(
   value: string | undefined,
   fallback: string[] = [],

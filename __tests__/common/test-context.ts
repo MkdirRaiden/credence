@@ -7,7 +7,6 @@ import { createTestModule } from './test-module.factory';
 import { cleanupDatabase } from './test-database';
 import { ModuleMetadata } from '@nestjs/common';
 
-
 /**
  * Unified test context — handles app setup, DB cleanup, teardown.
  * Reduces boilerplate significantly.
@@ -17,7 +16,6 @@ export class TestContext {
   app: INestApplication | undefined;
   prisma: PrismaService | undefined;
 
-
   async setup(metadata: ModuleMetadata = {}): Promise<void> {
     this.moduleRef = await createTestModule(metadata);
     this.app = this.moduleRef.createNestApplication();
@@ -25,12 +23,10 @@ export class TestContext {
     this.prisma = this.moduleRef.get(PrismaService);
   }
 
-
   async teardown(): Promise<void> {
     try {
       // Cleanup DB
       await cleanupDatabase(this.prisma);
-
 
       // Stop scheduler
       if (this.app) {
@@ -42,7 +38,6 @@ export class TestContext {
         } catch {
           // Ignore if not available
         }
-
 
         // Close app
         await this.app.close();
@@ -56,7 +51,6 @@ export class TestContext {
       this.prisma = undefined;
     }
   }
-
 
   /**
    * Get service instance from module

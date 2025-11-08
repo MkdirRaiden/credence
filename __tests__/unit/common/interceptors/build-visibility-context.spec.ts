@@ -2,9 +2,10 @@
 import { buildVisibilityContext } from '@/common/interceptors/helpers';
 import type { AuthenticatedUser } from '@/common/interfaces';
 
-
 describe('buildVisibilityContext Utility', () => {
-  const createMockUser = (overrides?: Partial<AuthenticatedUser>): AuthenticatedUser => ({
+  const createMockUser = (
+    overrides?: Partial<AuthenticatedUser>,
+  ): AuthenticatedUser => ({
     id: 'user_123',
     email: 'test@example.com',
     role: 'USER',

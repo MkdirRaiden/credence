@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { HealthController } from '@/health/health.controller';
 import * as services from '@/health/services';
 import { PROBES_TOKEN } from '@/health/symbols';
-import { BaseHealthService } from '@/health/contracts';
+import * as contracts from '@/health/contracts';
 
 /**
  * Health check module with extensible probe architecture.
@@ -15,7 +15,7 @@ import { BaseHealthService } from '@/health/contracts';
     services.SchedulerService,
     services.PrismaProbeService,
     {
-      provide: BaseHealthService,
+      provide: contracts.BaseHealthService,
       useClass: services.HealthService,
     },
     {
@@ -27,6 +27,6 @@ import { BaseHealthService } from '@/health/contracts';
       inject: [services.PrismaProbeService],
     },
   ],
-  exports: [BaseHealthService],
+  exports: [contracts.BaseHealthService],
 })
 export class HealthModule {}

@@ -1,5 +1,6 @@
 // src/common/utils/retry-database.ts
 import { LoggerService } from '@/logger/services';
+import { LOG_CONTEXTS } from '@/logger/constants';
 
 export interface RetryOptions {
   retries: number;
@@ -46,7 +47,7 @@ export async function retry<T>(
         if (context) {
           logger?.warn(
             `[${context}] Retry attempt ${attempt + 1}/${retries} failed. Retrying in ${nextDelay}ms...`,
-            'Retry',
+            LOG_CONTEXTS.RETRY,
           );
         }
 

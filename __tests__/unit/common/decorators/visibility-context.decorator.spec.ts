@@ -1,14 +1,18 @@
 // __tests__/unit/common/decorators/visibility-context.decorator.spec.ts
 import { ExecutionContext } from '@nestjs/common';
-import type { FieldSelectorContext, RequestWithContext } from '@/common/interfaces';
-
+import type {
+  FieldSelectorContext,
+  RequestWithContext,
+} from '@/common/interfaces';
 
 describe('GetVisibilityContext Decorator', () => {
   /**
    * Simulates the decorator callback logic
    * (Extract from request and return context)
    */
-  const extractVisibilityContext = (context: ExecutionContext): FieldSelectorContext => {
+  const extractVisibilityContext = (
+    context: ExecutionContext,
+  ): FieldSelectorContext => {
     const request = context.switchToHttp().getRequest<RequestWithContext>();
     return request['visibility-context'];
   };

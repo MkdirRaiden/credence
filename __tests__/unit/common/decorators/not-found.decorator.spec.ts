@@ -2,7 +2,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { NotFound } from '@/common/decorators/not-found.decorator';
 
-
 class TestService {
   @NotFound('Item not found')
   async findOne(): Promise<{ id: number }> {
@@ -29,7 +28,6 @@ class TestService {
     return id > 0 ? { id } : null;
   }
 }
-
 
 describe('NotFound Decorator', () => {
   let service: TestService;

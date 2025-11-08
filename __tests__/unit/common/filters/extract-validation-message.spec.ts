@@ -1,7 +1,6 @@
 // __tests__/unit/common/filters/extract-validation-message.spec.ts
 import { extractValidationMessage } from '@/common/filters/helpers/extract-validation-message';
 
-
 describe('extractValidationMessage Helper', () => {
   it('extracts string message', () => {
     const result = extractValidationMessage('Invalid input');

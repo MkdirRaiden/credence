@@ -2,6 +2,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
 import { BaseHealthService } from '@/health/contracts';
+import { LOG_CONTEXTS } from '@/logger/constants';
 
 /**
  * Runs critical readiness checks before accepting traffic.
@@ -14,8 +15,8 @@ export class ReadinessService {
   ) {}
 
   async run(): Promise<void> {
-    this.logger.log('Running readiness checks...', 'Bootstrap.Readiness');
+    this.logger.log('Running readiness checks...', LOG_CONTEXTS.BOOTSTRAP);
     await this.health.assertReadiness();
-    this.logger.log('Readiness checks passed', 'Bootstrap.Readiness');
+    this.logger.log('Readiness checks passed', LOG_CONTEXTS.BOOTSTRAP);
   }
 }

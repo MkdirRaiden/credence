@@ -3,8 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { createTestApp, closeTestApp } from '../common/test-app';
 
-
-// __tests__/e2e/health.e2e.spec.ts
 describe('Health Controller (E2E)', () => {
   let app: INestApplication;
 
@@ -29,16 +27,14 @@ describe('Health Controller (E2E)', () => {
       expect(response.body).toHaveProperty('uptimeMs');
     });
 
-  it('completes quickly (no probes)', async () => {
-    const start = Date.now();
-    await request(app.getHttpServer())
-      .get('/health/live')
-      .expect(200);
-    const duration = Date.now() - start;
+    it('completes quickly (no probes)', async () => {
+      const start = Date.now();
+      await request(app.getHttpServer()).get('/health/live').expect(200);
+      const duration = Date.now() - start;
 
-    // E2E timing can vary — allow 500ms margin
-    expect(duration).toBeLessThan(500);
-  });
+      // E2E timing can vary — allow 500ms margin
+      expect(duration).toBeLessThan(500);
+    });
   });
 
   describe('GET /health/ready', () => {
@@ -63,4 +59,3 @@ describe('Health Controller (E2E)', () => {
     });
   });
 });
-

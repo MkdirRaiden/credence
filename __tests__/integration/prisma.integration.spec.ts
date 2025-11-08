@@ -2,14 +2,11 @@
 import { PrismaService } from '@/database/prisma.service';
 import { TestContext } from '../common/test-context';
 
-
 jest.setTimeout(30000);
-
 
 describe('PrismaService (Integration)', () => {
   const context = new TestContext();
   let prisma: PrismaService;
-
 
   beforeAll(async () => {
     await context.setup();
@@ -17,23 +14,21 @@ describe('PrismaService (Integration)', () => {
     expect(prisma).toBeDefined();
   });
 
-
   afterAll(async () => {
     await context.teardown();
   });
-
 
   it('connects to database on module init', () => {
     expect(prisma).toBeDefined();
   });
 
-
   it('executes simple raw SQL queries', async () => {
-    const result = await prisma.$queryRaw<[{ result: number }]>`SELECT 1 as result`;
+    const result = await prisma.$queryRaw<
+      [{ result: number }]
+    >`SELECT 1 as result`;
     expect(result).toHaveLength(1);
     expect(result[0].result).toBe(1);
   });
-
 
   it('handles transactions with temp tables', async () => {
     await prisma.$transaction(async (tx) => {
@@ -47,7 +42,6 @@ describe('PrismaService (Integration)', () => {
     });
   });
 
-
   it('handles multiple queries in transaction', async () => {
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw`CREATE TEMP TABLE users (id SERIAL, email TEXT UNIQUE)`;
@@ -60,7 +54,6 @@ describe('PrismaService (Integration)', () => {
       expect(all[0].email).toBe('user1@test.com');
     });
   });
-
 
   it('rolls back on transaction error', async () => {
     try {

@@ -5,19 +5,16 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import type { AppConfig } from '@/common/interfaces';
 import type { Probe } from '@/health/health.interface';
 
-
 describe('HealthService', () => {
   let healthService: HealthService;
   let mockProbes: Probe[];
   let mockScheduler: jest.Mocked<SchedulerService>;
   let mockConfigService: jest.Mocked<ConfigService<AppConfig, true>>;
 
-
   beforeEach(() => {
     mockScheduler = {
       start: jest.fn(),
     } as any;
-
 
     mockConfigService = {
       get: jest.fn((key: string) => {
@@ -30,7 +27,6 @@ describe('HealthService', () => {
       }),
     } as any;
 
-
     mockProbes = [
       {
         name: 'database',
@@ -38,25 +34,24 @@ describe('HealthService', () => {
       },
     ];
 
-
-    healthService = new HealthService(mockProbes, mockScheduler, mockConfigService);
+    healthService = new HealthService(
+      mockProbes,
+      mockScheduler,
+      mockConfigService,
+    );
   });
-
 
   describe('onModuleInit', () => {
     it('starts scheduler with probes', () => {
       healthService.onModuleInit();
 
-
       expect(mockScheduler.start).toHaveBeenCalledWith(mockProbes);
     });
   });
 
-
   describe('liveness', () => {
     it('returns up status with uptime', () => {
       const result = healthService.liveness();
-
 
       expect(result.status).toBe('up');
       expect(result.uptimeMs).toBeGreaterThan(0);
@@ -64,22 +59,22 @@ describe('HealthService', () => {
     });
   });
 
-
   describe('readinessOrThrow', () => {
     it('returns readiness status when all probes are up', async () => {
       const result = await healthService.readinessOrThrow();
-
 
       expect(result.status).toBe('ok');
       expect(result.details.database.status).toBe('up');
     });
 
-
     it('throws HttpException when any probe fails', async () => {
       mockProbes[0].check = jest
         .fn()
-        .mockResolvedValue({ name: 'database', status: 'down', message: 'Lost' });
-
+        .mockResolvedValue({
+          name: 'database',
+          status: 'down',
+          message: 'Lost',
+        });
 
       try {
         await healthService.readinessOrThrow();
@@ -92,12 +87,14 @@ describe('HealthService', () => {
       }
     });
 
-
     it('includes failure details in response', async () => {
       mockProbes[0].check = jest
         .fn()
-        .mockResolvedValue({ name: 'database', status: 'down', message: 'Connection lost' });
-
+        .mockResolvedValue({
+          name: 'database',
+          status: 'down',
+          message: 'Connection lost',
+        });
 
       try {
         await healthService.readinessOrThrow();
@@ -112,18 +109,19 @@ describe('HealthService', () => {
     });
   });
 
-
   describe('assertReadiness', () => {
     it('resolves successfully when all probes are up', async () => {
       await expect(healthService.assertReadiness()).resolves.toBeUndefined();
     });
 
-
     it('throws Error on readiness failure (bootstrap phase)', async () => {
       mockProbes[0].check = jest
         .fn()
-        .mockResolvedValue({ name: 'database', status: 'down', message: 'Lost' });
-
+        .mockResolvedValue({
+          name: 'database',
+          status: 'down',
+          message: 'Lost',
+        });
 
       try {
         await healthService.assertReadiness();
@@ -134,12 +132,14 @@ describe('HealthService', () => {
       }
     });
 
-
     it('includes probe details in error message', async () => {
       mockProbes[0].check = jest
         .fn()
-        .mockResolvedValue({ name: 'database', status: 'down', message: 'Lost' });
-
+        .mockResolvedValue({
+          name: 'database',
+          status: 'down',
+          message: 'Lost',
+        });
 
       try {
         await healthService.assertReadiness();

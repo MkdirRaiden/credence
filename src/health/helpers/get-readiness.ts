@@ -1,11 +1,6 @@
 // src/health/helpers/get-readiness.ts
 import * as interfaces from '@/health/health.interface';
 
-/**
- * Checks all probes and returns aggregated readiness status.
- * Passes timeout to each probe to prevent hanging.
- * Returns 'ok' only if all probes are up.
- */
 export async function getReadiness(
   probes: interfaces.Probe[],
   options?: { timeout?: number },

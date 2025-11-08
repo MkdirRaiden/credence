@@ -10,7 +10,6 @@ import { INestApplication } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import type { AppConfig } from '@/common/interfaces';
 
-
 describe('BootstrapService', () => {
   let service: BootstrapService;
   let mockConfig: jest.Mocked<ConfigService<AppConfig, true>>;
@@ -21,7 +20,6 @@ describe('BootstrapService', () => {
   let mockShutdown: jest.Mocked<ShutdownService>;
   let mockApp: jest.Mocked<INestApplication>;
   let mockModuleRef: jest.Mocked<ModuleRef>;
-
 
   beforeEach(() => {
     mockConfig = {
@@ -40,7 +38,6 @@ describe('BootstrapService', () => {
       }),
     } as any;
 
-
     mockMiddleware = { setup: jest.fn() } as any;
     mockGlobalSetup = { setup: jest.fn() } as any;
     mockReadiness = { run: jest.fn().mockResolvedValue(undefined) } as any;
@@ -55,7 +52,6 @@ describe('BootstrapService', () => {
     } as any;
     mockModuleRef = {} as any;
 
-
     service = new BootstrapService(
       mockConfig,
       mockMiddleware,
@@ -66,11 +62,9 @@ describe('BootstrapService', () => {
     );
   });
 
-
   describe('init', () => {
     it('calls services in correct order', () => {
       const callOrder: string[] = [];
-
 
       mockMiddleware.setup.mockImplementation(() => {
         callOrder.push('middleware');
@@ -82,33 +76,25 @@ describe('BootstrapService', () => {
         callOrder.push('shutdown');
       });
 
-
       service.init(mockApp);
-
 
       expect(callOrder).toEqual(['middleware', 'globalSetup', 'shutdown']);
     });
 
-
     it('enables shutdown hooks', () => {
       service.init(mockApp);
-
 
       expect(mockApp.enableShutdownHooks).toHaveBeenCalled();
     });
 
-
     it('gets server config once', () => {
       service.init(mockApp);
-
 
       expect(mockConfig.get).toHaveBeenCalledWith('server', { infer: true });
     });
 
-
     it('passes serverConfig to middleware setup', () => {
       service.init(mockApp);
-
 
       expect(mockMiddleware.setup).toHaveBeenCalledWith(
         mockApp,
@@ -119,20 +105,19 @@ describe('BootstrapService', () => {
       );
     });
 
-
     it('passes moduleRef to global setup', () => {
       service.init(mockApp);
 
-
-      expect(mockGlobalSetup.setup).toHaveBeenCalledWith(mockApp, mockModuleRef);
+      expect(mockGlobalSetup.setup).toHaveBeenCalledWith(
+        mockApp,
+        mockModuleRef,
+      );
     });
   });
-
 
   describe('start', () => {
     it('runs readiness check before server start', async () => {
       const callOrder: string[] = [];
-
 
       mockReadiness.run.mockImplementation(async () => {
         callOrder.push('readiness');
@@ -141,17 +126,13 @@ describe('BootstrapService', () => {
         callOrder.push('server');
       });
 
-
       await service.start(mockApp);
-
 
       expect(callOrder).toEqual(['readiness', 'server']);
     });
 
-
     it('passes app and config to server start', async () => {
       await service.start(mockApp);
-
 
       expect(mockServer.start).toHaveBeenCalledWith(
         mockApp,
@@ -162,7 +143,6 @@ describe('BootstrapService', () => {
       );
     });
 
-
     it('awaits readiness before starting server', async () => {
       mockReadiness.run.mockImplementation(
         () =>
@@ -171,11 +151,9 @@ describe('BootstrapService', () => {
           }),
       );
 
-
       const startTime = Date.now();
       await service.start(mockApp);
       const duration = Date.now() - startTime;
-
 
       expect(duration).toBeGreaterThanOrEqual(100);
       expect(mockServer.start).toHaveBeenCalled();

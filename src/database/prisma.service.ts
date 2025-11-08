@@ -7,6 +7,7 @@ import {
 import { PrismaClient } from '@prisma/client';
 import { retry } from '@/common/utils';
 import { LoggerService } from '@/logger/services';
+import { LOG_CONTEXTS } from '@/logger/constants';
 
 @Injectable()
 export class PrismaService
@@ -23,23 +24,14 @@ export class PrismaService
   }
 
   async onModuleInit() {
-    try {
-      await retry(() => this.$connect(), {
-        retries: this.maxRetries,
-        delay: this.retryDelays,
-        exponentialBackoff: true,
-        logger: this.logger,
-        context: 'DatabaseConnection',
-      });
-      this.logger.log('Database connected successfully', 'PrismaService');
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error';
-      this.logger.error(
-        `Database connection failed: ${message}. Aborting startup.`,
-        'PrismaService',
-      );
-      throw err;
-    }
+    await retry(() => this.$connect(), {
+      retries: this.maxRetries,
+      delay: this.retryDelays,
+      exponentialBackoff: true,
+      logger: this.logger,
+      context: 'DatabaseConnection',
+    });
+    this.logger.log('Database connected successfully', LOG_CONTEXTS.PRISMA);
   }
 
   async onApplicationShutdown() {

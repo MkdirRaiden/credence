@@ -1,5 +1,6 @@
 // src/config/helpers/validate-config.ts
 import { configValidationSchema, getCriticalSchema } from '@/config/schemas';
+import { LOG_CONTEXTS } from '@/logger/constants';
 import { BootstrapLogger } from '@/logger/services';
 
 /**
@@ -9,20 +10,15 @@ import { BootstrapLogger } from '@/logger/services';
 export async function validatePreConfig(
   logger: BootstrapLogger,
 ): Promise<void> {
-  // Critical phase - throws on error
-  await getCriticalSchema().validateAsync(process.env, {
-    abortEarly: true,
-  });
+  await getCriticalSchema().validateAsync(process.env, { abortEarly: true });
 
-  // Full phase - warn on non-critical issues
   const { error } = configValidationSchema.validate(process.env, {
     abortEarly: false,
   });
-
   if (error) {
     logger.warn(
       `Non-critical config issues: ${error.message}`,
-      'ConfigPreValidation',
+      LOG_CONTEXTS.CONFIG,
     );
   }
 }

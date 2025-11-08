@@ -4,7 +4,6 @@ import { Visibility } from '@/common/decorators/visibility.decorator';
 import { VISIBILITY_KEY } from '@/common/constants';
 import type { VisibilityLevel } from '@/common/interfaces';
 
-
 describe('Visibility Decorator', () => {
   const reflector = new Reflector();
 

@@ -1,24 +1,37 @@
 // src/logger/base/base-logger.ts
 import { LoggerService as NestLogger } from '@nestjs/common';
-import { formatLogJson, logWriter } from '@/logger/helpers';
+import { formatLogJson, logWriter, sanitizeLog } from '@/logger/helpers';
+import { LogLevel, shouldLog } from '@/common/interfaces';
+import { LogContext } from '@/logger/constants';
+import { LOG_LEVEL } from '@/config/constants';
 
-/**
- * Base logger implementing NestJS LoggerService interface.
- * Orchestrates logging flow: receive → format → output, delegating to helpers.
- */
 export class BaseLogger implements NestLogger {
-  constructor(protected readonly env?: string) {}
+  constructor(
+    protected readonly env?: string,
+    protected readonly minLevel: LogLevel = LOG_LEVEL,
+  ) {}
 
-  log(message: any, context?: string) {
-    const json = formatLogJson('INFO', message, {
-      context,
-      env: this.env,
-    });
+  log(message: unknown, context?: LogContext): void {
+    if (!shouldLog('INFO', this.minLevel)) return;
+    const safeMsg =
+      typeof message === 'object' && message !== null
+        ? sanitizeLog(message)
+        : message;
+    const json = formatLogJson('INFO', safeMsg, { context, env: this.env });
     logWriter('INFO', json);
   }
 
-  error(message: any, traceOrError?: string | Error, context?: string) {
-    const json = formatLogJson('ERROR', message, {
+  error(
+    message: unknown,
+    traceOrError?: string | Error,
+    context?: LogContext,
+  ): void {
+    if (!shouldLog('ERROR', this.minLevel)) return;
+    const safeMsg =
+      typeof message === 'object' && message !== null
+        ? sanitizeLog(message)
+        : message;
+    const json = formatLogJson('ERROR', safeMsg, {
       context,
       env: this.env,
       error: traceOrError,
@@ -26,32 +39,33 @@ export class BaseLogger implements NestLogger {
     logWriter('ERROR', json);
   }
 
-  warn(message: any, context?: string) {
-    const json = formatLogJson('WARN', message, {
-      context,
-      env: this.env,
-    });
+  warn(message: unknown, context?: LogContext): void {
+    if (!shouldLog('WARN', this.minLevel)) return;
+    const safeMsg =
+      typeof message === 'object' && message !== null
+        ? sanitizeLog(message)
+        : message;
+    const json = formatLogJson('WARN', safeMsg, { context, env: this.env });
     logWriter('WARN', json);
   }
 
-  // Debug and verbose skipped in production to reduce noise
-  debug(message: any, context?: string) {
-    if (this.env !== 'production') {
-      const json = formatLogJson('DEBUG', message, {
-        context,
-        env: this.env,
-      });
-      logWriter('DEBUG', json);
-    }
+  debug(message: unknown, context?: LogContext): void {
+    if (!shouldLog('DEBUG', this.minLevel)) return;
+    const safeMsg =
+      typeof message === 'object' && message !== null
+        ? sanitizeLog(message)
+        : message;
+    const json = formatLogJson('DEBUG', safeMsg, { context, env: this.env });
+    logWriter('DEBUG', json);
   }
 
-  verbose(message: any, context?: string) {
-    if (this.env !== 'production') {
-      const json = formatLogJson('VERBOSE', message, {
-        context,
-        env: this.env,
-      });
-      logWriter('VERBOSE', json);
-    }
+  verbose(message: unknown, context?: LogContext): void {
+    if (!shouldLog('VERBOSE', this.minLevel)) return;
+    const safeMsg =
+      typeof message === 'object' && message !== null
+        ? sanitizeLog(message)
+        : message;
+    const json = formatLogJson('VERBOSE', safeMsg, { context, env: this.env });
+    logWriter('VERBOSE', json);
   }
 }

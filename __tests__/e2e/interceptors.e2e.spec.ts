@@ -3,7 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { createTestApp, closeTestApp } from '../common/test-app';
 
-// __tests__/e2e/interceptors.e2e.spec.ts
 describe('Global Interceptors (E2E)', () => {
   let app: INestApplication;
 
@@ -35,9 +34,7 @@ describe('Global Interceptors (E2E)', () => {
     });
 
     it('root returns raw config', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/').expect(200);
 
       expect(response.body).toHaveProperty('name');
       expect(response.body.success).toBeUndefined(); // Not wrapped

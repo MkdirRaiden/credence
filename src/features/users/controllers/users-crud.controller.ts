@@ -28,8 +28,9 @@ export class UsersCrudController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  async create(@Body() dto: userDtos.CreateUserDto): 
-  Promise<userDtos.UserResponseDto> {
+  async create(
+    @Body() dto: userDtos.CreateUserDto,
+  ): Promise<userDtos.UserResponseDto> {
     return this.crudService.create(dto);
   }
 

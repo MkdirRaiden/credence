@@ -11,8 +11,8 @@ import * as contracts from '@/features/users/contracts';
  */
 @Module({
   controllers: [
-    controllers.UsersLookupController, 
-    controllers.UsersCrudController
+    controllers.UsersLookupController,
+    controllers.UsersCrudController,
   ],
   providers: [
     services.UserAuthService,

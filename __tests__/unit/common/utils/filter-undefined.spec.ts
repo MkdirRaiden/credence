@@ -1,7 +1,6 @@
 // __tests__/unit/common/utils/filter-undefined.spec.ts
 import { filterUndefined } from '@/common/utils/filter-undefined';
 
-
 describe('filterUndefined Utility', () => {
   it('removes undefined and null, preserves falsy values', () => {
     const input = {

@@ -3,6 +3,7 @@ import { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { LoggerService } from '@/logger/services/logger.service';
 import { buildResponse } from '@/common/utils';
+import { LOG_CONTEXTS } from '@/logger/constants';
 
 export abstract class BaseExceptionFilter<T = unknown>
   implements ExceptionFilter
@@ -12,7 +13,10 @@ export abstract class BaseExceptionFilter<T = unknown>
   abstract catch(exception: T, host: ArgumentsHost): void;
 
   protected logException(message: string, stack?: string, context?: string) {
-    this.logger.error(message, stack, context);
+    // Compose message with context details if provided
+    const enrichedMessage = context ? `${message} [${context}]` : message;
+
+    this.logger.error(enrichedMessage, stack, LOG_CONTEXTS.FILTER);
   }
 
   protected sendResponse(

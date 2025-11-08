@@ -1,4 +1,5 @@
 // src/common/interfaces/app-config.interface.ts
+import { LogLevel } from '@/common/interfaces';
 export interface AppConfig {
   server: {
     nodeEnv: string;
@@ -11,6 +12,7 @@ export interface AppConfig {
   app: {
     appName: string;
     appVersion: string;
+    logLevel: LogLevel;
   };
   database: {
     url: string;

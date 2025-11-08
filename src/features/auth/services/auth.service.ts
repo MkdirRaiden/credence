@@ -2,18 +2,17 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { BaseCrudService } from '@/features/users/contracts';
-import { RefreshTokenService } from '@/features/refresh-tokens/refresh-token.service';
+import { RefreshTokenService } from '@/features/refresh-tokens/services';
 import { LoggerService } from '@/logger/services';
 import * as authDtos from '@/features/auth/dtos';
 import * as helpers from '@/features/auth/helpers';
+import { LOG_CONTEXTS } from '@/logger/constants';
 
 /**
  * Orchestrates authentication flows (register, login, refresh, logout)
  */
 @Injectable()
 export class AuthService {
-  private readonly logContext = 'AuthService';
-
   constructor(
     @Inject(BaseCrudService) private readonly crudService: BaseCrudService,
     private readonly jwtService: JwtService,
@@ -24,14 +23,19 @@ export class AuthService {
   /**
    * Register new user, hash password, generate tokens, store refresh token in DB
    */
-  async register(registerDto: authDtos.RegisterDto): Promise<authDtos.AuthResponseDto> {
-    this.logger.log(`Registering user: ${registerDto.email}`, this.logContext);
+  async register(
+    registerDto: authDtos.RegisterDto,
+  ): Promise<authDtos.AuthResponseDto> {
+    this.logger.log(
+      `Registering user: ${registerDto.email}`,
+      LOG_CONTEXTS.AUTH,
+    );
     const { password, ...userFields } = registerDto;
     const user = await this.crudService.create({
       ...userFields,
       passwordHash: await helpers.hashPassword(password),
     });
-    this.logger.log(`User registered: ${user.id}`, this.logContext);
+    this.logger.log(`User registered: ${user.id}`, LOG_CONTEXTS.AUTH);
     return this.createAuthResponse(user.id, user.email, user);
   }
 
@@ -39,8 +43,10 @@ export class AuthService {
    * Generate tokens for authenticated user
    * Called after LocalStrategy validates credentials
    */
-  async login(user: Partial<authDtos.UserResponseDto>): Promise<authDtos.AuthResponseDto> {
-    this.logger.log(`User logged in: ${user.id}`, this.logContext);
+  async login(
+    user: Partial<authDtos.UserResponseDto>,
+  ): Promise<authDtos.AuthResponseDto> {
+    this.logger.log(`User logged in: ${user.id}`, LOG_CONTEXTS.AUTH);
     return this.createAuthResponse(
       user.id!,
       user.email!,
@@ -51,8 +57,10 @@ export class AuthService {
   /**
    * Verify refresh token in DB, revoke old token, generate new tokens
    */
-  async refresh(refreshTokenDto: authDtos.RefreshTokenDto): Promise<authDtos.AuthResponseDto> {
-    this.logger.log('Refreshing access token', this.logContext);
+  async refresh(
+    refreshTokenDto: authDtos.RefreshTokenDto,
+  ): Promise<authDtos.AuthResponseDto> {
+    this.logger.log('Refreshing access token', LOG_CONTEXTS.AUTH);
 
     const payload = helpers.verifyJwtToken(
       this.jwtService,
@@ -68,7 +76,7 @@ export class AuthService {
 
     this.logger.log(
       `Token refreshed for user: ${payload.sub}`,
-      this.logContext,
+      LOG_CONTEXTS.AUTH,
     );
     return this.createAuthResponse(
       payload.sub,
@@ -83,7 +91,7 @@ export class AuthService {
    */
   async logout(refreshToken: string): Promise<void> {
     await this.refreshTokenService.revoke(refreshToken);
-    this.logger.log('User logged out', this.logContext);
+    this.logger.log('User logged out', LOG_CONTEXTS.AUTH);
   }
 
   /**

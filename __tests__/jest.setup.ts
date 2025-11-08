@@ -16,5 +16,5 @@ afterEach(() => {
 // Force exit after all tests
 afterAll(async () => {
   // Give async operations time to settle
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 100));
 });

@@ -28,11 +28,15 @@ model ReferralRedemption {
   status         RedemptionStatus   @default(PENDING)
   reason         String?
   idempotencyKey String?            @unique  // Prevent duplicate processing
+  updatedAt      DateTime           @updatedAt
   createdAt      DateTime           @default(now())
   decidedAt      DateTime?
+  decidedById    String? 
+  deletedAt      DateTime? 
 
   referrer       User               @relation("Referrer", fields: [referrerId], references: [id], onDelete: Restrict)
   referee        User               @relation("Referee", fields: [refereeId], references: [id], onDelete: Restrict)
+  decidedBy      User?              @relation("RedemptionDecider", fields: [decidedById], references: [id], onDelete: SetNull)
   referralCode   ReferralCode       @relation(fields: [referralCodeId], references: [id], onDelete: Restrict)
   ledgerEntries  CreditLedger[]     @relation("RedemptionLedger")
 
@@ -44,5 +48,9 @@ model ReferralRedemption {
   @@index([refereeId, createdAt])   // For "my referrers" queries
   @@index([referralCodeId])         // For "code redemptions" queries
   @@index([status, createdAt])      // For pending/approved/rejected reporting
+  @@index([deletedAt])              // Index for soft delete queries
+  @@index([status, deletedAt])
+  @@index([decidedById])            // Track admin decisions
+  @@index([status, decidedAt]) 
   
 }

@@ -3,7 +3,7 @@
 model CreditLedger {
   id                   String               @id @default(uuid())
   userId               String
-  amount               Int
+  amount               BigInt 
   event                CreditEvent
   sourceLedgerId       String?
   operationId          String?

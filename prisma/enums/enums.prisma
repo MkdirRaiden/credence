@@ -10,6 +10,14 @@ enum OtpChannel {
   EMAIL
 }
 
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  GITHUB
+  APPLE
+  SYSTEM  
+}
+
 enum RedemptionStatus {
   PENDING
   APPROVED
@@ -18,11 +26,11 @@ enum RedemptionStatus {
 }
 
 enum CreditEvent {
-  ISSUE        // Referral bonus issued
-  REVOKE       // Credits removed (user delete, term violation)
-  REFUND       // Credits returned to user
-  EXPIRE       // Auto-expiration
-  ADJUSTMENT   // Admin manual correction/dispute resolution
+  ISSUED       // Changed from ISSUE - Referral bonus issued
+  REVOKED      // Changed from REVOKE - Credits removed (user delete, term violation)
+  REFUNDED     // Changed from REFUND - Credits returned to user
+  EXPIRED      // Changed from EXPIRE - Auto-expiration
+  ADJUSTED     // Changed from ADJUSTMENT - Admin manual correction/dispute resolution
 }
 
 enum IdempotencyScope {

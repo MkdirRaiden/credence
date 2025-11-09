@@ -4,6 +4,7 @@ Custom CLI automation for Prisma migrations, schema management, and environment 
 
 ## Structure
 
+```
 scripts/
 ├── bootstrap.sh              # Core initialization
 ├── env/env-load.sh          # Environment loader
@@ -12,6 +13,7 @@ scripts/
 └── prisma/
     ├── utils/               # Schema merge, DB helpers
     └── commands/            # User-facing commands
+```
 
 ## Commands
 

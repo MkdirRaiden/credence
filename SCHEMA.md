@@ -16,7 +16,7 @@ A custom CLI script `merge-generate.sh` is used to merge these schema files as p
 
 This merging approach follows best practices for modular and maintainable Prisma schema management.
 
-## Database-Level Constraints
+## Manual Database-Level Constraints
 
 To supplement Prisma schema validation, additional SQL-level constraints are manually applied via migrations to enforce critical business rules and security policies directly in the database:
 

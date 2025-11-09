@@ -1,0 +1,90 @@
+# Credence
+
+Professional, scalable NestJS & Prisma backend application for credit ledger and referral system.
+
+## Features
+
+- Modular NestJS architecture following SOLID and DRY principles.
+- Secure authentication with JWT, refresh tokens, and RBAC.
+- Comprehensive Prisma schema with strong database-level constraints.
+- Custom CLI scripts for managing schema, migrations, seeding, and environment.
+- Structured logging and health monitoring.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js v20 or higher
+- PostgreSQL database
+
+### Installation
+
+```bash
+npm install
+```
+
+### Running
+
+Development:
+
+```bash
+npm run start:dev
+```
+
+Production:
+
+```bash
+npm run build
+npm run start:prod
+```
+
+### Testing
+
+Unit tests:
+
+```bash
+npm run test:unit
+```
+
+Integration tests:
+
+```bash
+npm run test:integration
+```
+
+E2E tests:
+
+```bash
+npm run test:e2e
+```
+
+## Project Structure
+
+The backend consists of core infrastructure modules and feature modules:
+
+| Module     | Description                          |
+|------------|----------------------------------|
+| Config     | Environment config and validation  |
+| Common     | Utilities, guards, interceptors    |
+| Database   | Prisma DB client and lifecycle     |
+| Logger     | Structured logging services        |
+| Bootstrap  | App startup, middlewares, shutdown |
+| Root       | App root module                    |
+| Users      | User management and profiles       |
+| Auth       | Authentication flows and guards    |
+| Refresh Tokens | Refresh token lifecycle handling|
+
+## Documentation
+
+- [Schema Definition](SCHEMA.md): Prisma schema design and constraints.
+- [CLI Scripts](SCRIPTS.md): Automation for migrations and environment setup.
+
+## Contributing
+
+Please open issues for bugs or feature requests and submit pull requests for improvements.
+
+## License
+
+MIT
+
+---

@@ -1,5 +1,5 @@
 // prisma/factories/user.factory.ts
-import { Prisma, UserRole } from '@prisma/client';
+import { Prisma, UserRole, AuthProvider } from '@prisma/client';
 
 export const seedUsers: Prisma.UserCreateInput[] = [
   {
@@ -8,6 +8,7 @@ export const seedUsers: Prisma.UserCreateInput[] = [
     role: UserRole.ADMIN,
     emailVerified: true,
     phoneVerified: false,
+    authProvider: AuthProvider.SYSTEM,
   },
   {
     email: 'john@example.com',
@@ -16,6 +17,8 @@ export const seedUsers: Prisma.UserCreateInput[] = [
     role: UserRole.USER,
     emailVerified: true,
     phoneVerified: true,
+
+    authProvider: AuthProvider.SYSTEM,
   },
   {
     email: 'jane@example.com',
@@ -24,5 +27,6 @@ export const seedUsers: Prisma.UserCreateInput[] = [
     role: UserRole.USER,
     emailVerified: true,
     phoneVerified: false,
+    authProvider: AuthProvider.SYSTEM,
   },
 ];

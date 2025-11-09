@@ -2,28 +2,13 @@
 
 Custom CLI automation for Prisma migrations, schema management, and environment handling.
 
-## Quick Start
-
-```bash
-# Development
-bash scripts/prisma/commands/merge-generate.sh development
-bash scripts/prisma/commands/migrate.sh development
-bash scripts/prisma/commands/studio.sh development
-
-# Production
-bash scripts/prisma/commands/deploy.sh production
-```
-
 ## Structure
 
 scripts/
 ├── bootstrap.sh              # Core initialization
 ├── env/env-load.sh          # Environment loader
-<<<<<<< HEAD
 ├── helpers/                 # Utilities (colors, logging, debug, validation)
-=======
 ├── helpers/                  # Utilities (colors, logging, debug, validation)
->>>>>>> develope
 └── prisma/
     ├── utils/               # Schema merge, DB helpers
     └── commands/            # User-facing commands
@@ -33,55 +18,50 @@ scripts/
 ### merge-generate.sh
 Merge schema files and generate Prisma client
 ```bash
-bash scripts/prisma/commands/merge-generate.sh <environment>
+npm run prisma:gen <environment>
 ```
 Merges base.prisma + enums/*.prisma + models/*.prisma → formats → validates → generates client
 
 ### migrate.sh
 Run database migrations
 ```bash
-bash scripts/prisma/commands/migrate.sh <environment> [mode]
-# Modes: dev-migrate (default), deploy, core
+npm run prisma:migrate <environment>
 ```
 
 ### deploy.sh
 Production-safe migration deployment
 ```bash
-bash scripts/prisma/commands/deploy.sh production
+npm run prisma:deploy
 ```
 Requires confirmation, validates production environment
 
 ### rebuild.sh
 Complete database rebuild (dev only)
 ```bash
-bash scripts/prisma/commands/rebuild.sh [environment] [--skip-seed]
+npm run prisma:rebuild [environment] [--skip-seed]
 ```
 ⚠️ Destructive: Drop all → migrations → seeds
 
 ### reset.sh
 Full database wipe (dev only)
 ```bash
-bash scripts/prisma/commands/reset.sh [environment]
+npm run prisma:reset [environment]
 ```
 ⚠️ Nuclear option: Multiple confirmations required
 
 ### seed.sh
 Run database seeders
 ```bash
-bash scripts/prisma/commands/seed.sh [environment]
+npm run prisma:seed [environment]
 ```
 
 ### studio.sh
 Launch Prisma Studio
 ```bash
-bash scripts/prisma/commands/studio.sh [environment]
+npm run prisma:studio [environment]
 ```
-<<<<<<< HEAD
 Opens at http://localhost:5555
 
 ## See also
 
 - For detailed Prisma schema structure and constraints, see [SCHEMA.md](SCHEMA.md).
-=======
-Opens at http://localhost:5555
->>>>>>> develope

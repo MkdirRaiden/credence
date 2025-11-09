@@ -19,7 +19,11 @@ bash scripts/prisma/commands/deploy.sh production
 scripts/
 ├── bootstrap.sh              # Core initialization
 ├── env/env-load.sh          # Environment loader
+<<<<<<< HEAD
 ├── helpers/                 # Utilities (colors, logging, debug, validation)
+=======
+├── helpers/                  # Utilities (colors, logging, debug, validation)
+>>>>>>> develope
 └── prisma/
     ├── utils/               # Schema merge, DB helpers
     └── commands/            # User-facing commands
@@ -72,8 +76,12 @@ Launch Prisma Studio
 ```bash
 bash scripts/prisma/commands/studio.sh [environment]
 ```
+<<<<<<< HEAD
 Opens at http://localhost:5555
 
 ## See also
 
 - For detailed Prisma schema structure and constraints, see [SCHEMA.md](SCHEMA.md).
+=======
+Opens at http://localhost:5555
+>>>>>>> develope

@@ -1,4 +1,4 @@
-// src/logger/helpers/log-writer.ts
+// src/logger/helpers/output/log-writer.ts
 import { LogLevel } from '@/common/interfaces';
 
 export function logWriter(level: LogLevel, json: string): void {

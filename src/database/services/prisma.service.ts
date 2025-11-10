@@ -39,7 +39,7 @@ export class PrismaService
   async onApplicationShutdown() {
     await this.$disconnect();
     // Note: Logs twice due to Prisma $extends() creating proxy instance.
-    // This is harmless - both share the same connection pool and 
+    // This is harmless - both share the same connection pool and
     // $disconnect() is idempotent.
     this.logger.log('Database disconnected', LOG_CONTEXTS.PRISMA);
   }

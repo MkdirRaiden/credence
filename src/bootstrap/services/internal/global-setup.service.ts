@@ -1,4 +1,4 @@
-// src/bootstrap/services/global-setup.service.ts
+// src/bootstrap/services/internal/global-setup.service.ts
 import {
   Injectable,
   INestApplication,

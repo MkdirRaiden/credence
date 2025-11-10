@@ -1,4 +1,4 @@
-// src/logger/helpers/build-entry.ts
+// src/logger/helpers/formatting/build-entry.ts
 import { BuildOptions, LogLevel, LogEntry } from '@/common/interfaces';
 import { buildEntry, errorMeta, sanitizeLog } from '@/logger/helpers';
 

@@ -51,7 +51,7 @@ describe('LoggerModule (Integration)', () => {
     logSpy.mockRestore();
   });
 
-  it('logs errors with stack trace', () => {
+  it('logs errors with stack trace at root level', () => {
     const logger = context.getService<LoggerService>(LoggerService);
     const errorSpy = jest.spyOn(console, 'error').mockImplementation();
 
@@ -61,7 +61,9 @@ describe('LoggerModule (Integration)', () => {
     expect(errorSpy).toHaveBeenCalled();
     const output = errorSpy.mock.calls[0][0];
     const parsed = JSON.parse(output);
-    // error fields are at root (directly on log entry)
+    
+    // Error metadata merged at root via Object.assign
+    expect(parsed.message).toBe('Error occurred');
     expect(parsed.name).toBe('Error');
     expect(parsed.trace).toContain('Test error');
 
@@ -113,23 +115,13 @@ describe('LoggerModule (Integration)', () => {
     const output = logSpy.mock.calls[0][0];
     const parsed = JSON.parse(output);
 
-    // Message is JSON string, so parse again
-    const sanitizedMsg = JSON.parse(parsed.message);
-    expect(sanitizedMsg.email).toBe('user@example.com');
-    expect(sanitizedMsg.password).toBe('[REDACTED]');
-    expect(sanitizedMsg.token).toBe('[REDACTED]');
+    // message is stringified JSON (from safeSerialize)
+    const messageObj = JSON.parse(parsed.message);
+    expect(messageObj.email).toBe('user@example.com');
+    expect(messageObj.password).toBe('[REDACTED]');
+    expect(messageObj.token).toBe('[REDACTED]');
 
     logSpy.mockRestore();
-  });
-
-  it('respects log level filtering', () => {
-    const logger = context.getService<LoggerService>(LoggerService);
-    const debugSpy = jest.spyOn(console, 'log').mockImplementation();
-
-    logger.debug('Debug message', LOG_CONTEXTS.APP);
-    // Depends on LOG_LEVEL env setting, cannot assert in integration test
-
-    debugSpy.mockRestore();
   });
 
   it('uses default context when none provided', () => {

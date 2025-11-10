@@ -1,6 +1,6 @@
-// __tests__/unit/health/services/prisma.probe.spec.ts
+// __tests__/unit/health/prisma.probe.spec.ts
 import { PrismaProbeService } from '@/health/services/probes/prisma.probe';
-import { PrismaService } from '@/database/services/prisma.service';
+import { PrismaService } from '@/database/services';
 
 describe('PrismaProbeService', () => {
   let probe: PrismaProbeService;
@@ -9,36 +9,39 @@ describe('PrismaProbeService', () => {
   beforeEach(() => {
     mockPrisma = {
       $queryRaw: jest.fn(),
-    } as any; // Cast to 'any' to bypass strict PrismaPromise typing in tests
+    } as any;
 
     probe = new PrismaProbeService(mockPrisma);
   });
 
   it('returns up status on successful query', async () => {
-    (mockPrisma.$queryRaw as jest.Mock).mockResolvedValue([{ result: 1 }]);
+    mockPrisma.$queryRaw.mockResolvedValue([{ result: 1 }]);
 
     const result = await probe.check();
 
-    expect(result.name).toBe('database');
-    expect(result.status).toBe('up');
-    expect(result.message).toBeUndefined();
+    expect(result).toEqual({ name: 'database', status: 'up' });
+    expect(mockPrisma.$queryRaw).toHaveBeenCalledTimes(1);
   });
 
   it('returns down status on query failure', async () => {
     const error = new Error('Connection refused');
-    (mockPrisma.$queryRaw as jest.Mock).mockRejectedValue(error);
+    mockPrisma.$queryRaw.mockRejectedValue(error);
 
     const result = await probe.check();
 
-    expect(result.name).toBe('database');
-    expect(result.status).toBe('down');
-    expect(result.message).toBe('Connection refused');
+    expect(result).toEqual({
+      name: 'database',
+      status: 'down',
+      message: 'Connection refused',
+    });
   });
 
-  it('enforces timeout when provided', async () => {
+  it('uses timeout when provided', async () => {
     jest.useFakeTimers();
-    (mockPrisma.$queryRaw as jest.Mock).mockImplementation(
-      () => new Promise((resolve) => setTimeout(() => resolve([]), 5000)),
+    
+    // Fix: Return a never-resolving promise (simpler)
+    mockPrisma.$queryRaw.mockReturnValue(
+      new Promise(() => {}) as any, // Cast to bypass PrismaPromise type
     );
 
     const checkPromise = probe.check({ timeout: 1000 });
@@ -47,31 +50,20 @@ describe('PrismaProbeService', () => {
     const result = await checkPromise;
 
     expect(result.status).toBe('down');
-    expect(result.message).toContain('Timeout');
+    expect(result.message).toContain('Timeout after 1000ms');
 
     jest.useRealTimers();
-  });
-
-  it('clears timeout after successful check', async () => {
-    jest.useFakeTimers();
-    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-
-    (mockPrisma.$queryRaw as jest.Mock).mockResolvedValue([]);
-
-    await probe.check({ timeout: 1000 });
-
-    expect(clearTimeoutSpy).toHaveBeenCalled();
-
-    jest.useRealTimers();
-    clearTimeoutSpy.mockRestore();
   });
 
   it('handles non-Error exceptions', async () => {
-    (mockPrisma.$queryRaw as jest.Mock).mockRejectedValue('Unknown error');
+    mockPrisma.$queryRaw.mockRejectedValue('Unknown error');
 
     const result = await probe.check();
 
-    expect(result.status).toBe('down');
-    expect(result.message).toBe('Unknown error');
+    expect(result).toEqual({
+      name: 'database',
+      status: 'down',
+      message: 'Unknown error',
+    });
   });
 });

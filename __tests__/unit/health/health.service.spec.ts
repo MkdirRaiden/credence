@@ -1,4 +1,4 @@
-// __tests__/unit/health/services/health.service.spec.ts
+// __tests__/unit/health/health.service.spec.ts
 import { HealthService, SchedulerService } from '@/health/services';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import type { Probe } from '@/health/health.interface';
@@ -68,34 +68,16 @@ describe('HealthService', () => {
         message: 'Connection lost',
       });
 
-      try {
-        await healthService.readinessOrThrow();
-        fail('Should have thrown HttpException');
-      } catch (err) {
-        expect(err).toBeInstanceOf(HttpException);
-        if (err instanceof HttpException) {
-          expect(err.getStatus()).toBe(HttpStatus.SERVICE_UNAVAILABLE);
-        }
-      }
-    });
-
-    it('includes failure details in response', async () => {
-      mockProbes[0].check = jest.fn().mockResolvedValue({
-        name: 'database',
-        status: 'down',
-        message: 'Connection lost',
+      await expect(healthService.readinessOrThrow()).rejects.toMatchObject({
+        message: expect.anything(),
+        response: {
+          status: 'error',
+          details: expect.objectContaining({
+            database: expect.objectContaining({ status: 'down' }),
+          }),
+        },
+        status: HttpStatus.SERVICE_UNAVAILABLE,
       });
-
-      try {
-        await healthService.readinessOrThrow();
-        fail('Should have thrown');
-      } catch (err) {
-        if (err instanceof HttpException) {
-          const response = err.getResponse() as any;
-          expect(response.status).toBe('error');
-          expect(response.details.database.message).toBe('Connection lost');
-        }
-      }
     });
   });
 
@@ -104,32 +86,16 @@ describe('HealthService', () => {
       await expect(healthService.assertReadiness()).resolves.toBeUndefined();
     });
 
-    it('throws Error on readiness failure (bootstrap phase)', async () => {
+    it('throws Error on readiness failure with probe details', async () => {
       mockProbes[0].check = jest.fn().mockResolvedValue({
         name: 'database',
         status: 'down',
         message: 'Lost',
       });
 
-      await expect(healthService.assertReadiness()).rejects.toThrow(Error);
-    });
-
-    it('includes probe details in error message', async () => {
-      mockProbes[0].check = jest.fn().mockResolvedValue({
-        name: 'database',
-        status: 'down',
-        message: 'Lost',
-      });
-
-      try {
-        await healthService.assertReadiness();
-        fail('Should have thrown');
-      } catch (err) {
-        if (err instanceof Error) {
-          expect(err.message).toContain('Readiness check failed');
-          expect(err.message).toContain('database');
-        }
-      }
+      await expect(healthService.assertReadiness()).rejects.toThrow(
+        /Readiness check failed.*database/,
+      );
     });
   });
 });

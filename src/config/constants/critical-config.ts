@@ -5,7 +5,7 @@ import { validateJwtSecret, validateDatabaseUrl } from '@/config/validators';
 /**
  * Critical environment variables that MUST be set before app starts.
  * Mapped to their validators for pre-validation in main.ts.
- */
+ **/
 export const CRITICAL_ENV_VARS = [
   'DATABASE_URL',
   'JWT_SECRET',

@@ -1,4 +1,4 @@
-// src/logger/helpers/error-meta.ts
+// src/logger/helpers/formatting/error-meta.ts
 import { safeSerialize } from '@/logger/helpers';
 
 /**

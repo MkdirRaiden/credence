@@ -1,4 +1,4 @@
-// src/bootstrap/services/readiness.service.ts
+// src/bootstrap/services/internal/readiness.service.ts
 import { Inject, Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
 import { BaseHealthService } from '@/health/contracts';

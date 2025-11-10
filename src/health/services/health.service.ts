@@ -62,17 +62,10 @@ export class HealthService extends BaseHealthService implements OnModuleInit {
 
   private async executeReadinessCheck() {
     const probeTimeoutMs = Math.floor(constants.PROBE_CHECK_TIMEOUT_MS * 0.8);
-    const serviceTimeoutHandle = helpers.createTimeoutPromise(
+
+    return helpers.withTimeout(
+      helpers.getReadiness(this.probes, { timeout: probeTimeoutMs }),
       constants.PROBE_CHECK_TIMEOUT_MS,
     );
-
-    try {
-      return await Promise.race([
-        helpers.getReadiness(this.probes, { timeout: probeTimeoutMs }),
-        serviceTimeoutHandle.promise,
-      ]);
-    } finally {
-      clearTimeout(serviceTimeoutHandle.id);
-    }
   }
 }

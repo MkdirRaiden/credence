@@ -10,7 +10,8 @@ import { BootstrapLogger } from '@/logger/services';
 export async function validatePreConfig(
   logger: BootstrapLogger,
 ): Promise<void> {
-  await getCriticalSchema().validateAsync(process.env, { abortEarly: true });
+  const criticalSchema = getCriticalSchema();
+  await criticalSchema.validateAsync(process.env, { abortEarly: true });
 
   const { error } = configValidationSchema.validate(process.env, {
     abortEarly: false,

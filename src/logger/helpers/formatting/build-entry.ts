@@ -1,4 +1,4 @@
-// src/logger/helpers/build-entry.ts
+// src/logger/helpers/formatting/build-entry.ts
 import { LogEntry, BuildOptions, LogLevel } from '@/common/interfaces';
 import { safeSerialize } from '@/logger/helpers';
 import { LOG_CONTEXTS } from '@/common/constants';

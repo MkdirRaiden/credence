@@ -1,4 +1,4 @@
-// src/bootstrap/services/shutdown.service.ts
+// src/bootstrap/services/internal/shutdown.service.ts
 import { Injectable, INestApplication } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
 import { LOG_CONTEXTS } from '@/common/constants';

@@ -1,6 +1,6 @@
 // src/config/schemas/core-fields.builder.ts
 import * as Joi from 'joi';
-import { NODE_ENV, PORT, VALID_NODE_ENVS, HOST } from '@/config/constants';
+import * as constants from '@/config/constants';
 
 /**
  * Builds core server configuration fields schema.
@@ -9,11 +9,11 @@ import { NODE_ENV, PORT, VALID_NODE_ENVS, HOST } from '@/config/constants';
 export function buildCoreFieldsSchema(): Record<string, Joi.Schema> {
   return {
     NODE_ENV: Joi.string()
-      .valid(...VALID_NODE_ENVS)
-      .default(NODE_ENV),
+      .valid(...constants.VALID_NODE_ENVS)
+      .default(constants.NODE_ENV),
 
-    PORT: Joi.number().port().default(PORT),
+    PORT: Joi.number().port().default(constants.PORT),
 
-    HOST: Joi.string().hostname().default(HOST),
+    HOST: Joi.string().hostname().default(constants.HOST),
   };
 }

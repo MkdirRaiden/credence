@@ -1,52 +1,56 @@
 // __tests__/integration/health.integration.spec.ts
-import { SchedulerService } from '@/health/services';
+import { HealthService } from '@/health/services';
+import { BaseHealthService } from '@/health/contracts';
 import { HealthModule } from '@/health/health.module';
 import { TestContext } from '../common/test-context';
 
 describe('HealthModule (Integration)', () => {
   const context = new TestContext();
-  let scheduler: SchedulerService;
+  let healthService: HealthService;
 
   beforeAll(async () => {
     await context.setup({
       imports: [HealthModule],
     });
-    scheduler = context.getService(SchedulerService);
+    healthService = context.getService(HealthService);
   });
 
   afterAll(async () => {
     await context.teardown();
   });
 
-  it('scheduler service is registered', () => {
-    expect(scheduler).toBeDefined();
-    expect(scheduler).toBeInstanceOf(SchedulerService);
+  describe('liveness probe', () => {
+    it('returns up status with uptime', () => {
+      const result = healthService.liveness();
+
+      expect(result.status).toBe('up');
+      expect(result.uptimeMs).toBeGreaterThan(0);
+    });
   });
 
-  it('scheduler has start method', () => {
-    expect(scheduler).toHaveProperty('start');
-    expect(typeof scheduler.start).toBe('function');
+  describe('readiness probe', () => {
+    it('returns ok status when database is connected', async () => {
+      const result = await healthService.readinessOrThrow();
+
+      expect(result.status).toBe('ok');
+      expect(result.details).toHaveProperty('database');
+      expect(result.details.database.status).toBe('up');
+    });
   });
 
-  it('scheduler can start with empty probes', () => {
-    expect(() => {
-      scheduler.start([]);
-    }).not.toThrow();
+  describe('assertReadiness', () => {
+    it('succeeds when all probes are healthy', async () => {
+      await expect(healthService.assertReadiness()).resolves.toBeUndefined();
+    });
   });
 
-  it('scheduler has onApplicationShutdown method', () => {
-    expect(scheduler).toHaveProperty('onApplicationShutdown');
-    expect(typeof scheduler.onApplicationShutdown).toBe('function');
-  });
+  describe('contract export', () => {
+    it('exports BaseHealthService for bootstrap', () => {
+      const baseService = context.getService<BaseHealthService>(BaseHealthService);
 
-  it('scheduler stops on application shutdown', () => {
-    scheduler.start([]);
-    expect(() => {
-      scheduler.onApplicationShutdown('SIGTERM');
-    }).not.toThrow();
-  });
-
-  it('scheduler is injected with logger', () => {
-    expect(scheduler['logger']).toBeDefined();
+      expect(baseService).toBeDefined();
+      expect(baseService).toBeInstanceOf(HealthService);
+      expect(baseService.assertReadiness).toBeDefined();
+    });
   });
 });

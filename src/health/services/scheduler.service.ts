@@ -23,13 +23,12 @@ export class SchedulerService implements OnApplicationShutdown {
   }
 
   private async tick(probes: Probe[]) {
-    // Use probe timeout to prevent hanging
     const probeTimeoutMs = Math.floor(constants.PROBE_CHECK_TIMEOUT_MS * 0.6);
 
     const results = await Promise.all(
       probes.map((p) =>
         p.check({ timeout: probeTimeoutMs }).catch((err) => ({
-          name: 'unknown',
+          name: p.name,
           status: 'down' as const,
           message: err instanceof Error ? err.message : String(err),
         })),
@@ -37,7 +36,6 @@ export class SchedulerService implements OnApplicationShutdown {
     );
 
     const failures = results.filter((r) => r.status === 'down');
-
     if (failures.length > 0) {
       this.logger.warn(
         `Health check failures: ${JSON.stringify(failures)}`,

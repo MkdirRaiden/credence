@@ -1,4 +1,4 @@
-// src/logger/helpers/sanitize.helper.ts
+// src/logger/helpers/serialization/sanitize.helper.ts
 import { SENSITIVE_FIELDS } from '@/logger/constants';
 
 const SENSITIVE_FIELDS_LOWER = SENSITIVE_FIELDS.map((field) =>

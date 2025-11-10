@@ -1,4 +1,4 @@
-// src/bootstrap/services/middleware-setup.service.ts
+// src/bootstrap/services/internal/middleware-setup.service.ts
 import { Injectable, INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
 import compression from 'compression';

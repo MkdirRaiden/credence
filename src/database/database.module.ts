@@ -1,7 +1,7 @@
 // src/database/database.module.ts
 import { Module, Global } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService } from '@/database/services';
 import { LoggerService } from '@/logger/services';
 import type { AppConfig } from '@/common/interfaces';
 
@@ -18,8 +18,7 @@ import type { AppConfig } from '@/common/interfaces';
         logger: LoggerService,
       ) => {
         const database = configService.get('database', { infer: true });
-        const { url, maxRetries, retryDelays } = database;
-        return new PrismaService(url, maxRetries, retryDelays, logger);
+        return new PrismaService(database.url, logger);
       },
       inject: [ConfigService, LoggerService],
     },

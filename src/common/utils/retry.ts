@@ -1,6 +1,6 @@
-// src/common/utils/retry-database.ts
+// src/common/utils/retry.ts
 import { LoggerService } from '@/logger/services';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 export interface RetryOptions {
   retries: number;

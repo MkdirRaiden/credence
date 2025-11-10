@@ -24,8 +24,4 @@ function buildConfigSchema(): Joi.ObjectSchema {
   });
 }
 
-/**
- * Single source of truth for config validation.
- * Used by both NestConfigModule and critical schema extraction.
- */
 export const configValidationSchema = buildConfigSchema();

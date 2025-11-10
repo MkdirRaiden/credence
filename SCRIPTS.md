@@ -8,8 +8,7 @@ Custom CLI automation for Prisma migrations, schema management, and environment 
 scripts/
 ├── bootstrap.sh              # Core initialization
 ├── env/env-load.sh          # Environment loader
-├── helpers/                 # Utilities (colors, logging, debug, validation)
-├── helpers/                  # Utilities (colors, logging, debug, validation)
+├── helpers/                 # Utilities (colors, logging, debug validation)             
 └── prisma/
     ├── utils/               # Schema merge, DB helpers
     └── commands/            # User-facing commands

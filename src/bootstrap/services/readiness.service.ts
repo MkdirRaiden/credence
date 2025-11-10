@@ -2,7 +2,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
 import { BaseHealthService } from '@/health/contracts';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 /**
  * Runs critical readiness checks before accepting traffic.

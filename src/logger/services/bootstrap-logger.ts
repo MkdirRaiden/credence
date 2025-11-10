@@ -1,5 +1,5 @@
 // src/logger/services/bootstrap-logger.ts
-import { NODE_ENV } from '@/config/constants';
+import { NODE_ENV } from '@/logger/constants';
 import { BaseLogger } from '@/logger/base/base-logger';
 
 /**

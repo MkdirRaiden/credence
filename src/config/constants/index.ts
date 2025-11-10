@@ -24,13 +24,6 @@ export const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000'];
 export const JWT_EXPIRATION = 900; // 15 minutes
 export const JWT_REFRESH_EXPIRATION = 604800; // 7 days
 
-// Database related
-export const DATABASE_MAX_RETRIES = 5;
-export const DATABASE_RETRY_DELAY = 2000;
-export const SHUTDOWN_TIMEOUT_MS = 200;
-export const HEALTH_CHECK_INTERVAL_MS = 60000;
-export const PROBE_CHECK_TIMEOUT_MS = 5000;
-
 // Environment-specific config
 export const ENV_CONFIG = {
   development: {

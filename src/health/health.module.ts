@@ -2,7 +2,7 @@
 import { Module } from '@nestjs/common';
 import { HealthController } from '@/health/health.controller';
 import * as services from '@/health/services';
-import { PROBES_TOKEN } from '@/health/symbols';
+import { PROBES_TOKEN } from '@/health/constants';
 import * as contracts from '@/health/contracts';
 
 /**

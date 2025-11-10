@@ -6,9 +6,10 @@ import { BootstrapService } from '@/bootstrap/services';
 import { BootstrapLogger, LoggerService } from '@/logger/services';
 import { validatePreConfig } from '@/config/helpers';
 import { handleBootstrapError } from '@/bootstrap/helpers';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 const nodeEnv = process.env.NODE_ENV;
+const isProd = nodeEnv === 'production';
 const bootstrapLogger = new BootstrapLogger();
 let app: INestApplication | null = null;
 
@@ -28,7 +29,7 @@ async function bootstrap(): Promise<void> {
   // Phase 2: Create app with buffered logs
   app = await NestFactory.create(AppModule, {
     bufferLogs: true,
-    abortOnError: nodeEnv === 'production',
+    abortOnError: isProd,
     logger: bootstrapLogger,
   });
 

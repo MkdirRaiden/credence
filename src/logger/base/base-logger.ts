@@ -1,9 +1,8 @@
 // src/logger/base/base-logger.ts
 import { LoggerService as NestLogger } from '@nestjs/common';
 import { formatLogJson, logWriter, sanitizeLog } from '@/logger/helpers';
-import { LogLevel, shouldLog } from '@/common/interfaces';
-import { LogContext } from '@/logger/constants';
-import { LOG_LEVEL } from '@/config/constants';
+import { LogLevel, shouldLog, LogContext } from '@/common/interfaces';
+import { LOG_LEVEL } from '@/logger/constants';
 
 export class BaseLogger implements NestLogger {
   constructor(

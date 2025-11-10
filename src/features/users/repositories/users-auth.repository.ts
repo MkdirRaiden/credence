@@ -1,7 +1,7 @@
 // src/features/users/repositories/users-auth.repository.ts
 import { AUTH_USER_SELECT } from '@/features/users/constants';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService } from '@/database/services';
 import { User } from '@prisma/client';
 import { NotFound } from '@/common/decorators';
 

@@ -1,6 +1,6 @@
 // src/config/helpers/validate-config.ts
 import { configValidationSchema, getCriticalSchema } from '@/config/schemas';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 import { BootstrapLogger } from '@/logger/services';
 
 /**

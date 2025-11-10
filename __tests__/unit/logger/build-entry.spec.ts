@@ -1,6 +1,6 @@
 // __tests__/unit/logger/build-entry.spec.ts
 import { buildEntry } from '@/logger/helpers';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 import { requestContext } from '@/common/utils';
 
 describe('buildEntry', () => {

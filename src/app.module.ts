@@ -9,6 +9,7 @@ import { HealthModule } from '@/health/health.module';
 import { UsersModule } from '@/features/users/users.module';
 import { RootController } from '@/root.controller';
 import { AuthModule } from '@/features/auth/auth.module';
+import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.module';
 
 /**
  * Root application module with strict initialization order:
@@ -27,6 +28,7 @@ import { AuthModule } from '@/features/auth/auth.module';
     // Domain: Feature modules
     UsersModule,
     AuthModule,
+    RefreshTokenModule,
   ],
   controllers: [RootController],
 })

@@ -1,5 +1,5 @@
 // __tests__/common/test-database.ts
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService } from '@/database/services';
 
 /**
  * Cleans up database by deleting test records.

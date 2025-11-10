@@ -1,6 +1,6 @@
 // src/features/users/repositories/users-crud.repository.ts
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService } from '@/database/services';
 import { Prisma, User } from '@prisma/client';
 import { NotFound } from '@/common/decorators';
 import { DeletedResourceDto } from '@/features/users/dtos';

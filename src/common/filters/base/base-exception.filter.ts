@@ -3,7 +3,7 @@ import { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { LoggerService } from '@/logger/services/logger.service';
 import { buildResponse } from '@/common/utils';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 export abstract class BaseExceptionFilter<T = unknown>
   implements ExceptionFilter

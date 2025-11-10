@@ -1,6 +1,5 @@
 // __tests__/unit/common/utils/retry.spec.ts
 import { retry } from '@/common/utils';
-import { LOG_CONTEXTS } from '@/logger/constants';
 import type { LoggerService } from '@/logger/services';
 
 describe('Retry Utility', () => {

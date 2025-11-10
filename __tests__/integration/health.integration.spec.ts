@@ -46,8 +46,7 @@ describe('HealthModule (Integration)', () => {
     }).not.toThrow();
   });
 
-  it('scheduler is injected with logger and config', () => {
+  it('scheduler is injected with logger', () => {
     expect(scheduler['logger']).toBeDefined();
-    expect(scheduler['config']).toBeDefined();
   });
 });

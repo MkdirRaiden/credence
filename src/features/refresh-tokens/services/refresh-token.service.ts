@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
 import { RefreshTokenRepository } from '@/features/refresh-tokens/repositories';
 import * as helpers from '@/features/refresh-tokens/helpers';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 /**
  * Manages refresh token lifecycle (create, verify, revoke)
@@ -26,7 +26,7 @@ export class RefreshTokenService {
     await this.repository.create(userId, refreshToken, expiresAt);
     this.logger.log(
       `Token created for user: ${userId}`,
-      LOG_CONTEXTS.RERESH_TOKEN,
+      LOG_CONTEXTS.REFRESH_TOKEN,
     );
   }
 
@@ -45,7 +45,7 @@ export class RefreshTokenService {
   async revoke(refreshToken: string): Promise<void> {
     const tokenHash = helpers.hashToken(refreshToken);
     await this.repository.update(tokenHash, { isRevoked: true });
-    this.logger.log('Token revoked', LOG_CONTEXTS.RERESH_TOKEN);
+    this.logger.log('Token revoked', LOG_CONTEXTS.REFRESH_TOKEN);
   }
 
   /**
@@ -55,7 +55,7 @@ export class RefreshTokenService {
     await this.repository.updateManyByUserId(userId, { isRevoked: true });
     this.logger.log(
       `All tokens revoked for user: ${userId}`,
-      LOG_CONTEXTS.RERESH_TOKEN,
+      LOG_CONTEXTS.REFRESH_TOKEN,
     );
   }
 }

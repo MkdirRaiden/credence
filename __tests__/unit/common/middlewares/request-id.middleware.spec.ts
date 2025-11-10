@@ -1,7 +1,7 @@
 // __tests__/unit/common/middlewares/request-id.middleware.spec.ts
 import { RequestIdMiddleware } from '@/common/middlewares/request-id.middleware';
 import { requestContext } from '@/common/utils';
-import type { Request, Response, NextFunction } from 'express';
+import type { Request, Response } from 'express';
 
 describe('RequestIdMiddleware', () => {
   let middleware: RequestIdMiddleware;

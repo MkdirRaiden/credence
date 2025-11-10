@@ -1,5 +1,5 @@
 // __tests__/integration/prisma.integration.spec.ts
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService } from '@/database/services';
 import { TestContext } from '../common/test-context';
 
 jest.setTimeout(30000);
@@ -65,5 +65,19 @@ describe('PrismaService (Integration)', () => {
     } catch (err: any) {
       expect(err.message).toContain('Intentional error');
     }
+  });
+
+  // NEW TEST: runTransaction helper
+  it('uses runTransaction helper with timeout settings', async () => {
+    const result = await prisma.runTransaction(async (tx) => {
+      await tx.$executeRaw`CREATE TEMP TABLE helper_test (id INT)`;
+      await tx.$executeRaw`INSERT INTO helper_test VALUES (42)`;
+      const rows = await tx.$queryRaw<{ id: number }[]>`
+        SELECT * FROM helper_test
+      `;
+      return rows[0].id;
+    });
+
+    expect(result).toBe(42);
   });
 });

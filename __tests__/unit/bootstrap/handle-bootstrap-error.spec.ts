@@ -24,6 +24,7 @@ describe('handleBootstrapError', () => {
     logSpy.mockRestore();
     warnSpy.mockRestore();
     exitSpy.mockRestore();
+    jest.clearAllTimers();
   });
 
   it('logs Error with stack trace', async () => {

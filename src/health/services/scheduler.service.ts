@@ -2,9 +2,8 @@
 import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
 import { Probe } from '@/health/health.interface';
-import { ConfigService } from '@nestjs/config';
-import { AppConfig } from '@/common/interfaces';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
+import * as constants from '@/health/constants';
 
 /**
  * Runs periodic health checks on all probes.
@@ -14,23 +13,18 @@ import { LOG_CONTEXTS } from '@/logger/constants';
 export class SchedulerService implements OnApplicationShutdown {
   private interval?: NodeJS.Timeout;
 
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly config: ConfigService<AppConfig, true>,
-  ) {}
+  constructor(private readonly logger: LoggerService) {}
 
   public start(probes: Probe[]) {
-    const { healthCheckIntervalMs } = this.getDatabaseParams();
     if (this.interval) return;
     this.interval = setInterval(() => {
       void this.tick(probes);
-    }, healthCheckIntervalMs);
+    }, constants.HEALTH_CHECK_INTERVAL_MS);
   }
 
   private async tick(probes: Probe[]) {
     // Use probe timeout to prevent hanging
-    const { probeCheckTimeoutMs } = this.getDatabaseParams();
-    const probeTimeoutMs = Math.floor(probeCheckTimeoutMs * 0.6); // 60% for scheduler
+    const probeTimeoutMs = Math.floor(constants.PROBE_CHECK_TIMEOUT_MS * 0.6);
 
     const results = await Promise.all(
       probes.map((p) =>
@@ -50,10 +44,6 @@ export class SchedulerService implements OnApplicationShutdown {
         LOG_CONTEXTS.HEALTH,
       );
     }
-  }
-
-  private getDatabaseParams(): AppConfig['database'] {
-    return this.config.get('database', { infer: true });
   }
 
   onApplicationShutdown(signal?: string) {

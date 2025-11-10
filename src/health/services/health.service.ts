@@ -8,11 +8,9 @@ import {
 } from '@nestjs/common';
 import { Probe } from '@/health/health.interface';
 import { SchedulerService } from '@/health/services';
-import { PROBES_TOKEN } from '@/health/symbols';
+import * as constants from '@/health/constants';
 import * as helpers from '@/health/helpers';
 import { BaseHealthService } from '@/health/contracts';
-import { ConfigService } from '@nestjs/config';
-import type { AppConfig } from '@/common/interfaces';
 
 /**
  * Orchestrates health checks across all probes.
@@ -22,9 +20,8 @@ import type { AppConfig } from '@/common/interfaces';
 @Injectable()
 export class HealthService extends BaseHealthService implements OnModuleInit {
   constructor(
-    @Inject(PROBES_TOKEN) private readonly probes: Probe[],
+    @Inject(constants.PROBES_TOKEN) private readonly probes: Probe[],
     private readonly scheduler: SchedulerService,
-    private readonly config: ConfigService<AppConfig, true>,
   ) {
     super();
   }
@@ -64,12 +61,10 @@ export class HealthService extends BaseHealthService implements OnModuleInit {
   }
 
   private async executeReadinessCheck() {
-    const { probeCheckTimeoutMs } = this.config.get('database', {
-      infer: true,
-    });
-    const probeTimeoutMs = Math.floor(probeCheckTimeoutMs * 0.8);
-    const serviceTimeoutHandle =
-      helpers.createTimeoutPromise(probeCheckTimeoutMs);
+    const probeTimeoutMs = Math.floor(constants.PROBE_CHECK_TIMEOUT_MS * 0.8);
+    const serviceTimeoutHandle = helpers.createTimeoutPromise(
+      constants.PROBE_CHECK_TIMEOUT_MS,
+    );
 
     try {
       return await Promise.race([

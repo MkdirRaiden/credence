@@ -4,7 +4,7 @@ import {
   extractHttpExceptionMessage,
   isFaviconRequest,
 } from '@/common/filters/helpers/resolve-exception-details';
-import { HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('Exception Resolution Helpers', () => {
   describe('resolveExceptionDetails', () => {

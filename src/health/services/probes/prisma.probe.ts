@@ -1,6 +1,6 @@
 // src/health/services/probes/prisma.probe.ts
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/database/prisma.service';
+import { PrismaService } from '@/database/services/prisma.service';
 import { createTimeoutPromise } from '@/health/helpers';
 import { Probe, ProbeResult } from '@/health/health.interface';
 

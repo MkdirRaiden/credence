@@ -67,8 +67,6 @@ describe('configuration', () => {
     const config = configuration();
 
     expect(config.database.url).toBe(validEnv.DATABASE_URL);
-    expect(config.database.maxRetries).toBeDefined();
-    expect(config.database.healthCheckIntervalMs).toBeDefined();
   });
 
   it('sets jwt config from env', () => {

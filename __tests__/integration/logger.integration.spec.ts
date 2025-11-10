@@ -1,6 +1,6 @@
 // __tests__/integration/logger.integration.spec.ts
 import { LoggerService } from '@/logger/services';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 import { requestContext } from '@/common/utils';
 import { TestContext } from '../common/test-context';
 

@@ -1,8 +1,8 @@
 // src/logger/helpers/build-entry.ts
 import { LogEntry, BuildOptions, LogLevel } from '@/common/interfaces';
 import { safeSerialize } from '@/logger/helpers';
-import { DEFAULT_CONTEXT } from '@/common/constants';
-import { NODE_ENV } from '@/config/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
+import { NODE_ENV } from '@/logger/constants';
 import { requestContext } from '@/common/utils';
 
 /**
@@ -18,7 +18,7 @@ export function buildEntry(
     timestamp: new Date().toISOString(),
     level,
     env: opts?.env ?? NODE_ENV,
-    context: opts?.context ?? DEFAULT_CONTEXT,
+    context: opts?.context ?? LOG_CONTEXTS.APP,
     message: safeSerialize(message),
   };
 

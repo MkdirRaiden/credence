@@ -3,7 +3,7 @@ import { Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from '@/logger/services';
 import { CRITICAL_PROVIDERS } from '@/common/modules';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 /**
  * Dynamically resolves and registers providers from DI container after initialization.

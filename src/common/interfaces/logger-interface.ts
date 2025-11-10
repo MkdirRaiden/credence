@@ -1,6 +1,9 @@
 // src/common/interfaces/logger-interface.ts
+import { LOG_CONTEXTS } from '@/common/constants';
+
 export type LogLevel = 'ERROR' | 'WARN' | 'INFO' | 'DEBUG' | 'VERBOSE';
-import { LogContext } from '@/logger/constants';
+
+export type LogContext = (typeof LOG_CONTEXTS)[keyof typeof LOG_CONTEXTS];
 
 // Log level hierarchy for filtering
 export const LOG_LEVEL_PRIORITY: Record<LogLevel, number> = {

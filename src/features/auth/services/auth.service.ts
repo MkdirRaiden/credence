@@ -6,7 +6,7 @@ import { RefreshTokenService } from '@/features/refresh-tokens/services';
 import { LoggerService } from '@/logger/services';
 import * as authDtos from '@/features/auth/dtos';
 import * as helpers from '@/features/auth/helpers';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 /**
  * Orchestrates authentication flows (register, login, refresh, logout)

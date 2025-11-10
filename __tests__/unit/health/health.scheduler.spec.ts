@@ -1,15 +1,12 @@
-// __tests__/unit/health/scheduler.service.spec.ts
+// __tests__/unit/health/health.scheduler.spec.ts
 import { SchedulerService } from '@/health/services';
-import { ConfigService } from '@nestjs/config';
 import { LoggerService } from '@/logger/services';
-import type { AppConfig } from '@/common/interfaces';
 import type { Probe } from '@/health/health.interface';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 describe('SchedulerService', () => {
   let scheduler: SchedulerService;
   let mockLogger: jest.Mocked<LoggerService>;
-  let mockConfigService: jest.Mocked<ConfigService<AppConfig, true>>;
   let upProbe: Probe;
   let downProbe: Probe;
 
@@ -24,18 +21,6 @@ describe('SchedulerService', () => {
       verbose: jest.fn(),
     } as any;
 
-    mockConfigService = {
-      get: jest.fn((key: string) => {
-        if (key === 'database') {
-          return {
-            healthCheckIntervalMs: 5000,
-            probeCheckTimeoutMs: 5000,
-          };
-        }
-        return {};
-      }),
-    } as any;
-
     upProbe = {
       name: 'database',
       check: jest.fn().mockResolvedValue({ name: 'database', status: 'up' }),
@@ -43,19 +28,18 @@ describe('SchedulerService', () => {
 
     downProbe = {
       name: 'database',
-      check: jest
-        .fn()
-        .mockResolvedValue({
-          name: 'database',
-          status: 'down',
-          message: 'Lost',
-        }),
+      check: jest.fn().mockResolvedValue({
+        name: 'database',
+        status: 'down',
+        message: 'Lost',
+      }),
     };
 
-    scheduler = new SchedulerService(mockLogger, mockConfigService);
+    scheduler = new SchedulerService(mockLogger);
   });
 
   afterEach(() => {
+    scheduler.onApplicationShutdown();
     jest.useRealTimers();
   });
 
@@ -69,7 +53,7 @@ describe('SchedulerService', () => {
 
   it('logs warning only when probes fail', async () => {
     scheduler.start([downProbe]);
-    await jest.advanceTimersByTimeAsync(5000);
+    await jest.advanceTimersByTimeAsync(60000);
 
     expect(mockLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining('Health check failures'),
@@ -77,11 +61,11 @@ describe('SchedulerService', () => {
     );
   });
 
-  it('passes timeout to each probe (60% of probeCheckTimeoutMs)', async () => {
+  it('passes timeout to each probe (60% of probe timeout)', async () => {
     scheduler.start([upProbe]);
-    await jest.advanceTimersByTimeAsync(5000);
+    await jest.advanceTimersByTimeAsync(60000);
 
-    const probeTimeoutMs = Math.floor(5000 * 0.6); // 3000ms
+    const probeTimeoutMs = Math.floor(5000 * 0.6);
     expect(upProbe.check).toHaveBeenCalledWith({ timeout: probeTimeoutMs });
   });
 
@@ -92,7 +76,7 @@ describe('SchedulerService', () => {
     };
 
     scheduler.start([errorProbe]);
-    await jest.advanceTimersByTimeAsync(5000);
+    await jest.advanceTimersByTimeAsync(60000);
 
     expect(mockLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining('Health check failures'),
@@ -102,7 +86,7 @@ describe('SchedulerService', () => {
 
   it('does not warn when all probes are up', async () => {
     scheduler.start([upProbe]);
-    await jest.advanceTimersByTimeAsync(5000);
+    await jest.advanceTimersByTimeAsync(60000);
 
     expect(mockLogger.warn).not.toHaveBeenCalled();
   });

@@ -6,7 +6,7 @@ import * as userDtos from '@/features/users/dtos';
 import { DeletedResourceDto } from '@/common/dtos';
 import * as UsersMapper from '@/features/users/mappers';
 import { BaseCrudService } from '@/features/users/contracts';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 /**
  * User creation, update, deletion operations

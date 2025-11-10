@@ -1,10 +1,12 @@
 // src/common/modules/common.config.ts
-import { ResponseInterceptor } from '@/common/interceptors/response.interceptor';
-import { VisibilityInterceptor } from '@/common/interceptors/visibility.interceptor';
+import * as interceptors from '@/common/interceptors';
 import * as filters from '@/common/filters';
 
 // Export these!
-export const GLOBAL_INTERCEPTORS = [ResponseInterceptor, VisibilityInterceptor];
+export const GLOBAL_INTERCEPTORS = [
+  interceptors.ResponseInterceptor,
+  interceptors.VisibilityInterceptor,
+];
 
 /**
  * CRITICAL: Filter order matters!

@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import { LoggerService } from '@/logger/services';
 import { UsersAuthRepository } from '@/features/users/repositories';
 import { BaseAuthService } from '@/features/users/contracts';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 /**
  * User authentication queries (bypasses visibility/field selection)

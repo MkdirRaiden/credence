@@ -1,6 +1,6 @@
 // __tests__/unit/logger/format-log-json.spec.ts
 import { formatLogJson } from '@/logger/helpers';
-import { LOG_CONTEXTS } from '@/logger/constants';
+import { LOG_CONTEXTS } from '@/common/constants';
 
 describe('formatLogJson', () => {
   it('formats basic log with required fields', () => {

@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { buildResponse } from '@/common/utils';
 import { APP_VERSION } from '@/config/constants';
+import { X_API_VERSION } from '@/common/constants';
 import { StandardResponse } from '@/common/interfaces';
 
 /**
@@ -27,7 +28,7 @@ export class ResponseInterceptor<T>
     const req = ctx.getRequest<Request>();
     const res = ctx.getResponse<Response>();
 
-    res.setHeader('X-API-Version', APP_VERSION);
+    res.setHeader(X_API_VERSION, APP_VERSION);
 
     return next.handle().pipe(
       map((data: T) => {

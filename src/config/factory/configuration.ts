@@ -1,8 +1,7 @@
 // src/config/factory/configuration.ts
-import { AppConfig } from '@/common/interfaces';
+import { AppConfig, LogLevel } from '@/common/interfaces';
 import { splitStringToArray } from '@/config/helpers';
 import * as constants from '@/config/constants';
-import { LogLevel } from '@/common/interfaces';
 
 /**
  * Transforms environment variables into typed AppConfig object.
@@ -34,10 +33,6 @@ export function configuration(): AppConfig {
     // Database (guaranteed by pre-validation)
     database: {
       url: process.env.DATABASE_URL!,
-      maxRetries: constants.DATABASE_MAX_RETRIES,
-      retryDelays: constants.DATABASE_RETRY_DELAY,
-      healthCheckIntervalMs: constants.HEALTH_CHECK_INTERVAL_MS,
-      probeCheckTimeoutMs: constants.PROBE_CHECK_TIMEOUT_MS,
     },
 
     // Security (guaranteed by pre-validation)

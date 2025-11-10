@@ -1,30 +1,16 @@
 // __tests__/unit/health/services/health.service.spec.ts
 import { HealthService, SchedulerService } from '@/health/services';
-import { ConfigService } from '@nestjs/config';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import type { AppConfig } from '@/common/interfaces';
 import type { Probe } from '@/health/health.interface';
 
 describe('HealthService', () => {
   let healthService: HealthService;
   let mockProbes: Probe[];
   let mockScheduler: jest.Mocked<SchedulerService>;
-  let mockConfigService: jest.Mocked<ConfigService<AppConfig, true>>;
 
   beforeEach(() => {
     mockScheduler = {
       start: jest.fn(),
-    } as any;
-
-    mockConfigService = {
-      get: jest.fn((key: string) => {
-        if (key === 'database') {
-          return {
-            probeCheckTimeoutMs: 5000,
-          };
-        }
-        return {};
-      }),
     } as any;
 
     mockProbes = [
@@ -34,11 +20,7 @@ describe('HealthService', () => {
       },
     ];
 
-    healthService = new HealthService(
-      mockProbes,
-      mockScheduler,
-      mockConfigService,
-    );
+    healthService = new HealthService(mockProbes, mockScheduler);
   });
 
   describe('onModuleInit', () => {
@@ -68,13 +50,23 @@ describe('HealthService', () => {
     });
 
     it('throws HttpException when any probe fails', async () => {
-      mockProbes[0].check = jest
-        .fn()
-        .mockResolvedValue({
-          name: 'database',
-          status: 'down',
-          message: 'Lost',
-        });
+      mockProbes[0].check = jest.fn().mockResolvedValue({
+        name: 'database',
+        status: 'down',
+        message: 'Lost',
+      });
+
+      await expect(healthService.readinessOrThrow()).rejects.toThrow(
+        HttpException,
+      );
+    });
+
+    it('throws SERVICE_UNAVAILABLE status on failure', async () => {
+      mockProbes[0].check = jest.fn().mockResolvedValue({
+        name: 'database',
+        status: 'down',
+        message: 'Connection lost',
+      });
 
       try {
         await healthService.readinessOrThrow();
@@ -88,13 +80,11 @@ describe('HealthService', () => {
     });
 
     it('includes failure details in response', async () => {
-      mockProbes[0].check = jest
-        .fn()
-        .mockResolvedValue({
-          name: 'database',
-          status: 'down',
-          message: 'Connection lost',
-        });
+      mockProbes[0].check = jest.fn().mockResolvedValue({
+        name: 'database',
+        status: 'down',
+        message: 'Connection lost',
+      });
 
       try {
         await healthService.readinessOrThrow();
@@ -115,37 +105,28 @@ describe('HealthService', () => {
     });
 
     it('throws Error on readiness failure (bootstrap phase)', async () => {
-      mockProbes[0].check = jest
-        .fn()
-        .mockResolvedValue({
-          name: 'database',
-          status: 'down',
-          message: 'Lost',
-        });
+      mockProbes[0].check = jest.fn().mockResolvedValue({
+        name: 'database',
+        status: 'down',
+        message: 'Lost',
+      });
 
-      try {
-        await healthService.assertReadiness();
-        fail('Should have thrown Error');
-      } catch (err) {
-        expect(err).toBeInstanceOf(Error);
-        expect((err as Error).message).toContain('Readiness check failed');
-      }
+      await expect(healthService.assertReadiness()).rejects.toThrow(Error);
     });
 
     it('includes probe details in error message', async () => {
-      mockProbes[0].check = jest
-        .fn()
-        .mockResolvedValue({
-          name: 'database',
-          status: 'down',
-          message: 'Lost',
-        });
+      mockProbes[0].check = jest.fn().mockResolvedValue({
+        name: 'database',
+        status: 'down',
+        message: 'Lost',
+      });
 
       try {
         await healthService.assertReadiness();
         fail('Should have thrown');
       } catch (err) {
         if (err instanceof Error) {
+          expect(err.message).toContain('Readiness check failed');
           expect(err.message).toContain('database');
         }
       }

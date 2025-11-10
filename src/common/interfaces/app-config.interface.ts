@@ -16,10 +16,6 @@ export interface AppConfig {
   };
   database: {
     url: string;
-    maxRetries: number;
-    retryDelays: number;
-    healthCheckIntervalMs: number;
-    probeCheckTimeoutMs: number;
   };
   jwt: {
     jwtSecret: string;

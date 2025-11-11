@@ -1,24 +1,15 @@
 // src/root.controller.ts
 import { Controller, Get } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import type { AppConfig } from '@/common/interfaces';
+import { RootService } from '@/root.service';
 
 @Controller()
 export class RootController {
-  constructor(private readonly configService: ConfigService<AppConfig, true>) {}
-
+  constructor(private readonly rootService: RootService) {}
   /**
    * Returns application metadata and configuration.
    */
   @Get()
   getInfo() {
-    const appInfo = this.configService.get('app', { infer: true });
-    const serverInfo = this.configService.get('server', { infer: true });
-
-    return {
-      name: appInfo.appName,
-      version: appInfo.appVersion,
-      environment: serverInfo.nodeEnv,
-    };
+    return this.rootService.appInfo();
   }
 }

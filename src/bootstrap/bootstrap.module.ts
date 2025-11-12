@@ -1,6 +1,7 @@
 // src/bootstrap/bootstrap.module.ts
 import { Module } from '@nestjs/common';
-import * as services from '@/bootstrap/services';
+import * as services from '@/bootstrap/services/internals';
+import { BootstrapService } from '@/bootstrap/services';
 import { HealthModule } from '@/health/health.module';
 
 /**
@@ -9,13 +10,13 @@ import { HealthModule } from '@/health/health.module';
 @Module({
   imports: [HealthModule],
   providers: [
-    services.BootstrapService,
+    BootstrapService,
     services.MiddlewareSetupService,
     services.GlobalSetupService,
     services.ServerService,
     services.ReadinessService,
     services.ShutdownService,
   ],
-  exports: [services.BootstrapService],
+  exports: [BootstrapService],
 })
 export class BootstrapModule {}

@@ -3,7 +3,7 @@ import { Injectable, INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
 import { AppConfig } from '@/common/interfaces';
-import * as services from '@/bootstrap/services';
+import * as services from '@/bootstrap/services/internals';
 
 @Injectable()
 export class BootstrapService {

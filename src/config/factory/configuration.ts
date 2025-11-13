@@ -28,6 +28,7 @@ export function configuration(): AppConfig {
         process.env.ALLOWED_ORIGINS,
         constants.DEFAULT_ALLOWED_ORIGINS,
       ),
+      maxRequestSize: constants.MAX_REQUEST_SIZE,
     },
 
     // Database (guaranteed by pre-validation)
@@ -44,7 +45,7 @@ export function configuration(): AppConfig {
     },
     throttle: {
       ttl: constants.THROTTLER_TTL,
-      limit: constants.THROTTLER_LIMIT
-    }
+      limit: constants.THROTTLER_LIMIT,
+    },
   };
 }

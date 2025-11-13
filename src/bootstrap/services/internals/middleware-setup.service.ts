@@ -1,6 +1,7 @@
 // src/bootstrap/services/internal/middleware-setup.service.ts
 import { Injectable, INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
+import express from 'express';
 import compression from 'compression';
 import { RequestIdMiddleware } from '@/common/middlewares';
 import type { AppConfig } from '@/common/interfaces';
@@ -13,6 +14,7 @@ import type { AppConfig } from '@/common/interfaces';
 export class MiddlewareSetupService {
   setup(app: INestApplication, serverConfig: AppConfig['server']): void {
     this.setupRequestId(app);
+    this.setupBodyParsing(app, serverConfig.maxRequestSize);
     this.setupSecurity(app);
     this.setupCompression(app);
     this.setupCors(app, serverConfig.allowedOrigins);
@@ -28,8 +30,21 @@ export class MiddlewareSetupService {
     app.use(middleware.use.bind(middleware));
   }
 
+  private setupBodyParsing(
+    app: INestApplication,
+    maxRequestSize: string,
+  ): void {
+    app.use(express.json({ limit: maxRequestSize }));
+    app.use(express.urlencoded({ extended: true, limit: maxRequestSize }));
+  }
+
   private setupSecurity(app: INestApplication): void {
-    app.use(helmet());
+    app.use(
+      helmet({
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false,
+      }),
+    );
   }
 
   private setupCompression(app: INestApplication): void {

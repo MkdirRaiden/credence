@@ -38,7 +38,7 @@ describe('PrismaProbeService', () => {
 
   it('uses timeout when provided', async () => {
     jest.useFakeTimers();
-    
+
     // Fix: Return a never-resolving promise (simpler)
     mockPrisma.$queryRaw.mockReturnValue(
       new Promise(() => {}) as any, // Cast to bypass PrismaPromise type

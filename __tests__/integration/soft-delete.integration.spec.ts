@@ -19,8 +19,8 @@ describe('Soft Delete Extension (Integration)', () => {
 
   beforeEach(async () => {
     // Clean up test users
-    await prisma.user.deleteMany({ 
-      where: { email: { contains: '@soft-delete-test.com' } } 
+    await prisma.user.deleteMany({
+      where: { email: { contains: '@soft-delete-test.com' } },
     });
   });
 
@@ -28,9 +28,9 @@ describe('Soft Delete Extension (Integration)', () => {
     it('automatically filters soft-deleted records in findMany', async () => {
       // Create active user
       const active = await prisma.user.create({
-        data: { 
-          email: 'active@soft-delete-test.com', 
-          passwordHash: 'hash' 
+        data: {
+          email: 'active@soft-delete-test.com',
+          passwordHash: 'hash',
         },
       });
 
@@ -97,9 +97,9 @@ describe('Soft Delete Extension (Integration)', () => {
     it('does not filter records without deletedAt field', async () => {
       // Create test user first
       const user = await prisma.user.create({
-        data: { 
-          email: 'otp-test@soft-delete-test.com', 
-          passwordHash: 'hash' 
+        data: {
+          email: 'otp-test@soft-delete-test.com',
+          passwordHash: 'hash',
         },
       });
 

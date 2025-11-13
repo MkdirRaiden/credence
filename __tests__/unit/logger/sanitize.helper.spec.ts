@@ -75,7 +75,11 @@ describe('sanitizeLog', () => {
       { password: 'pw1', token: 'tk1', data: 1 },
       { password: 'pw2', token: 'tk2', data: 2 },
     ];
-    const sanitized = sanitizeLog(input) as Array<{ password: string; token?: string; data?: number }>;
+    const sanitized = sanitizeLog(input) as Array<{
+      password: string;
+      token?: string;
+      data?: number;
+    }>;
     expect(sanitized[0].password).toBe('[REDACTED]');
     expect(sanitized[1].token).toBe('[REDACTED]');
     expect(sanitized[0].data).toBe(1);
@@ -90,7 +94,10 @@ describe('sanitizeLog', () => {
 
   it('handles objects with undefined nested values', () => {
     const input = { password: undefined, info: { token: undefined } };
-    const sanitized = sanitizeLog(input) as { password: string; info: { token: string } };
+    const sanitized = sanitizeLog(input) as {
+      password: string;
+      info: { token: string };
+    };
     expect(sanitized.password).toBe('[REDACTED]');
     expect(sanitized.info.token).toBe('[REDACTED]');
   });
@@ -112,7 +119,11 @@ describe('sanitizeLog', () => {
       | { foo: string; token: string }
     >;
 
-    if (sanitized[0] && typeof sanitized[0] === 'object' && 'apiKey' in sanitized[0]) {
+    if (
+      sanitized[0] &&
+      typeof sanitized[0] === 'object' &&
+      'apiKey' in sanitized[0]
+    ) {
       expect(sanitized[0].apiKey).toBe('[REDACTED]');
       expect(sanitized[0].obj.password).toBe('[REDACTED]');
     }
@@ -121,10 +132,13 @@ describe('sanitizeLog', () => {
     expect(sanitized[2]).toBeUndefined();
     expect(sanitized[3]).toBe('plain');
 
-    if (sanitized[4] && typeof sanitized[4] === 'object' && 'token' in sanitized[4]) {
+    if (
+      sanitized[4] &&
+      typeof sanitized[4] === 'object' &&
+      'token' in sanitized[4]
+    ) {
       expect(sanitized[4].token).toBe('[REDACTED]');
       expect(sanitized[4].foo).toBe('bar');
     }
   });
-
 });

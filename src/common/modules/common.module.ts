@@ -9,12 +9,14 @@ import type { AppConfig } from '@/common/interfaces';
 @Global()
 @Module({
   imports: [
-      ThrottlerModule.forRootAsync({
+    ThrottlerModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService<AppConfig, true>) => [{
-        ttl: config.get('throttle.ttl', { infer: true }),
-        limit: config.get('throttle.limit', { infer: true }),
-      }],
+      useFactory: (config: ConfigService<AppConfig, true>) => [
+        {
+          ttl: config.get('throttle.ttl', { infer: true }),
+          limit: config.get('throttle.limit', { infer: true }),
+        },
+      ],
     }),
   ],
   providers: [

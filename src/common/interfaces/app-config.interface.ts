@@ -8,6 +8,7 @@ export interface AppConfig {
     globalPrefix: string;
     allowedOrigins: string[];
     excludePrefixArray: string[];
+    maxRequestSize: string;
   };
   app: {
     appName: string;
@@ -24,7 +25,7 @@ export interface AppConfig {
     jwtRefreshExpiration: number;
   };
   throttle: {
-    ttl: number,
-    limit: number
-  }
+    ttl: number;
+    limit: number;
+  };
 }

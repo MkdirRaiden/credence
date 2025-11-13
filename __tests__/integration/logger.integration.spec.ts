@@ -61,7 +61,7 @@ describe('LoggerModule (Integration)', () => {
     expect(errorSpy).toHaveBeenCalled();
     const output = errorSpy.mock.calls[0][0];
     const parsed = JSON.parse(output);
-    
+
     // Error metadata merged at root via Object.assign
     expect(parsed.message).toBe('Error occurred');
     expect(parsed.name).toBe('Error');

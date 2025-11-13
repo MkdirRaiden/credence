@@ -46,7 +46,8 @@ describe('HealthModule (Integration)', () => {
 
   describe('contract export', () => {
     it('exports BaseHealthService for bootstrap', () => {
-      const baseService = context.getService<BaseHealthService>(BaseHealthService);
+      const baseService =
+        context.getService<BaseHealthService>(BaseHealthService);
 
       expect(baseService).toBeDefined();
       expect(baseService).toBeInstanceOf(HealthService);

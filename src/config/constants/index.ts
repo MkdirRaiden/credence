@@ -14,6 +14,7 @@ export const PORT = 5000;
 export const HOST = 'localhost';
 export const GLOBAL_PREFIX = 'api/v1';
 export const EXCLUDE_PREFIX_ARRAY = ['/', 'health/live', 'health/ready'];
+export const MAX_REQUEST_SIZE = '10mb';
 
 // Application defaults
 export const APP_NAME = 'Credence API';
@@ -24,6 +25,7 @@ export const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000'];
 export const JWT_EXPIRATION = 900; // 15 minutes
 export const JWT_REFRESH_EXPIRATION = 604800; // 7 days
 
+// Rate limit throttler
 export const THROTTLER_TTL = 60000;
 export const THROTTLER_LIMIT = 5;
 

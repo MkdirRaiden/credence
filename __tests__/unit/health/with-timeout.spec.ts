@@ -45,7 +45,9 @@ describe('withTimeout', () => {
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const operation = Promise.reject(new Error('failed'));
 
-    await withTimeout(operation, constants.PROBE_CHECK_TIMEOUT_MS).catch(() => {});
+    await withTimeout(operation, constants.PROBE_CHECK_TIMEOUT_MS).catch(
+      () => {},
+    );
 
     expect(clearTimeoutSpy).toHaveBeenCalled();
     clearTimeoutSpy.mockRestore();

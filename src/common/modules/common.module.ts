@@ -11,12 +11,10 @@ import type { AppConfig } from '@/common/interfaces';
   imports: [
     ThrottlerModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService<AppConfig, true>) => [
-        {
-          ttl: config.get('throttle.ttl', { infer: true }),
-          limit: config.get('throttle.limit', { infer: true }),
-        },
-      ],
+      useFactory: (config: ConfigService<AppConfig, true>) => {
+        const throttle = config.get('throttle', { infer: true });
+        return [{ ttl: throttle.ttl, limit: throttle.limit }]
+      },
     }),
   ],
   providers: [

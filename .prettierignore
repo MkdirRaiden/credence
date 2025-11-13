@@ -1,0 +1,17 @@
+# Dependencies
+node_modules
+dist
+build
+coverage
+
+# Generated files
+*.generated.ts
+prisma/migrations
+*.lock
+
+# Config files that shouldn't be formatted
+.env
+.env.*
+pnpm-lock.yaml
+package-lock.json
+yarn.lock

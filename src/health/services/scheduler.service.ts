@@ -12,7 +12,6 @@ import * as constants from '@/health/constants';
 @Injectable()
 export class SchedulerService implements OnApplicationShutdown {
   private interval?: NodeJS.Timeout;
-
   constructor(private readonly logger: LoggerService) {}
 
   public start(probes: Probe[]) {

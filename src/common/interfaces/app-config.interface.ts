@@ -23,4 +23,8 @@ export interface AppConfig {
     jwtExpiration: number;
     jwtRefreshExpiration: number;
   };
+  throttle: {
+    ttl: number,
+    limit: number
+  }
 }

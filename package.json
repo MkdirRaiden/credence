@@ -29,14 +29,12 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-
     "test": "jest --passWithNoTests --runInBand --detectOpenHandles",
     "test:watch": "jest --watch --runInBand",
     "test:cov": "jest --coverage --runInBand",
     "test:unit": "jest --testRegex='__tests__/unit/.*\\.spec\\.ts$' --passWithNoTests --detectOpenHandles",
     "test:integration": "jest --testRegex='__tests__/integration/.*\\.integration\\.spec\\.ts$' --passWithNoTests --detectOpenHandles --runInBand",
     "test:e2e": "jest --testRegex='__tests__/e2e/.*\\.e2e\\.spec\\.ts$' --passWithNoTests --detectOpenHandles --runInBand",
-
     "prisma:gen": "bash ./scripts/prisma/commands/merge-generate.sh",
     "prisma:fmt": "bash ./scripts/prisma/commands/format-validate.sh",
     "prisma:seed": "bash ./scripts/prisma/commands/seed.sh",
@@ -58,6 +56,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/terminus": "^11.0.0",
+    "@nestjs/throttler": "^6.4.0",
     "@prisma/client": "6.17.1",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",

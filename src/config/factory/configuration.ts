@@ -42,5 +42,9 @@ export function configuration(): AppConfig {
       jwtExpiration: constants.JWT_EXPIRATION,
       jwtRefreshExpiration: constants.JWT_REFRESH_EXPIRATION,
     },
+    throttle: {
+      ttl: constants.THROTTLER_TTL,
+      limit: constants.THROTTLER_LIMIT
+    }
   };
 }

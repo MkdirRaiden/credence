@@ -10,6 +10,7 @@ import { UsersModule } from '@/features/users/users.module';
 import { RootController } from '@/root.controller';
 import { AuthModule } from '@/features/auth/auth.module';
 import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.module';
+import { RootService } from '@/root.service';
 
 /**
  * Root application module with strict initialization order:
@@ -30,6 +31,7 @@ import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.modu
     AuthModule,
     RefreshTokenModule,
   ],
+  providers: [RootService],
   controllers: [RootController],
 })
 export class AppModule {}

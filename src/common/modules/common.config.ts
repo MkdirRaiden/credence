@@ -21,5 +21,5 @@ export const GLOBAL_FILTERS = [
 
 export const CRITICAL_PROVIDERS = [
   'AllExceptionsFilter',
-  'ValidationExceptionFilter',
+  'ValidationExceptionFilter'
 ];

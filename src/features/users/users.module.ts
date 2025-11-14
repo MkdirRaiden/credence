@@ -29,7 +29,15 @@ import * as contracts from '@/features/users/contracts';
       provide: contracts.BaseCrudService,
       useClass: services.UserCrudService,
     },
+    {
+      provide: contracts.BaseLookupService,
+      useClass: services.UserLookupService
+    }
   ],
-  exports: [contracts.BaseAuthService, contracts.BaseCrudService],
+  exports: [
+    contracts.BaseAuthService, 
+    contracts.BaseCrudService, 
+    contracts.BaseLookupService
+  ],
 })
 export class UsersModule {}

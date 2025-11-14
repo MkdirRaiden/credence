@@ -3,7 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserResponseDto } from '@/features/users/dtos';
+import { UserRole } from '@prisma/client';
+import { UserResponseDto } from '@/features/auth/dtos';
 import type { AppConfig } from '@/common/interfaces';
 
 @Injectable()
@@ -25,11 +26,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     sub: string;
     email: string;
     username?: string;
+    role?: UserRole;
   }): Partial<UserResponseDto> {
     return {
       id: payload.sub,
       email: payload.email,
       username: payload.username,
+      role: payload.role || UserRole.USER,
     };
   }
 }

@@ -21,7 +21,6 @@ export class UsersLookupRepository {
     const skip = context.skip ?? PAGINATION_LIMITS.DEFAULT_SKIP;
     const take = context.take ?? PAGINATION_LIMITS.DEFAULT_TAKE;
     const users = await this.prisma.user.findMany({
-      where: { deletedAt: null },
       select,
       skip,
       take,
@@ -40,7 +39,7 @@ export class UsersLookupRepository {
   ): Promise<Partial<User>> {
     const select = createPrismaSelect(USER_FIELD_VISIBILITY_CONFIG, context);
     const user = await this.prisma.user.findUnique({
-      where: { id, deletedAt: null },
+      where: { id },
       select,
     });
     return user as unknown as Partial<User>;
@@ -56,7 +55,7 @@ export class UsersLookupRepository {
   ): Promise<Partial<User>> {
     const select = createPrismaSelect(USER_FIELD_VISIBILITY_CONFIG, context);
     const user = await this.prisma.user.findUnique({
-      where: { email, deletedAt: null },
+      where: { email },
       select,
     });
     return user as unknown as Partial<User>;
@@ -72,7 +71,7 @@ export class UsersLookupRepository {
   ): Promise<Partial<User>> {
     const select = createPrismaSelect(USER_FIELD_VISIBILITY_CONFIG, context);
     const user = await this.prisma.user.findUnique({
-      where: { username, deletedAt: null },
+      where: { username },
       select,
     });
     return user as unknown as Partial<User>;
@@ -88,7 +87,7 @@ export class UsersLookupRepository {
   ): Promise<Partial<User>> {
     const select = createPrismaSelect(USER_FIELD_VISIBILITY_CONFIG, context);
     const user = await this.prisma.user.findFirst({
-      where: { phone, deletedAt: null },
+      where: { phone },
       select,
     });
     return user as unknown as Partial<User>;

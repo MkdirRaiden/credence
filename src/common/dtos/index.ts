@@ -1,2 +1,3 @@
 // src/common/dtos/index.ts
-export { DeletedResourceDto } from './deleted-resource.dto';
+export * from './deleted-resource.dto';
+export * from './user-response.dto';

@@ -1,7 +1,7 @@
 // src/features/auth/services/credentials.service.ts
 import { Injectable, Inject } from '@nestjs/common';
 import { BaseAuthService } from '@/features/users/contracts';
-import { validateUserCredentials } from '@/features/auth/helpers';
+import { verifyPassword } from '@/features/auth/helpers';
 import { UserResponseDto } from '@/features/auth/dtos';
 
 /**
@@ -18,6 +18,24 @@ export class CredentialsService {
     emailOrUsername: string,
     password: string,
   ): Promise<Partial<UserResponseDto> | null> {
-    return validateUserCredentials(emailOrUsername, password, this.authService);
+    try {
+      const user = emailOrUsername.includes('@')
+        ? await this.authService.findByEmailForAuth(emailOrUsername)
+        : await this.authService.findByUsernameForAuth(emailOrUsername);
+
+      if (!user?.passwordHash) {
+        return null;
+      }
+
+      const isPasswordValid = await verifyPassword(password, user.passwordHash);
+      if (!isPasswordValid) {
+        return null;
+      }
+
+      const { passwordHash, ...result } = user;
+      return result as Partial<UserResponseDto>;
+    } catch {
+      return null;
+    }
   }
 }

@@ -4,16 +4,19 @@ import { LoggerService } from '@/logger/services';
 import { RefreshTokenRepository } from '@/features/refresh-tokens/repositories';
 import * as helpers from '@/features/refresh-tokens/helpers';
 import { LOG_CONTEXTS } from '@/common/constants';
+import { BaseTokenService } from '@/features/refresh-tokens/contracts';
 
 /**
  * Manages refresh token lifecycle (create, verify, revoke)
  */
 @Injectable()
-export class RefreshTokenService {
+export class RefreshTokenService extends BaseTokenService {
   constructor(
     private readonly repository: RefreshTokenRepository,
     private readonly logger: LoggerService,
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Hash and store refresh token in DB

@@ -4,13 +4,16 @@ import { UsersLookupRepository } from '@/features/users/repositories';
 import { UserResponseDto } from '@/features/users/dtos';
 import { FieldSelectorContext } from '@/common/interfaces';
 import * as UsersMapper from '@/features/users/mappers';
+import { BaseLookupService } from '@/features/users/contracts';
 
 /**
  * User lookup operations with visibility context
  */
 @Injectable()
-export class UserLookupService {
-  constructor(private readonly repository: UsersLookupRepository) {}
+export class UserLookupService extends BaseLookupService {
+  constructor(private readonly repository: UsersLookupRepository) {
+    super();
+  }
 
   async findAll(
     context: FieldSelectorContext,

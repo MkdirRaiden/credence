@@ -13,7 +13,7 @@ import type { AppConfig } from '@/common/interfaces';
       inject: [ConfigService],
       useFactory: (config: ConfigService<AppConfig, true>) => {
         const throttle = config.get('throttle', { infer: true });
-        return [{ ttl: throttle.ttl, limit: throttle.limit }]
+        return [{ ttl: throttle.ttl, limit: throttle.limit }];
       },
     }),
   ],

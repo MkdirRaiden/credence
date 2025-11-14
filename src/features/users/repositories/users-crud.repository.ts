@@ -22,7 +22,7 @@ export class UsersCrudRepository {
   @NotFound('User not found')
   async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
     return await this.prisma.user.update({
-      where: { id, deletedAt: null },
+      where: { id },
       data,
     });
   }
@@ -33,7 +33,7 @@ export class UsersCrudRepository {
   @NotFound('User not found')
   async softDelete(id: string): Promise<DeletedResourceDto> {
     const deleted = await this.prisma.user.update({
-      where: { id, deletedAt: null },
+      where: { id },
       data: { deletedAt: new Date() },
       select: {
         id: true,

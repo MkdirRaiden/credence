@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '@prisma/client';
-import { UserResponseDto } from '@/features/users/dtos';
+import { UserResponseDto } from '@/features/auth/dtos';
 
 /**
  * Guard to enforce role-based access control
@@ -34,7 +34,7 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('User not authenticated');
     }
 
-    if (!requiredRoles.includes(user.role as UserRole)) {
+    if (!requiredRoles.includes(user.role)) {
       throw new ForbiddenException('Insufficient permissions');
     }
 

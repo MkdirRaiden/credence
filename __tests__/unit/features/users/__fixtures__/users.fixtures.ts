@@ -2,7 +2,7 @@
 import { User } from '@prisma/client';
 import { CreateUserDto } from '@/features/users/dtos/create-user.dto';
 import { UpdateUserDto } from '@/features/users/dtos/update-user.dto';
-import { UserResponseDto } from '@/features/users/dtos/user-response.dto';
+import { UserResponseDto } from '@/common/dtos/user-response.dto';
 import { FieldSelectorContext } from '@/common/interfaces';
 
 export const mockUser: User = {

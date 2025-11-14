@@ -1,7 +1,11 @@
 // src/features/auth/helpers/auth.helpers.ts
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { JWT_EXPIRATION, JWT_REFRESH_EXPIRATION } from '@/config/constants';
+import {
+  JWT_EXPIRATION,
+  JWT_REFRESH_EXPIRATION,
+} from '@/features/auth/constants';
+import { UserRole } from '@prisma/client';
 
 export const hashPassword = async (password: string): Promise<string> => {
   return bcrypt.hash(password, 10);
@@ -19,11 +23,13 @@ export const generateTokens = (
   userId: string,
   email: string,
   username?: string,
+  role?: UserRole,
 ): { accessToken: string; refreshToken: string; expiresIn: number } => {
   const payload = {
     sub: userId,
     email,
-    ...(username && { username }), // Include username if provided
+    ...(username && { username }),
+    ...(role && { role }),
   };
 
   // Access token: 15 minutes

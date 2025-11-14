@@ -1,8 +1,9 @@
 // src/features/auth/auth.service.ts
 import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { BaseCrudService } from '@/features/users/contracts';
-import { RefreshTokenService } from '@/features/refresh-tokens/services';
+import { UserRole } from '@prisma/client';
+import { BaseCrudService, BaseLookupService } from '@/features/users/contracts';
+import { BaseTokenService } from '@/features/refresh-tokens/contracts';
 import { LoggerService } from '@/logger/services';
 import * as authDtos from '@/features/auth/dtos';
 import * as helpers from '@/features/auth/helpers';
@@ -14,9 +15,13 @@ import { LOG_CONTEXTS } from '@/common/constants';
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(BaseCrudService) private readonly crudService: BaseCrudService,
+    @Inject(BaseCrudService)
+    private readonly crudService: BaseCrudService,
+    @Inject(BaseLookupService)
+    private readonly lookupService: BaseLookupService,
+    @Inject(BaseTokenService)
+    private readonly refreshTokenService: BaseTokenService,
     private readonly jwtService: JwtService,
-    private readonly refreshTokenService: RefreshTokenService,
     private readonly logger: LoggerService,
   ) {}
 
@@ -30,11 +35,13 @@ export class AuthService {
       `Registering user: ${registerDto.email}`,
       LOG_CONTEXTS.AUTH,
     );
+
     const { password, ...userFields } = registerDto;
     const user = await this.crudService.create({
       ...userFields,
       passwordHash: await helpers.hashPassword(password),
     });
+
     this.logger.log(`User registered: ${user.id}`, LOG_CONTEXTS.AUTH);
     return this.createAuthResponse(user.id, user.email, user);
   }
@@ -56,6 +63,7 @@ export class AuthService {
 
   /**
    * Verify refresh token in DB, revoke old token, generate new tokens
+   * Fetches fresh user data to ensure role is up-to-date
    */
   async refresh(
     refreshTokenDto: authDtos.RefreshTokenDto,
@@ -74,15 +82,22 @@ export class AuthService {
 
     await this.refreshTokenService.revoke(refreshTokenDto.refreshToken);
 
+    // Fetch current user to get latest role (using lookup service)
+    const user = await this.lookupService.findById(payload.sub, {
+      level: 'self', // Get full user data including role
+    });
+
     this.logger.log(
       `Token refreshed for user: ${payload.sub}`,
       LOG_CONTEXTS.AUTH,
     );
+
     return this.createAuthResponse(
       payload.sub,
       payload.email,
       undefined,
       payload.username,
+      user.role as UserRole, // TypeScript needs cast since Partial<UserResponseDto>
     );
   }
 
@@ -102,12 +117,14 @@ export class AuthService {
     email: string,
     user?: authDtos.UserResponseDto,
     username?: string,
+    role?: UserRole,
   ): Promise<authDtos.AuthResponseDto> {
     const { accessToken, refreshToken, expiresIn } = helpers.generateTokens(
       this.jwtService,
       userId,
       email,
       username || user?.username,
+      role || user?.role || UserRole.USER,
     );
 
     const expiresAt = new Date(Date.now() + expiresIn * 1000);
@@ -118,6 +135,7 @@ export class AuthService {
       refreshToken,
       user,
       expiresIn,
+      tokenType: 'Bearer',
     };
   }
 }

@@ -14,7 +14,7 @@ export class UsersAuthRepository {
   @NotFound('User not found for auth')
   async findByEmailForAuth(email: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
-      where: { email, deletedAt: null },
+      where: { email },
       select: AUTH_USER_SELECT,
     });
     return user as unknown as User;
@@ -26,7 +26,7 @@ export class UsersAuthRepository {
   @NotFound('User not found for auth')
   async findByUsernameForAuth(username: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
-      where: { username, deletedAt: null },
+      where: { username },
       select: AUTH_USER_SELECT,
     });
     return user as unknown as User;

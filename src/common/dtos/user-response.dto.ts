@@ -1,4 +1,6 @@
-// src/features/users/dtos/user-response.dto.ts
+import { UserRole } from '@prisma/client';
+
+// src/common/dtos/user-response.dto.ts
 export class UserResponseDto {
   id: string;
   email: string;
@@ -8,7 +10,7 @@ export class UserResponseDto {
   avatarUrl?: string;
   emailVerified: boolean;
   phoneVerified: boolean;
-  role: string;
+  role: UserRole;
   referredById?: string;
   createdAt: Date;
   updatedAt: Date;

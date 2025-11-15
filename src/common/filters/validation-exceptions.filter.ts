@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@/common/filters/base/base-exception.filter';
 import { LoggerService } from '@/logger/services';
-import { extractValidationMessage } from '@/common/filters/helpers';
+import * as helpers from '@/common/filters/helpers';
 
 @Injectable()
 @Catch(BadRequestException)
@@ -19,7 +19,7 @@ export class ValidationExceptionFilter extends BaseExceptionFilter {
 
   catch(exception: BadRequestException, host: ArgumentsHost) {
     const responseBody = exception.getResponse();
-    const message = extractValidationMessage(responseBody);
+    const message = helpers.extractValidationMessage(responseBody);
     this.handleResponse(host, HttpStatus.BAD_REQUEST, message, exception);
   }
 }

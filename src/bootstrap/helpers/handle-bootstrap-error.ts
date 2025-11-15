@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import { BootstrapLogger } from '@/logger/services';
 import { LOG_CONTEXTS } from '@/common/constants';
 
-const APP_CLOSE_TIMEOUT_MS = 5000; // 5 second graceful close timeout
+const APP_CLOSE_TIMEOUT_MS = 5000;
 
 /**
  * Centralized error handler for bootstrap phase.

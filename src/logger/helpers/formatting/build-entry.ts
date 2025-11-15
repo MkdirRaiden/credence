@@ -2,7 +2,7 @@
 import { LogEntry, BuildOptions, LogLevel } from '@/common/interfaces';
 import { safeSerialize } from '@/logger/helpers';
 import { LOG_CONTEXTS } from '@/common/constants';
-import { NODE_ENV } from '@/logger/constants';
+import { NODE_ENV } from '@/common/constants';
 import { requestContext } from '@/common/utils';
 
 /**
@@ -22,7 +22,6 @@ export function buildEntry(
     message: safeSerialize(message),
   };
 
-  // Include requestId for distributed tracing
   const ctx = requestContext.getStore();
   if (ctx?.requestId) {
     entry.requestId = ctx.requestId;

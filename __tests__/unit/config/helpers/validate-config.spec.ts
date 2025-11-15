@@ -1,5 +1,5 @@
 // __tests__/unit/config/helpers/validate-config.spec.ts
-import { validatePreConfig } from '@/config/helpers/validate-config';
+import { validatePreConfig } from '@/config/helpers';
 import { validEnv, criticalErrorEnv } from '../__fixtures__/env.fixtures';
 import { BootstrapLogger } from '@/logger/services';
 

@@ -3,10 +3,6 @@ import { NODE_ENV } from '@/config/constants';
 import * as path from 'path';
 import * as fs from 'fs';
 
-/**
- * Resolves environment-specific .env file in precedence order.
- * Enables different configs per environment without duplication.
- */
 export function getEnvFilePaths(): string[] {
   const env = process.env.NODE_ENV || NODE_ENV;
 

@@ -1,6 +1,6 @@
 // __tests__/unit/common/decorators/current-user.decorator.spec.ts
 import { ExecutionContext } from '@nestjs/common';
-import type { UserResponseDto } from '@/features/users/dtos';
+import type { UserResponseDto } from '@/common/dtos';
 
 describe('CurrentUser Decorator', () => {
   /**

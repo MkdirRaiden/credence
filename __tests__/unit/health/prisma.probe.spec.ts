@@ -1,5 +1,5 @@
 // __tests__/unit/health/prisma.probe.spec.ts
-import { PrismaProbeService } from '@/health/services/probes/prisma.probe';
+import { PrismaProbeService } from '@/health/services';
 import { PrismaService } from '@/database/services';
 
 describe('PrismaProbeService', () => {

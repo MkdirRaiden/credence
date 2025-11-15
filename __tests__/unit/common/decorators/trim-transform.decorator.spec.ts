@@ -1,6 +1,6 @@
 // __tests__/unit/common/decorators/trim-transform.decorator.spec.ts
 import { plainToClass } from 'class-transformer';
-import { TrimTransform } from '@/common/decorators/trim-transform.decorator';
+import { TrimTransform } from '@/common/decorators';
 
 class TestDTO {
   @TrimTransform

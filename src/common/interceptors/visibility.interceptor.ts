@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { RequestWithContext, VisibilityLevel } from '@/common/interfaces';
-import { VISIBILITY_KEY } from '@/common/constants';
+import * as constants from '@/common/constants';
 import { extractResourceId } from '@/common/utils';
 import { buildVisibilityContext } from '@/common/interceptors/helpers';
 
@@ -18,9 +18,9 @@ export class VisibilityInterceptor implements NestInterceptor {
 
     const declaredLevel =
       (Reflect.getMetadata(
-        VISIBILITY_KEY,
+        constants.VISIBILITY_KEY,
         context.getHandler(),
-      ) as VisibilityLevel) || 'public';
+      ) as VisibilityLevel) || constants.VISIBILITY_LEVEL;
 
     const resourceOwnerId = extractResourceId(request);
 
@@ -30,7 +30,7 @@ export class VisibilityInterceptor implements NestInterceptor {
       resourceOwnerId,
     );
 
-    request['visibility-context'] = selectorContext;
+    request[constants.VISIBILITY_CONTEXT] = selectorContext;
     return next.handle();
   }
 }

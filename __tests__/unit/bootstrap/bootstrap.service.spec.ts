@@ -1,10 +1,6 @@
 // __tests__/unit/bootstrap/services/bootstrap.service.spec.ts
 import { BootstrapService } from '@/bootstrap/services';
-import { MiddlewareSetupService } from '@/bootstrap/services';
-import { GlobalSetupService } from '@/bootstrap/services';
-import { ReadinessService } from '@/bootstrap/services';
-import { ServerService } from '@/bootstrap/services';
-import { ShutdownService } from '@/bootstrap/services';
+import * as services from '@/bootstrap/services/internals';
 import { ConfigService } from '@nestjs/config';
 import { INestApplication } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
@@ -13,11 +9,11 @@ import type { AppConfig } from '@/common/interfaces';
 describe('BootstrapService', () => {
   let service: BootstrapService;
   let mockConfig: jest.Mocked<ConfigService<AppConfig, true>>;
-  let mockMiddleware: jest.Mocked<MiddlewareSetupService>;
-  let mockGlobalSetup: jest.Mocked<GlobalSetupService>;
-  let mockReadiness: jest.Mocked<ReadinessService>;
-  let mockServer: jest.Mocked<ServerService>;
-  let mockShutdown: jest.Mocked<ShutdownService>;
+  let mockMiddleware: jest.Mocked<services.MiddlewareSetupService>;
+  let mockGlobalSetup: jest.Mocked<services.GlobalSetupService>;
+  let mockReadiness: jest.Mocked<services.ReadinessService>;
+  let mockServer: jest.Mocked<services.ServerService>;
+  let mockShutdown: jest.Mocked<services.ShutdownService>;
   let mockApp: jest.Mocked<INestApplication>;
   let mockModuleRef: jest.Mocked<ModuleRef>;
 

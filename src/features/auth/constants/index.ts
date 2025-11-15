@@ -1,7 +1,4 @@
 // src/features/auth/constants/index.ts
-/**
- * Validation constraints for authentication fields.
- */
 
 export { JWT_EXPIRATION, JWT_REFRESH_EXPIRATION } from '@/config/constants';
 

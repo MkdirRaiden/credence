@@ -32,7 +32,7 @@ export class CredentialsService {
         return null;
       }
 
-      const { passwordHash, ...result } = user;
+      const { passwordHash: _passwordHash, ...result } = user;
       return result as Partial<UserResponseDto>;
     } catch {
       return null;

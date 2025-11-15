@@ -1,4 +1,4 @@
-// src/common/decorators/visibility.decorator.ts
+// src/common/decorators/visibility/visibility.decorator.ts
 import { SetMetadata } from '@nestjs/common';
 import { VisibilityLevel } from '@/common/interfaces';
 import { VISIBILITY_KEY } from '@/common/constants';

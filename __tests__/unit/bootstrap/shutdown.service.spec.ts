@@ -1,5 +1,5 @@
 // __tests__/unit/bootstrap/services/shutdown.service.spec.ts
-import { ShutdownService } from '@/bootstrap/services';
+import { ShutdownService } from '@/bootstrap/services/internals';
 import { LOG_CONTEXTS } from '@/common/constants';
 import { LoggerService } from '@/logger/services';
 import { INestApplication } from '@nestjs/common';

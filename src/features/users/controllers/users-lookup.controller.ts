@@ -16,9 +16,6 @@ import { FieldSelectorContext } from '@/common/interfaces';
 export class UsersLookupController {
   constructor(private readonly lookupService: UserLookupService) {}
 
-  /**
-   * Get user by ID (public visibility)
-   */
   @Get('id/:id')
   @Visibility('public')
   async findById(
@@ -28,9 +25,6 @@ export class UsersLookupController {
     return this.lookupService.findById(id, context);
   }
 
-  /**
-   * Get user by username (public visibility)
-   */
   @Get('username/:username')
   @Visibility('public')
   async findByUsername(
@@ -40,9 +34,6 @@ export class UsersLookupController {
     return this.lookupService.findByUsername(username, context);
   }
 
-  /**
-   * Get user by email (admin only)
-   */
   @Get('email/:email')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
@@ -54,9 +45,6 @@ export class UsersLookupController {
     return this.lookupService.findByEmail(email, context);
   }
 
-  /**
-   * Get user by phone (admin only)
-   */
   @Get('phone/:phone')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
@@ -68,9 +56,6 @@ export class UsersLookupController {
     return this.lookupService.findByPhone(phone, context);
   }
 
-  /**
-   * Get all users with pagination (public visibility)
-   */
   @Get()
   @Visibility('public')
   async findAll(

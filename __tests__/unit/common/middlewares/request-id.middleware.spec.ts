@@ -1,5 +1,5 @@
 // __tests__/unit/common/middlewares/request-id.middleware.spec.ts
-import { RequestIdMiddleware } from '@/common/middlewares/request-id.middleware';
+import { RequestIdMiddleware } from '@/common/middlewares';
 import { requestContext } from '@/common/utils';
 import type { Request, Response } from 'express';
 

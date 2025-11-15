@@ -1,7 +1,5 @@
 // src/logger/constants
 
-export { LOG_LEVEL, NODE_ENV } from '@/config/constants';
-
 export const SENSITIVE_FIELDS = [
   'password',
   'passwordHash',

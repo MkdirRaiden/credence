@@ -1,5 +1,5 @@
 // __tests__/unit/common/utils/prisma-select.spec.ts
-import { createPrismaSelect } from '@/common/utils/prisma-select';
+import { createPrismaSelect } from '@/common/utils';
 import type {
   FieldVisibility,
   FieldSelectorContext,

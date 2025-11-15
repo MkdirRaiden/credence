@@ -2,7 +2,7 @@
 import { LoggerService as NestLogger } from '@nestjs/common';
 import { writeLog } from '@/logger/helpers';
 import { LogLevel, LogContext } from '@/common/interfaces';
-import { LOG_LEVEL } from '@/logger/constants';
+import { LOG_LEVEL } from '@/common/constants';
 
 export class BaseLogger implements NestLogger {
   constructor(

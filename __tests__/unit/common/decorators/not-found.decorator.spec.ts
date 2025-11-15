@@ -1,6 +1,6 @@
 // __tests__/unit/common/decorators/not-found.decorator.spec.ts
 import { NotFoundException } from '@nestjs/common';
-import { NotFound } from '@/common/decorators/not-found.decorator';
+import { NotFound } from '@/common/decorators';
 
 class TestService {
   @NotFound('Item not found')

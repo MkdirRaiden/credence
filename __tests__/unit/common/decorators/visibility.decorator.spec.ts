@@ -1,6 +1,6 @@
 // __tests__/unit/common/decorators/visibility.decorator.spec.ts
 import { Reflector } from '@nestjs/core';
-import { Visibility } from '@/common/decorators/visibility.decorator';
+import { Visibility } from '@/common/decorators/visibility/visibility.decorator';
 import { VISIBILITY_KEY } from '@/common/constants';
 import type { VisibilityLevel } from '@/common/interfaces';
 

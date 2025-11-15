@@ -1,7 +1,7 @@
-// src/common/decorators/current-user.decorator.ts
+// src/common/decorators/users/current-user.decorator.ts
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
-import { UserResponseDto } from '@/features/users/dtos';
+import { UserResponseDto } from '@/common/dtos';
 
 /**
  * Extracts authenticated user from JWT request.

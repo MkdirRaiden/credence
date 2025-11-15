@@ -3,13 +3,8 @@ import { AppConfig, LogLevel } from '@/common/interfaces';
 import { splitStringToArray } from '@/config/helpers';
 import * as constants from '@/config/constants';
 
-/**
- * Transforms environment variables into typed AppConfig object.
- * Loaded by NestConfigModule.forRoot() for DI-wide access.
- */
 export function configuration(): AppConfig {
   return {
-    // Application Identity
     app: {
       appName: process.env.APP_NAME || constants.APP_NAME,
       appVersion: process.env.APP_VERSION || constants.APP_VERSION,
@@ -17,7 +12,6 @@ export function configuration(): AppConfig {
         constants.LOG_LEVEL) as LogLevel,
     },
 
-    // Server
     server: {
       nodeEnv: process.env.NODE_ENV || constants.NODE_ENV,
       port: parseInt(process.env.PORT || String(constants.PORT), 10),
@@ -43,6 +37,7 @@ export function configuration(): AppConfig {
       jwtExpiration: constants.JWT_EXPIRATION,
       jwtRefreshExpiration: constants.JWT_REFRESH_EXPIRATION,
     },
+
     throttle: {
       ttl: constants.THROTTLER_TTL,
       limit: constants.THROTTLER_LIMIT,

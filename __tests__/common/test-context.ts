@@ -1,7 +1,7 @@
 // __tests__/common/test-context.ts
 import { INestApplication } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
-import { PrismaService } from '@/database/services/prisma.service';
+import { PrismaService } from '@/database/services';
 import { SchedulerService } from '@/health/services';
 import { createTestModule } from './test-module.factory';
 import { cleanupDatabase } from './test-database';

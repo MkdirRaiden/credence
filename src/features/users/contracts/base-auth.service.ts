@@ -7,15 +7,7 @@ import { User } from '@prisma/client';
  * Implemented by: UserAuthService, PhoneAuthService (Phase 5), OAuth2AuthService (Phase 6)
  */
 export abstract class BaseAuthService {
-  /**
-   * Find full user by email for auth verification
-   * Returns User with passwordHash and refreshTokens (bypasses visibility)
-   */
   abstract findByEmailForAuth(email: string): Promise<User>;
 
-  /**
-   * Find full user by username for auth verification
-   * Returns User with passwordHash and refreshTokens (bypasses visibility)
-   */
   abstract findByUsernameForAuth(username: string): Promise<User>;
 }

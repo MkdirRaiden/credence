@@ -3,7 +3,7 @@ import { Catch, ArgumentsHost, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { BaseExceptionFilter } from '@/common/filters/base/base-exception.filter';
 import { LoggerService } from '@/logger/services';
-import { mapPrismaError } from '@/common/filters/helpers';
+import * as helpers from '@/common/filters/helpers';
 
 @Injectable()
 @Catch(Prisma.PrismaClientKnownRequestError)
@@ -13,7 +13,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
   }
 
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
-    const { status, message } = mapPrismaError(exception);
+    const { status, message } = helpers.mapPrismaError(exception);
     this.handleResponse(host, status, message, exception);
   }
 }

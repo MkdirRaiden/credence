@@ -12,10 +12,8 @@ import { X_REQUEST_ID } from '@/common/constants';
 @Injectable()
 export class RequestIdMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction): void {
-    // Extract from header or generate new UUID
     const requestId = (req.headers[X_REQUEST_ID] as string) ?? randomUUID();
 
-    // Preserve requestId across async operations
     requestContext.run({ requestId }, () => {
       next();
     });

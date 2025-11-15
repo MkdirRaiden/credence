@@ -5,9 +5,14 @@ import { UserRole } from '@prisma/client';
 import { BaseCrudService, BaseLookupService } from '@/features/users/contracts';
 import { BaseTokenService } from '@/features/refresh-tokens/contracts';
 import { LoggerService } from '@/logger/services';
-import * as authDtos from '@/features/auth/dtos';
 import * as helpers from '@/features/auth/helpers';
 import { LOG_CONTEXTS } from '@/common/constants';
+import {
+  UserResponseDto,
+  AuthResponseDto,
+  RefreshTokenDto,
+  RegisterDto,
+} from '@/features/auth/dtos';
 
 /**
  * Orchestrates authentication flows (register, login, refresh, logout)
@@ -25,12 +30,7 @@ export class AuthService {
     private readonly logger: LoggerService,
   ) {}
 
-  /**
-   * Register new user, hash password, generate tokens, store refresh token in DB
-   */
-  async register(
-    registerDto: authDtos.RegisterDto,
-  ): Promise<authDtos.AuthResponseDto> {
+  async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
     this.logger.log(
       `Registering user: ${registerDto.email}`,
       LOG_CONTEXTS.AUTH,
@@ -46,28 +46,16 @@ export class AuthService {
     return this.createAuthResponse(user.id, user.email, user);
   }
 
-  /**
-   * Generate tokens for authenticated user
-   * Called after LocalStrategy validates credentials
-   */
-  async login(
-    user: Partial<authDtos.UserResponseDto>,
-  ): Promise<authDtos.AuthResponseDto> {
+  async login(user: Partial<UserResponseDto>): Promise<AuthResponseDto> {
     this.logger.log(`User logged in: ${user.id}`, LOG_CONTEXTS.AUTH);
     return this.createAuthResponse(
       user.id!,
       user.email!,
-      user as authDtos.UserResponseDto,
+      user as UserResponseDto,
     );
   }
 
-  /**
-   * Verify refresh token in DB, revoke old token, generate new tokens
-   * Fetches fresh user data to ensure role is up-to-date
-   */
-  async refresh(
-    refreshTokenDto: authDtos.RefreshTokenDto,
-  ): Promise<authDtos.AuthResponseDto> {
+  async refresh(refreshTokenDto: RefreshTokenDto): Promise<AuthResponseDto> {
     this.logger.log('Refreshing access token', LOG_CONTEXTS.AUTH);
 
     const payload = helpers.verifyJwtToken(
@@ -101,24 +89,18 @@ export class AuthService {
     );
   }
 
-  /**
-   * Revoke refresh token (logout)
-   */
   async logout(refreshToken: string): Promise<void> {
     await this.refreshTokenService.revoke(refreshToken);
     this.logger.log('User logged out', LOG_CONTEXTS.AUTH);
   }
 
-  /**
-   * Generate tokens and store refresh token in DB
-   */
   private async createAuthResponse(
     userId: string,
     email: string,
-    user?: authDtos.UserResponseDto,
+    user?: UserResponseDto,
     username?: string,
     role?: UserRole,
-  ): Promise<authDtos.AuthResponseDto> {
+  ): Promise<AuthResponseDto> {
     const { accessToken, refreshToken, expiresIn } = helpers.generateTokens(
       this.jwtService,
       userId,

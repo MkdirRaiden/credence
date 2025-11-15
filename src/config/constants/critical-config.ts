@@ -1,5 +1,4 @@
 // src/config/validators/critical-config.ts
-
 import { validateJwtSecret, validateDatabaseUrl } from '@/config/validators';
 
 /**

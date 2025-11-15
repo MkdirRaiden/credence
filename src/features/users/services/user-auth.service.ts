@@ -18,17 +18,11 @@ export class UserAuthService extends BaseAuthService {
     super();
   }
 
-  /**
-   * Get full user by email for auth verification
-   */
   async findByEmailForAuth(email: string): Promise<User> {
     this.logger.log(`Finding user for auth: ${email}`, LOG_CONTEXTS.USER);
     return await this.repository.findByEmailForAuth(email);
   }
 
-  /**
-   * Get full user by username for auth verification
-   */
   async findByUsernameForAuth(username: string): Promise<User> {
     this.logger.log(
       `Finding user for auth by username: ${username}`,

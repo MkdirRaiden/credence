@@ -8,9 +8,7 @@ import { NotFound } from '@/common/decorators';
 @Injectable()
 export class UsersAuthRepository {
   constructor(private readonly prisma: PrismaService) {}
-  /**
-   * Get full user by email for auth verification (bypasses visibility).
-   */
+
   @NotFound('User not found for auth')
   async findByEmailForAuth(email: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
@@ -20,9 +18,6 @@ export class UsersAuthRepository {
     return user as unknown as User;
   }
 
-  /**
-   * Get full user by username for auth verification (bypasses visibility).
-   */
   @NotFound('User not found for auth')
   async findByUsernameForAuth(username: string): Promise<User> {
     const user = await this.prisma.user.findUnique({

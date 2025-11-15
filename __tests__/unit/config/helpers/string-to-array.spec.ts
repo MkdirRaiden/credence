@@ -1,5 +1,5 @@
 // __tests__/unit/config/helpers/string-to-array.spec.ts
-import { splitStringToArray } from '@/config/helpers/string-to-array';
+import { splitStringToArray } from '@/config/helpers';
 
 describe('splitStringToArray', () => {
   it('splits and trims comma-separated strings', () => {

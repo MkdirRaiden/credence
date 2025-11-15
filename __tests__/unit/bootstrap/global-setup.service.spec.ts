@@ -1,5 +1,5 @@
 // __tests__/unit/bootstrap/services/global-setup.service.spec.ts
-import { GlobalSetupService } from '@/bootstrap/services';
+import { GlobalSetupService } from '@/bootstrap/services/internals';
 import { LoggerService } from '@/logger/services';
 import { ModuleRef } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';

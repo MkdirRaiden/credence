@@ -16,10 +16,9 @@ export async function validatePreConfig(
   const { error } = configValidationSchema.validate(process.env, {
     abortEarly: false,
   });
+
   if (error) {
-    logger.warn(
-      `Non-critical config issues: ${error.message}`,
-      LOG_CONTEXTS.CONFIG,
-    );
+    const message = `Non-critical config issues: ${error.message}`;
+    logger.warn(message, LOG_CONTEXTS.CONFIG);
   }
 }

@@ -1,33 +1,7 @@
 // src/config/constants/index.ts
-
-// critcal constants
 export * from '@/config/constants/critical-config';
-
-// logger constants
-export const LOG_LEVEL = 'INFO';
-export const VALID_LOG_LEVELS = ['ERROR', 'WARN', 'INFO', 'DEBUG', 'VERBOSE'];
-
-// Server defaults
-export const NODE_ENV = 'development';
-export const VALID_NODE_ENVS = ['development', 'test', 'production'];
-export const PORT = 5000;
-export const HOST = 'localhost';
-export const GLOBAL_PREFIX = 'api/v1';
-export const EXCLUDE_PREFIX_ARRAY = ['/', 'health/live', 'health/ready'];
-export const MAX_REQUEST_SIZE = '10mb';
-
-// Application defaults
-export const APP_NAME = 'Credence API';
-export const APP_VERSION = '1.0.0';
-export const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000'];
-
-// JWT defaults
-export const JWT_EXPIRATION = 900; // 15 minutes
-export const JWT_REFRESH_EXPIRATION = 604800; // 7 days
-
-// Rate limit throttler
-export const THROTTLER_TTL = 60000;
-export const THROTTLER_LIMIT = 5;
+export * from '@/config/constants/server-config';
+export * from '@/config/constants/application-config';
 
 // Environment-specific config
 export const ENV_CONFIG = {

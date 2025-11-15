@@ -15,6 +15,5 @@ export function errorMeta(err?: unknown): Record<string, unknown> | undefined {
     };
   }
 
-  // Non-Error: serialize as trace string
   return { trace: safeSerialize(err) };
 }

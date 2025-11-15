@@ -8,7 +8,7 @@ import { AUTH_VALIDATION } from '@/features/auth/constants';
  * Users can login with EITHER email OR username + password
  */
 export class LoginDto {
-  @ValidateIf((o: LoginDto) => !o.username) // Type the object
+  @ValidateIf((o: LoginDto) => !o.username)
   @IsEmail(
     {},
     { message: 'Invalid email format (required if username not provided)' },
@@ -16,7 +16,7 @@ export class LoginDto {
   @TrimTransform
   email?: string;
 
-  @ValidateIf((o: LoginDto) => !o.email) // Type the object
+  @ValidateIf((o: LoginDto) => !o.email)
   @IsString({ message: 'Username must be a string' })
   @MinLength(AUTH_VALIDATION.LOGIN_IDENTIFIER_MIN_LENGTH, {
     message: 'Username cannot be empty',

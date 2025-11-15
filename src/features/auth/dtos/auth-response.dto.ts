@@ -1,5 +1,5 @@
 // src/features/auth/dtos/auth-response.dto.ts
-import { UserResponseDto } from '@/features/users/dtos';
+import { UserResponseDto } from '@/common/dtos';
 
 /**
  * DTO for successful authentication response

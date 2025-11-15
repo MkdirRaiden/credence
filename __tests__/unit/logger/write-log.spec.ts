@@ -1,33 +1,37 @@
 // __tests__/unit/logger/write-log.spec.ts
-import { writeLog } from '@/logger/helpers/output/write-log.helper';
+import { writeLog } from '@/logger/helpers';
 import { shouldLog } from '@/common/interfaces';
-import * as helpers from '@/logger/helpers';
 
 jest.mock('@/common/interfaces', () => ({
   ...jest.requireActual('@/common/interfaces'),
   shouldLog: jest.fn(),
 }));
 
-jest.mock('@/logger/helpers', () => ({
-  sanitizeLog: jest.fn((obj) => obj),
-  formatLogJson: jest.fn(() => '{"level":"INFO","message":"test"}'),
-  logWriter: jest.fn(),
-}));
-
 describe('writeLog', () => {
   const mockShouldLog = shouldLog as jest.MockedFunction<typeof shouldLog>;
-  const mockSanitizeLog = helpers.sanitizeLog as jest.MockedFunction<
-    typeof helpers.sanitizeLog
-  >;
-  const mockFormatLogJson = helpers.formatLogJson as jest.MockedFunction<
-    typeof helpers.formatLogJson
-  >;
-  const mockLogWriter = helpers.logWriter as jest.MockedFunction<
-    typeof helpers.logWriter
-  >;
+
+  let consoleLogSpy: jest.SpyInstance;
+  let consoleWarnSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    consoleLogSpy = jest
+      .spyOn(console, 'log')
+      .mockImplementation(() => undefined);
+    consoleWarnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined);
+    consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    consoleLogSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
   it('skips logging when shouldLog returns false', () => {
@@ -35,8 +39,9 @@ describe('writeLog', () => {
 
     writeLog('DEBUG', 'INFO', 'test');
 
-    expect(mockFormatLogJson).not.toHaveBeenCalled();
-    expect(mockLogWriter).not.toHaveBeenCalled();
+    expect(consoleLogSpy).not.toHaveBeenCalled();
+    expect(consoleWarnSpy).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('sanitizes object messages', () => {
@@ -45,7 +50,13 @@ describe('writeLog', () => {
 
     writeLog('INFO', 'INFO', msg);
 
-    expect(mockSanitizeLog).toHaveBeenCalledWith(msg);
+    expect(consoleLogSpy).toHaveBeenCalledTimes(1);
+    const [loggedJson] = consoleLogSpy.mock.calls[0];
+
+    const parsed = JSON.parse(loggedJson as string);
+    // Message should be JSON of the sanitized object, so no raw "secret"
+    expect(String(parsed.message)).toContain('[REDACTED]');
+    expect(String(parsed.message)).not.toContain('secret');
   });
 
   it('does not sanitize primitives', () => {
@@ -53,27 +64,42 @@ describe('writeLog', () => {
 
     writeLog('INFO', 'INFO', 'string');
 
-    expect(mockSanitizeLog).not.toHaveBeenCalled();
+    expect(consoleLogSpy).toHaveBeenCalledTimes(1);
+    const [loggedJson] = consoleLogSpy.mock.calls[0];
+
+    const parsed = JSON.parse(loggedJson as string);
+    expect(parsed.message).toBe('string');
   });
 
-  it('passes all options to formatLogJson', () => {
+  it('passes env, context and error into formatted output', () => {
     mockShouldLog.mockReturnValue(true);
 
     writeLog('ERROR', 'ERROR', 'msg', 'prod', 'Auth', 'stack');
 
-    expect(mockFormatLogJson).toHaveBeenCalledWith('ERROR', 'msg', {
-      context: 'Auth',
-      env: 'prod',
-      error: 'stack',
-    });
+    // ERROR level goes to console.error via logWriter
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    const [loggedJson] = consoleErrorSpy.mock.calls[0];
+
+    const parsed = JSON.parse(loggedJson as string);
+
+    // level/env/context/error metadata come from formatLogJson pipeline
+    expect(parsed.level).toBe('ERROR');
+    expect(parsed.env).toBe('prod');
+    expect(parsed.context).toBe('Auth');
+    expect(parsed.trace).toBe('stack'); // from errorMeta for non-Error values
   });
 
-  it('calls logWriter with formatted output', () => {
+  it('calls console with formatted JSON for info logs', () => {
     mockShouldLog.mockReturnValue(true);
-    mockFormatLogJson.mockReturnValue('{"formatted":"json"}');
 
     writeLog('INFO', 'INFO', 'test');
 
-    expect(mockLogWriter).toHaveBeenCalledWith('INFO', '{"formatted":"json"}');
+    expect(consoleLogSpy).toHaveBeenCalledTimes(1);
+    const [loggedJson] = consoleLogSpy.mock.calls[0];
+
+    // Should be valid JSON
+    const parsed = JSON.parse(loggedJson as string);
+    expect(parsed.level).toBe('INFO');
+    expect(parsed.message).toBe('test');
   });
 });

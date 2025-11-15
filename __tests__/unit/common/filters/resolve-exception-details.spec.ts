@@ -3,7 +3,7 @@ import {
   resolveExceptionDetails,
   extractHttpExceptionMessage,
   isFaviconRequest,
-} from '@/common/filters/helpers/resolve-exception-details';
+} from '@/common/filters/helpers';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('Exception Resolution Helpers', () => {

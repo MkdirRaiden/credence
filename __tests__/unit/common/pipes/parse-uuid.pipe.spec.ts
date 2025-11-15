@@ -1,5 +1,5 @@
 // __tests__/unit/common/pipes/parse-uuid.pipe.spec.ts
-import { ParseUuidPipe } from '@/common/pipes/parse-uuid.pipe';
+import { ParseUuidPipe } from '@/common/pipes';
 import { BadRequestException } from '@nestjs/common';
 
 describe('ParseUuidPipe', () => {

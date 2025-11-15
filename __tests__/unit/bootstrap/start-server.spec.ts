@@ -21,6 +21,7 @@ describe('startServerAndLog', () => {
       nodeEnv: 'development',
       allowedOrigins: [],
       excludePrefixArray: [],
+      maxRequestSize: '10mb',
     };
 
     await startServerAndLog(config, mockApp, mockLogger);
@@ -36,6 +37,7 @@ describe('startServerAndLog', () => {
       nodeEnv: 'development',
       allowedOrigins: [],
       excludePrefixArray: [],
+      maxRequestSize: '10mb',
     };
 
     await startServerAndLog(config, mockApp, mockLogger);
@@ -54,6 +56,7 @@ describe('startServerAndLog', () => {
       nodeEnv: 'test',
       allowedOrigins: [],
       excludePrefixArray: [],
+      maxRequestSize: '10mb',
     };
 
     await startServerAndLog(config, mockApp, mockLogger);
@@ -72,6 +75,7 @@ describe('startServerAndLog', () => {
       nodeEnv: 'production',
       allowedOrigins: [],
       excludePrefixArray: [],
+      maxRequestSize: '10mb',
     };
 
     await startServerAndLog(config, mockApp, mockLogger);
@@ -90,6 +94,7 @@ describe('startServerAndLog', () => {
       nodeEnv: 'production',
       allowedOrigins: [],
       excludePrefixArray: [],
+      maxRequestSize: '10mb',
     };
 
     await startServerAndLog(config, mockApp, mockLogger);

@@ -31,13 +31,13 @@ import * as contracts from '@/features/users/contracts';
     },
     {
       provide: contracts.BaseLookupService,
-      useClass: services.UserLookupService
-    }
+      useClass: services.UserLookupService,
+    },
   ],
   exports: [
-    contracts.BaseAuthService, 
-    contracts.BaseCrudService, 
-    contracts.BaseLookupService
+    contracts.BaseAuthService,
+    contracts.BaseCrudService,
+    contracts.BaseLookupService,
   ],
 })
 export class UsersModule {}

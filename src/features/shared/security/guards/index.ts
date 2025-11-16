@@ -1,4 +1,4 @@
-// src/features/auth/guards/index.ts
+// src/feature/shared/security/guards/index.ts
 export * from './local-auth.guard';
 export * from './jwt-auth.guard';
 export * from './roles.guard';

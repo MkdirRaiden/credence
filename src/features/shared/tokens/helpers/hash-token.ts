@@ -1,4 +1,4 @@
-// src/features/refresh-tokens/helpers/hash-verify-token.ts
+// src/features/shared/tokens/helpers/hash-verify-token.ts
 import * as crypto from 'crypto';
 
 export function hashToken(token: string): string {

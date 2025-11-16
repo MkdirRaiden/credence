@@ -2,7 +2,7 @@
 import { TestContext } from '../../../common/test-context';
 import { AuthModule } from '@/features/auth/auth.module';
 import { UsersModule } from '@/features/users/users.module';
-import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.module';
+import { RefreshTokenModule } from '@/features/shared/tokens/token.module';
 import { PrismaService } from '@/database/services';
 import { AuthService } from '@/features/auth/services';
 import { UserRole } from '@prisma/client';

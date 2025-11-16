@@ -6,12 +6,13 @@ import { ConfigService } from '@nestjs/config';
 import { AuthController } from '@/features/auth/auth.controller';
 import * as services from '@/features/auth/services';
 import * as strategies from '@/features/auth/strategies';
-import * as guards from '@/features/auth/guards';
 import { UsersModule } from '@/features/users/users.module';
-import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.module';
+import { RefreshTokenModule } from '@/features/shared/tokens/token.module';
 import type { AppConfig } from '@/common/interfaces';
+import { SecurityModule } from '@/features/shared/security/security.module';
 
 @Module({
+  // imports internal and external lib
   imports: [
     PassportModule,
     JwtModule.registerAsync({
@@ -26,24 +27,19 @@ import type { AppConfig } from '@/common/interfaces';
     }),
     UsersModule,
     RefreshTokenModule,
+    SecurityModule,
   ],
+
+  // API ENDPOINTS
   controllers: [AuthController],
+
   providers: [
     services.AuthService,
     services.CredentialsService,
     strategies.LocalStrategy,
     strategies.JwtStrategy,
-    guards.LocalAuthGuard,
-    guards.JwtAuthGuard,
-    guards.RolesGuard,
-    guards.OptionalJwtAuthGuard,
   ],
-  exports: [
-    services.AuthService,
-    guards.LocalAuthGuard,
-    guards.JwtAuthGuard,
-    guards.RolesGuard,
-    guards.OptionalJwtAuthGuard,
-  ],
+
+  exports: [services.AuthService],
 })
 export class AuthModule {}

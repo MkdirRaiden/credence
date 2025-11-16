@@ -1,7 +1,7 @@
 // src/features/users/controllers/users-lookup.controller.ts
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
-import { JwtAuthGuard, RolesGuard } from '@/features/auth/guards';
+import * as guards from '@/features/shared/security/guards';
 import { Roles } from '@/common/decorators';
 import { ParseUuidPipe } from '@/common/pipes';
 import { UsersLookupService } from '@/features/users/services';
@@ -35,7 +35,7 @@ export class UsersLookupController {
   }
 
   @Get('email/:email')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
   @Visibility('admin')
   async findByEmail(
@@ -46,7 +46,7 @@ export class UsersLookupController {
   }
 
   @Get('phone/:phone')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
   @Visibility('admin')
   async findByPhone(

@@ -9,7 +9,8 @@ import { HealthModule } from '@/health/health.module';
 import { UsersModule } from '@/features/users/users.module';
 import { RootController } from '@/root.controller';
 import { AuthModule } from '@/features/auth/auth.module';
-import { RefreshTokenModule } from '@/features/refresh-tokens/refresh-token.module';
+import { RefreshTokenModule } from '@/features/shared/tokens/token.module';
+import { SecurityModule } from '@/features/shared/security/security.module';
 import { RootService } from '@/root.service';
 
 /**
@@ -26,10 +27,12 @@ import { RootService } from '@/root.service';
     // System: Infrastructure services
     BootstrapModule,
     HealthModule,
-    // Domain: Feature modules
+    // Domain: Feature modules shared modules
+    RefreshTokenModule,
+    SecurityModule,
+    // Domain: Features modules
     UsersModule,
     AuthModule,
-    RefreshTokenModule,
   ],
   providers: [RootService],
   controllers: [RootController],

@@ -1,3 +1,3 @@
-// src/features/refresh-tokens/helpers/index.ts
+// src/features/shared/tokens/helpers/index.ts
 export * from './validate-token';
 export * from './hash-token';

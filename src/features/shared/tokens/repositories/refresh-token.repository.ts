@@ -1,7 +1,7 @@
-// src/features/refresh-tokens/refresh-token.repository.ts
+// src/features/shared/tokens/refresh-token.repository.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/database/services';
-import { hashToken } from '@/features/refresh-tokens/helpers';
+import { hashToken } from '@/features/shared/tokens/helpers';
 
 @Injectable()
 export class RefreshTokenRepository {

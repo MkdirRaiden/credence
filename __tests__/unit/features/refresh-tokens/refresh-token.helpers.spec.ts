@@ -4,7 +4,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import {
   hashToken,
   validateRefreshToken,
-} from '@/features/refresh-tokens/helpers';
+} from '@/features/shared/tokens/helpers';
 
 type RefreshTokenRecord = {
   tokenHash: string;

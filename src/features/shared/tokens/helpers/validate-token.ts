@@ -1,4 +1,4 @@
-// src/features/refresh-tokens/helpers/validate-refresh-token.ts
+// src/features/shared/tokens/helpers/validate-refresh-token.ts
 import { UnauthorizedException } from '@nestjs/common';
 
 export interface RefreshTokenRecord {

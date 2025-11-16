@@ -1,4 +1,4 @@
-// src/features/auth/guards/local-auth.guard.ts
+// src/feature/shared/security/guards/local-auth.guard.ts
 import { Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 

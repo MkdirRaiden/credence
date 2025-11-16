@@ -1,4 +1,4 @@
-// src/features/contracts/base-token.service.ts
+// src/features/shared/tokens/contracts/base-token.service.ts
 
 export abstract class BaseTokenService {
   abstract create(

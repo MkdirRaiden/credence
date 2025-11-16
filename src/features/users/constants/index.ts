@@ -1,6 +1,8 @@
-// src/features/users/users.config.ts
+// src/features/users/index.ts
 import { type VisibilityLevel } from '@/common/interfaces';
 import { UserResponseDto } from '@/features/users/dtos';
+
+export const USER_NOT_FOUND = 'User not found for auth';
 
 /**
  * Type-safe field visibility rules mapped to UserResponseDto.

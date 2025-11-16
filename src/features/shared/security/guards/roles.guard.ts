@@ -1,4 +1,4 @@
-// src/features/auth/guards/roles.guard.ts
+// src/feature/shared/security/guards/roles.guard.ts
 import {
   Injectable,
   CanActivate,
@@ -7,7 +7,8 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '@prisma/client';
-import { UserResponseDto } from '@/features/auth/dtos';
+import { UserResponseDto } from '@/common/dtos';
+import { ROLES } from '@/common/constants';
 
 /**
  * Guard to enforce role-based access control
@@ -19,7 +20,7 @@ export class RolesGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.get<UserRole[]>(
-      'roles',
+      ROLES,
       context.getHandler(),
     );
 

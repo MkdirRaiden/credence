@@ -9,17 +9,17 @@ import {
   UseGuards,
   ForbiddenException,
 } from '@nestjs/common';
-import { UserRole } from '@prisma/client';
-import { JwtAuthGuard, RolesGuard } from '@/features/auth/guards';
-import { Roles, CurrentUser } from '@/common/decorators';
-import { ParseUuidPipe } from '@/common/pipes';
-import { UsersCrudService } from '@/features/users/services';
 import {
   CreateUserDto,
   UserResponseDto,
   UpdateUserDto,
   DeletedResourceDto,
 } from '@/features/users/dtos';
+import { UserRole } from '@prisma/client';
+import * as guards from '@/features/shared/security/guards';
+import { Roles, CurrentUser } from '@/common/decorators';
+import { ParseUuidPipe } from '@/common/pipes';
+import { UsersCrudService } from '@/features/users/services';
 
 /**
  * User management endpoints with role-based access control
@@ -29,14 +29,14 @@ export class UsersCrudController {
   constructor(private readonly crudService: UsersCrudService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
   async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
     return this.crudService.create(dto);
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(guards.JwtAuthGuard)
   async update(
     @Param('id', ParseUuidPipe) id: string,
     @Body() dto: UpdateUserDto,
@@ -47,7 +47,7 @@ export class UsersCrudController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(guards.JwtAuthGuard)
   async remove(
     @Param('id', ParseUuidPipe) id: string,
     @CurrentUser() currentUser: UserResponseDto,

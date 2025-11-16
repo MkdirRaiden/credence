@@ -1,5 +1,5 @@
 // src/features/users/repositories/users-auth.repository.ts
-import { AUTH_USER_SELECT } from '@/features/users/constants';
+import * as constants from '@/features/users/constants';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/database/services';
 import { User } from '@prisma/client';
@@ -9,20 +9,20 @@ import { NotFound } from '@/common/decorators';
 export class UsersAuthRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  @NotFound('User not found for auth')
+  @NotFound(constants.USER_NOT_FOUND)
   async findByEmailForAuth(email: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { email },
-      select: AUTH_USER_SELECT,
+      select: constants.AUTH_USER_SELECT,
     });
     return user as unknown as User;
   }
 
-  @NotFound('User not found for auth')
+  @NotFound(constants.USER_NOT_FOUND)
   async findByUsernameForAuth(username: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { username },
-      select: AUTH_USER_SELECT,
+      select: constants.AUTH_USER_SELECT,
     });
     return user as unknown as User;
   }

@@ -7,9 +7,6 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { AuthService } from '@/features/auth/services';
-import { CurrentUser } from '@/common/decorators';
-import { LocalAuthGuard, JwtAuthGuard } from '@/features/auth/guards';
 import {
   RegisterDto,
   UserResponseDto,
@@ -17,6 +14,9 @@ import {
   LoginDto,
   RefreshTokenDto,
 } from '@/features/auth/dtos';
+import { AuthService } from '@/features/auth/services';
+import { CurrentUser } from '@/common/decorators';
+import * as guards from '@/features/shared/security/guards';
 
 /**
  * Authentication endpoints for register, login, refresh, logout, and profile
@@ -31,7 +31,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(guards.LocalAuthGuard)
   async login(
     @Body() _loginDto: LoginDto,
     @Request() req: { user: UserResponseDto },
@@ -47,13 +47,13 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(guards.JwtAuthGuard)
   async logout(@Body() refreshTokenDto: RefreshTokenDto): Promise<void> {
     return this.authService.logout(refreshTokenDto.refreshToken);
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(guards.JwtAuthGuard)
   getMe(@CurrentUser() user: UserResponseDto): UserResponseDto {
     return user;
   }

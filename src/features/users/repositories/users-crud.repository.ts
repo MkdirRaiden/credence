@@ -4,6 +4,7 @@ import { PrismaService } from '@/database/services';
 import { Prisma, User } from '@prisma/client';
 import { NotFound } from '@/common/decorators';
 import { DeletedResourceDto } from '@/features/users/dtos';
+import * as constants from '@/features/users/constants';
 
 @Injectable()
 export class UsersCrudRepository {
@@ -13,7 +14,7 @@ export class UsersCrudRepository {
     return await this.prisma.user.create({ data });
   }
 
-  @NotFound('User not found')
+  @NotFound(constants.USER_NOT_FOUND)
   async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
     return await this.prisma.user.update({
       where: { id },
@@ -21,7 +22,7 @@ export class UsersCrudRepository {
     });
   }
 
-  @NotFound('User not found')
+  @NotFound(constants.USER_NOT_FOUND)
   async softDelete(id: string): Promise<DeletedResourceDto> {
     const deleted = await this.prisma.user.update({
       where: { id },

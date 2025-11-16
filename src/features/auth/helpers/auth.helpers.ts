@@ -1,10 +1,7 @@
 // src/features/auth/helpers/auth.helpers.ts
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import {
-  JWT_EXPIRATION,
-  JWT_REFRESH_EXPIRATION,
-} from '@/features/auth/constants';
+import * as constants from '@/features/auth/constants';
 import { UserRole } from '@prisma/client';
 
 export const hashPassword = async (password: string): Promise<string> => {
@@ -34,19 +31,19 @@ export const generateTokens = (
 
   // Access token: 15 minutes
   const accessToken = jwtService.sign(payload, {
-    expiresIn: JWT_EXPIRATION,
+    expiresIn: constants.JWT_EXPIRATION,
   });
 
   // Refresh token: 7 days
   const refreshToken = jwtService.sign(payload, {
-    expiresIn: JWT_REFRESH_EXPIRATION,
+    expiresIn: constants.JWT_REFRESH_EXPIRATION,
   });
 
   // Calculate expiresIn in seconds
   const decoded: { exp?: number } | null = jwtService.decode(accessToken);
   const expiresIn = decoded?.exp
     ? decoded.exp - Math.floor(Date.now() / 1000)
-    : JWT_EXPIRATION;
+    : constants.JWT_EXPIRATION;
 
   return { accessToken, refreshToken, expiresIn };
 };

@@ -1,10 +1,10 @@
-// src/features/refresh-tokens/refresh-token.service.ts
+// src/features/shared/tokens/refresh-token.service.ts
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
-import { RefreshTokenRepository } from '@/features/refresh-tokens/repositories';
-import * as helpers from '@/features/refresh-tokens/helpers';
+import { RefreshTokenRepository } from '@/features/shared/tokens/repositories';
+import * as helpers from '@/features/shared/tokens/helpers';
 import { LOG_CONTEXTS } from '@/common/constants';
-import { BaseTokenService } from '@/features/refresh-tokens/contracts';
+import { BaseTokenService } from '@/features/shared/tokens/contracts';
 
 /**
  * Manages refresh token lifecycle (create, verify, revoke)

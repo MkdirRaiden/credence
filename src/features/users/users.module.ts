@@ -4,16 +4,20 @@ import * as controllers from '@/features/users/controllers';
 import * as repositories from '@/features/users/repositories';
 import * as services from '@/features/users/services';
 import * as contracts from '@/features/users/contracts';
+import { SecurityModule } from '@/features/shared/security/security.module';
 
 /**
  * Users module: user management, visibility, and auth integration.
  * Exports contracts for Auth module to use.
  */
 @Module({
+  imports: [SecurityModule],
+
   controllers: [
     controllers.UsersLookupController,
     controllers.UsersCrudController,
   ],
+
   providers: [
     services.UsersAuthService,
     services.UsersCrudService,
@@ -34,6 +38,7 @@ import * as contracts from '@/features/users/contracts';
       useClass: services.UsersLookupService,
     },
   ],
+  
   exports: [
     contracts.BaseAuthService,
     contracts.BaseCrudService,

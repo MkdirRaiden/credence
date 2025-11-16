@@ -1,5 +1,6 @@
 // src/common/interfaces/user-config.interface.ts
 import { Request } from 'express';
+import { UserRole } from '@prisma/client';
 
 export type VisibilityLevel = 'public' | 'self' | 'admin';
 
@@ -13,7 +14,7 @@ export interface FieldSelectorContext {
 export interface AuthenticatedUser {
   id: string;
   email: string;
-  role: 'USER' | 'ADMIN';
+  role: UserRole;
 }
 
 export interface RequestWithContext extends Request {

@@ -1,18 +1,19 @@
 // src/features/auth/auth.service.ts
-import { Injectable, Inject } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UserRole } from '@prisma/client';
-import { BaseCrudService, BaseLookupService } from '@/features/users/contracts';
-import { BaseTokenService } from '@/features/refresh-tokens/contracts';
-import { LoggerService } from '@/logger/services';
-import * as helpers from '@/features/auth/helpers';
-import { LOG_CONTEXTS } from '@/common/constants';
 import {
   UserResponseDto,
   AuthResponseDto,
   RefreshTokenDto,
   RegisterDto,
 } from '@/features/auth/dtos';
+import { Injectable, Inject } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UserRole } from '@prisma/client';
+import { BaseCrudService, BaseLookupService } from '@/features/users/contracts';
+import { BaseTokenService } from '@/features/shared/tokens/contracts';
+import { LoggerService } from '@/logger/services';
+import * as helpers from '@/features/auth/helpers';
+import { LOG_CONTEXTS } from '@/common/constants';
+
 
 /**
  * Orchestrates authentication flows (register, login, refresh, logout)

@@ -1,4 +1,4 @@
 // src/features/users/services/index.ts
-export * from './user-crud.service';
-export * from './user-lookup.service';
-export * from './user-auth.service';
+export * from './users-crud.service';
+export * from './users-lookup.service';
+export * from './users-auth.service';

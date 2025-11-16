@@ -1,7 +1,6 @@
 // src/bootstrap/services/internal/server.service.ts
 import { Injectable, INestApplication } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
-import { startServerAndLog } from '@/bootstrap/helpers';
 import type { AppConfig } from '@/common/interfaces';
 
 /**
@@ -15,6 +14,16 @@ export class ServerService {
     app: INestApplication,
     serverConfig: AppConfig['server'],
   ): Promise<void> {
-    await startServerAndLog(serverConfig, app, this.logger);
+    const { port, host, globalPrefix, nodeEnv } = serverConfig;
+    await app.listen(port);
+    const protocol = nodeEnv === 'production' ? 'https' : 'http';
+    const normPrefix = String(globalPrefix ?? '').replace(/^\/+|\/+$/g, '');
+    const baseUrl = normPrefix
+      ? `${protocol}://${host}:${port}/${normPrefix}`
+      : `${protocol}://${host}:${port}`;
+    this.logger.log(
+      `🚀 Server running on ${baseUrl} [${nodeEnv}]`,
+      'Bootstrap',
+    );
   }
 }

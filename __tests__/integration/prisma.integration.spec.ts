@@ -30,8 +30,8 @@ describe('PrismaService (Integration)', () => {
     expect(result[0].result).toBe(1);
   });
 
-  it('handles transactions with temp tables', async () => {
-    await prisma.$transaction(async (tx) => {
+  it('handles transactions with temp tables (via runTransaction helper)', async () => {
+    const result = await prisma.runTransaction(async (tx) => {
       await tx.$executeRaw`CREATE TEMP TABLE test_table (id SERIAL, name TEXT)`;
       await tx.$executeRaw`INSERT INTO test_table (name) VALUES ('test')`;
       const rows = await tx.$queryRaw<{ name: string }[]>`
@@ -39,11 +39,14 @@ describe('PrismaService (Integration)', () => {
       `;
       expect(rows).toHaveLength(1);
       expect(rows[0].name).toBe('test');
+      return rows.length;
     });
+
+    expect(result).toBe(1);
   });
 
-  it('handles multiple queries in transaction', async () => {
-    await prisma.$transaction(async (tx) => {
+  it('handles multiple queries in transaction (via runTransaction helper)', async () => {
+    const count = await prisma.runTransaction(async (tx) => {
       await tx.$executeRaw`CREATE TEMP TABLE users (id SERIAL, email TEXT UNIQUE)`;
       await tx.$executeRaw`INSERT INTO users (email) VALUES ('user1@test.com')`;
       await tx.$executeRaw`INSERT INTO users (email) VALUES ('user2@test.com')`;
@@ -52,7 +55,10 @@ describe('PrismaService (Integration)', () => {
       `;
       expect(all).toHaveLength(2);
       expect(all[0].email).toBe('user1@test.com');
+      return all.length;
     });
+
+    expect(count).toBe(2);
   });
 
   it('rolls back on transaction error', async () => {

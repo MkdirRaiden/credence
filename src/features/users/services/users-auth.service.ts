@@ -1,4 +1,4 @@
-// src/features/users/services/user-auth.service.ts
+// src/features/users/services/users-auth.service.ts
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { LoggerService } from '@/logger/services';
@@ -10,7 +10,7 @@ import { LOG_CONTEXTS } from '@/common/constants';
  * User authentication queries (bypasses visibility/field selection)
  */
 @Injectable()
-export class UserAuthService extends BaseAuthService {
+export class UsersAuthService extends BaseAuthService {
   constructor(
     private readonly repository: UsersAuthRepository,
     private readonly logger: LoggerService,

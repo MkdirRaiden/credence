@@ -15,23 +15,23 @@ import * as contracts from '@/features/users/contracts';
     controllers.UsersCrudController,
   ],
   providers: [
-    services.UserAuthService,
-    services.UserCrudService,
-    services.UserLookupService,
+    services.UsersAuthService,
+    services.UsersCrudService,
+    services.UsersLookupService,
     repositories.UsersAuthRepository,
     repositories.UsersCrudRepository,
     repositories.UsersLookupRepository,
     {
       provide: contracts.BaseAuthService,
-      useClass: services.UserAuthService,
+      useClass: services.UsersAuthService,
     },
     {
       provide: contracts.BaseCrudService,
-      useClass: services.UserCrudService,
+      useClass: services.UsersCrudService,
     },
     {
       provide: contracts.BaseLookupService,
-      useClass: services.UserLookupService,
+      useClass: services.UsersLookupService,
     },
   ],
   exports: [

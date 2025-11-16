@@ -1,6 +1,7 @@
 // __tests__/e2e/interceptors.e2e.spec.ts
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
+
 import { createTestApp, closeTestApp } from '../common/test-app';
 
 describe('Global Interceptors (E2E)', () => {
@@ -14,30 +15,37 @@ describe('Global Interceptors (E2E)', () => {
     await closeTestApp(app);
   });
 
-  describe('ResponseInterceptor (wraps included routes)', () => {
-    it('wraps responses in StandardResponse envelope', async () => {
-      // Test with a route that IS wrapped (not excluded)
-      // Example: POST /api/v1/auth/register (when created)
-      // For now, skip or test with actual endpoint
-      expect(true).toBe(true);
+  describe('ResponseInterceptor (wraps routes)', () => {
+    it('wraps responses in StandardResponse envelope for a typical route', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/health/live')
+        .expect(200);
+
+      expect(res.body).toHaveProperty('success');
+      expect(res.body).toHaveProperty('statusCode');
+      expect(res.body).toHaveProperty('data');
     });
   });
 
-  describe('Excluded routes bypass interceptor', () => {
-    it('health/live returns raw data', async () => {
+  describe('Previously “excluded” routes are also wrapped', () => {
+    it('health/live returns wrapped data', async () => {
       const response = await request(app.getHttpServer())
         .get('/health/live')
         .expect(200);
 
-      expect(response.body).toHaveProperty('status');
-      expect(response.body.success).toBeUndefined(); // Not wrapped
+      const body = response.body.data ?? response.body;
+
+      expect(body).toHaveProperty('status');
+      expect(response.body.success).toBe(true);
     });
 
-    it('root returns raw config', async () => {
+    it('root returns wrapped config', async () => {
       const response = await request(app.getHttpServer()).get('/').expect(200);
 
-      expect(response.body).toHaveProperty('name');
-      expect(response.body.success).toBeUndefined(); // Not wrapped
+      const body = response.body.data ?? response.body;
+
+      expect(body).toHaveProperty('name');
+      expect(response.body.success).toBe(true);
     });
   });
 });

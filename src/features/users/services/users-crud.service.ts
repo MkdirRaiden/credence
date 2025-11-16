@@ -1,4 +1,4 @@
-// src/features/users/services/user-crud.service.ts
+// src/features/users/services/users-crud.service.ts
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
 import { UsersCrudRepository } from '@/features/users/repositories';
@@ -16,7 +16,7 @@ import {
  * User creation, update, deletion operations
  */
 @Injectable()
-export class UserCrudService extends BaseCrudService {
+export class UsersCrudService extends BaseCrudService {
   constructor(
     private readonly repository: UsersCrudRepository,
     private readonly logger: LoggerService,

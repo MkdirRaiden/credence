@@ -2,6 +2,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@/app.module';
+import { BootstrapService } from '@/bootstrap/services';
 
 let testModule: TestingModule;
 
@@ -11,19 +12,20 @@ export async function createTestApp(): Promise<INestApplication> {
   }).compile();
 
   const app = testModule.createNestApplication();
-  await app.init();
 
+  // Run the same bootstrap init as main.ts so globalPrefix, middleware,
+  // pipes, filters, and interceptors are configured.
+  const bootstrap = app.get(BootstrapService);
+  bootstrap.init(app);
+
+  await app.init();
   return app;
 }
 
 export async function closeTestApp(app: INestApplication): Promise<void> {
-  // Close app
   await app.close();
-
-  // Close test module (closes all providers)
   await testModule.close();
 
-  // Force close remaining handles
   const handles = (process as any)._getActiveHandles?.();
   const requests = (process as any)._getActiveRequests?.();
 

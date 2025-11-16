@@ -1,4 +1,4 @@
-// src/features/users/services/user-lookup.service.ts
+// src/features/users/services/users-lookup.service.ts
 import { Injectable } from '@nestjs/common';
 import { UsersLookupRepository } from '@/features/users/repositories';
 import { UserResponseDto } from '@/features/users/dtos';
@@ -10,7 +10,7 @@ import { BaseLookupService } from '@/features/users/contracts';
  * User lookup operations with visibility context
  */
 @Injectable()
-export class UserLookupService extends BaseLookupService {
+export class UsersLookupService extends BaseLookupService {
   constructor(private readonly repository: UsersLookupRepository) {
     super();
   }

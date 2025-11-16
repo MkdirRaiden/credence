@@ -13,7 +13,7 @@ import { UserRole } from '@prisma/client';
 import { JwtAuthGuard, RolesGuard } from '@/features/auth/guards';
 import { Roles, CurrentUser } from '@/common/decorators';
 import { ParseUuidPipe } from '@/common/pipes';
-import { UserCrudService } from '@/features/users/services';
+import { UsersCrudService } from '@/features/users/services';
 import {
   CreateUserDto,
   UserResponseDto,
@@ -26,7 +26,7 @@ import {
  */
 @Controller('users')
 export class UsersCrudController {
-  constructor(private readonly crudService: UserCrudService) {}
+  constructor(private readonly crudService: UsersCrudService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)

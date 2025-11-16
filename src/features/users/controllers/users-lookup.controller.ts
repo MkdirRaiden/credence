@@ -4,7 +4,7 @@ import { UserRole } from '@prisma/client';
 import { JwtAuthGuard, RolesGuard } from '@/features/auth/guards';
 import { Roles } from '@/common/decorators';
 import { ParseUuidPipe } from '@/common/pipes';
-import { UserLookupService } from '@/features/users/services';
+import { UsersLookupService } from '@/features/users/services';
 import { UserResponseDto, PaginationQueryDto } from '@/features/users/dtos';
 import { Visibility, GetVisibilityContext } from '@/common/decorators';
 import { FieldSelectorContext } from '@/common/interfaces';
@@ -14,7 +14,7 @@ import { FieldSelectorContext } from '@/common/interfaces';
  */
 @Controller('users')
 export class UsersLookupController {
-  constructor(private readonly lookupService: UserLookupService) {}
+  constructor(private readonly lookupService: UsersLookupService) {}
 
   @Get('id/:id')
   @Visibility('public')

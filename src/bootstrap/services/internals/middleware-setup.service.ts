@@ -4,7 +4,8 @@ import helmet from 'helmet';
 import express from 'express';
 import compression from 'compression';
 import { RequestIdMiddleware } from '@/common/middlewares';
-import type { AppConfig } from '@/common/interfaces';
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '@/common/interfaces';
 
 /**
  * Configures global middleware for security, compression, CORS, and request tracing.
@@ -12,17 +13,20 @@ import type { AppConfig } from '@/common/interfaces';
  */
 @Injectable()
 export class MiddlewareSetupService {
-  setup(app: INestApplication, serverConfig: AppConfig['server']): void {
+  constructor(private readonly config: ConfigService<AppConfig, true>) {}
+
+  get server() {
+    const server = this.config.get('server', { infer: true });
+    return server;
+  }
+
+  setup(app: INestApplication): void {
     this.setupRequestId(app);
-    this.setupBodyParsing(app, serverConfig.maxRequestSize);
+    this.setupBodyParsing(app);
     this.setupSecurity(app);
     this.setupCompression(app);
-    this.setupCors(app, serverConfig.allowedOrigins);
-    this.setupGlobalPrefix(
-      app,
-      serverConfig.globalPrefix,
-      serverConfig.excludePrefixArray,
-    );
+    this.setupCors(app);
+    this.setupGlobalPrefix(app);
   }
 
   private setupRequestId(app: INestApplication): void {
@@ -30,10 +34,8 @@ export class MiddlewareSetupService {
     app.use(middleware.use.bind(middleware));
   }
 
-  private setupBodyParsing(
-    app: INestApplication,
-    maxRequestSize: string,
-  ): void {
+  private setupBodyParsing(app: INestApplication): void {
+    const maxRequestSize = this.server.maxRequestSize;
     app.use(express.json({ limit: maxRequestSize }));
     app.use(express.urlencoded({ extended: true, limit: maxRequestSize }));
   }
@@ -51,18 +53,17 @@ export class MiddlewareSetupService {
     app.use(compression());
   }
 
-  private setupCors(app: INestApplication, allowedOrigins: string[]): void {
+  private setupCors(app: INestApplication): void {
+    const allowedOrigins = this.server.allowedOrigins;
     app.enableCors({
       origin: allowedOrigins.length > 0 ? allowedOrigins : false,
       credentials: true,
     });
   }
 
-  private setupGlobalPrefix(
-    app: INestApplication,
-    globalPrefix: string,
-    excludePrefixArray: string[],
-  ): void {
-    app.setGlobalPrefix(globalPrefix, { exclude: excludePrefixArray });
+  private setupGlobalPrefix(app: INestApplication): void {
+    app.setGlobalPrefix(this.server.globalPrefix, {
+      exclude: this.server.excludePrefixArray,
+    });
   }
 }

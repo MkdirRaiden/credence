@@ -7,10 +7,8 @@ import { DatabaseModule } from '@/database/database.module';
 import { BootstrapModule } from '@/bootstrap/bootstrap.module';
 import { HealthModule } from '@/health/health.module';
 import { UsersModule } from '@/features/users/users.module';
-import { RootController } from '@/root.controller';
 import { AuthModule } from '@/features/auth/auth.module';
-import { RefreshTokenModule } from '@/features/shared/tokens/token.module';
-import { SecurityModule } from '@/features/shared/security/security.module';
+import { RootController } from '@/root.controller';
 import { RootService } from '@/root.service';
 
 /**
@@ -24,12 +22,11 @@ import { RootService } from '@/root.service';
     LoggerModule,
     CommonModule,
     DatabaseModule,
+
     // System: Infrastructure services
     BootstrapModule,
     HealthModule,
-    // Domain: Feature modules shared modules
-    RefreshTokenModule,
-    SecurityModule,
+
     // Domain: Features modules
     UsersModule,
     AuthModule,

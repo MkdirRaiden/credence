@@ -12,8 +12,7 @@ import { BaseCrudService, BaseLookupService } from '@/features/users/contracts';
 import { BaseTokenService } from '@/features/shared/tokens/contracts';
 import { LoggerService } from '@/logger/services';
 import * as helpers from '@/features/auth/helpers';
-import { LOG_CONTEXTS } from '@/common/constants';
-
+import { LOG_CONTEXTS, TOKEN_TYPE } from '@/common/constants';
 
 /**
  * Orchestrates authentication flows (register, login, refresh, logout)
@@ -86,7 +85,7 @@ export class AuthService {
       payload.email,
       undefined,
       payload.username,
-      user.role as UserRole, // TypeScript needs cast since Partial<UserResponseDto>
+      user.role as UserRole,
     );
   }
 
@@ -118,7 +117,7 @@ export class AuthService {
       refreshToken,
       user,
       expiresIn,
-      tokenType: 'Bearer',
+      tokenType: TOKEN_TYPE,
     };
   }
 }

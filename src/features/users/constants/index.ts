@@ -69,15 +69,6 @@ export const AUTH_USER_SELECT = {
   role: true,
   referredById: true,
   passwordHash: true, // Sensitive: Password verification
-  refreshTokens: {
-    select: {
-      id: true,
-      tokenHash: true,
-      expiresAt: true,
-      createdAt: true,
-      isRevoked: true,
-    },
-  },
   createdAt: true,
   updatedAt: true,
   deletedAt: true,

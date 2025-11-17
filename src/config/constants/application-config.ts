@@ -4,6 +4,8 @@ export const VALID_LOG_LEVELS = ['ERROR', 'WARN', 'INFO', 'DEBUG', 'VERBOSE'];
 
 export const APP_NAME = 'Credence API';
 export const APP_VERSION = '1.0.0';
+export const SWAGGER_DESCRIPTION = 'Credence backend API documentation';
+export const API_DOCS_PATH = 'docs' as const;
 export const DEFAULT_ALLOWED_ORIGINS = ['http://localhost:3000'];
 
 export const JWT_EXPIRATION = 900; // 15 minutes

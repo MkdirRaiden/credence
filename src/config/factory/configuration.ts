@@ -8,6 +8,8 @@ export function configuration(): AppConfig {
     app: {
       appName: process.env.APP_NAME || constants.APP_NAME,
       appVersion: process.env.APP_VERSION || constants.APP_VERSION,
+      swaggerDescription: constants.SWAGGER_DESCRIPTION,
+      apiDocsPath: constants.API_DOCS_PATH,
       logLevel: (process.env.LOG_LEVEL?.toUpperCase() ||
         constants.LOG_LEVEL) as LogLevel,
     },

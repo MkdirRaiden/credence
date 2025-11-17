@@ -13,6 +13,8 @@ export interface AppConfig {
   app: {
     appName: string;
     appVersion: string;
+    swaggerDescription: string;
+    apiDocsPath: string;
     logLevel: LogLevel;
   };
   database: {

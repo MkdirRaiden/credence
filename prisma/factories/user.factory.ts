@@ -17,7 +17,6 @@ export const seedUsers: Prisma.UserCreateInput[] = [
     role: UserRole.USER,
     emailVerified: true,
     phoneVerified: true,
-
     authProvider: AuthProvider.SYSTEM,
   },
   {

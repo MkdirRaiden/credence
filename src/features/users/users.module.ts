@@ -38,7 +38,7 @@ import { SecurityModule } from '@/features/shared/security/security.module';
       useClass: services.UsersLookupService,
     },
   ],
-  
+
   exports: [
     contracts.BaseAuthService,
     contracts.BaseCrudService,

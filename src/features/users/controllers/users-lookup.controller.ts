@@ -17,6 +17,7 @@ export class UsersLookupController {
   constructor(private readonly lookupService: UsersLookupService) {}
 
   @Get('id/:id')
+  @UseGuards(guards.OptionalJwtAuthGuard)
   @Visibility('public')
   async findById(
     @Param('id', ParseUuidPipe) id: string,

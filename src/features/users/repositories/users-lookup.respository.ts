@@ -12,7 +12,10 @@ export class UsersLookupRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(context: FieldSelectorContext): Promise<Partial<User>[]> {
-    const select = createPrismaSelect(constants.USER_FIELD_VISIBILITY_CONFIG, context);
+    const select = createPrismaSelect(
+      constants.USER_FIELD_VISIBILITY_CONFIG,
+      context,
+    );
     const skip = context.skip ?? constants.PAGINATION_LIMITS.DEFAULT_SKIP;
     const take = context.take ?? constants.PAGINATION_LIMITS.DEFAULT_TAKE;
     const users = await this.prisma.user.findMany({
@@ -29,7 +32,10 @@ export class UsersLookupRepository {
     id: string,
     context: FieldSelectorContext,
   ): Promise<Partial<User>> {
-    const select = createPrismaSelect(constants.USER_FIELD_VISIBILITY_CONFIG, context);
+    const select = createPrismaSelect(
+      constants.USER_FIELD_VISIBILITY_CONFIG,
+      context,
+    );
     const user = await this.prisma.user.findUnique({
       where: { id },
       select,
@@ -42,7 +48,10 @@ export class UsersLookupRepository {
     email: string,
     context: FieldSelectorContext,
   ): Promise<Partial<User>> {
-    const select = createPrismaSelect(constants.USER_FIELD_VISIBILITY_CONFIG, context);
+    const select = createPrismaSelect(
+      constants.USER_FIELD_VISIBILITY_CONFIG,
+      context,
+    );
     const user = await this.prisma.user.findUnique({
       where: { email },
       select,
@@ -55,7 +64,10 @@ export class UsersLookupRepository {
     username: string,
     context: FieldSelectorContext,
   ): Promise<Partial<User>> {
-    const select = createPrismaSelect(constants.USER_FIELD_VISIBILITY_CONFIG, context);
+    const select = createPrismaSelect(
+      constants.USER_FIELD_VISIBILITY_CONFIG,
+      context,
+    );
     const user = await this.prisma.user.findUnique({
       where: { username },
       select,
@@ -68,7 +80,10 @@ export class UsersLookupRepository {
     phone: string,
     context: FieldSelectorContext,
   ): Promise<Partial<User>> {
-    const select = createPrismaSelect(constants.USER_FIELD_VISIBILITY_CONFIG, context);
+    const select = createPrismaSelect(
+      constants.USER_FIELD_VISIBILITY_CONFIG,
+      context,
+    );
     const user = await this.prisma.user.findFirst({
       where: { phone },
       select,

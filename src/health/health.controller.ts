@@ -1,6 +1,10 @@
 // src/health/health.controller.ts
+import {
+  ApiOkResponse,
+  ApiTags,
+  ApiServiceUnavailableResponse,
+} from '@nestjs/swagger';
 import { Controller, Get, HttpCode } from '@nestjs/common';
-import { ApiOkResponse, ApiTags, ApiServiceUnavailableResponse } from '@nestjs/swagger';
 import { HealthService } from '@/health/services';
 import { LivenessDto, ReadinessDto } from '@/health/dtos';
 import { SkipThrottle } from '@nestjs/throttler';
@@ -11,9 +15,6 @@ import { SkipThrottle } from '@nestjs/throttler';
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
-  /**
-   * Liveness probe — tells if the process is running.
-   */
   @Get('live')
   @HttpCode(200)
   @ApiOkResponse({
@@ -24,9 +25,6 @@ export class HealthController {
     return this.healthService.liveness();
   }
 
-  /**
-   * Readiness probe — tells if dependencies are healthy.
-   */
   @Get('ready')
   @HttpCode(200)
   @ApiOkResponse({

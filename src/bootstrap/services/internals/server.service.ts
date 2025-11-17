@@ -22,7 +22,7 @@ export class ServerService {
   async start(app: INestApplication): Promise<void> {
     const { port, host, globalPrefix, nodeEnv } = this.server;
     await app.listen(port);
-    
+
     const protocol = nodeEnv === 'production' ? 'https' : 'http';
     const normPrefix = String(globalPrefix ?? '').replace(/^\/+|\/+$/g, '');
     const baseUrl = normPrefix

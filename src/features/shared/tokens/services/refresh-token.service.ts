@@ -6,9 +6,6 @@ import * as helpers from '@/features/shared/tokens/helpers';
 import { LOG_CONTEXTS } from '@/common/constants';
 import { BaseTokenService } from '@/features/shared/tokens/contracts';
 
-/**
- * Manages refresh token lifecycle (create, verify, revoke)
- */
 @Injectable()
 export class RefreshTokenService extends BaseTokenService {
   constructor(
@@ -30,10 +27,10 @@ export class RefreshTokenService extends BaseTokenService {
     );
   }
 
-  async verify(userId: string, refreshToken: string): Promise<void> {
+  async isValidToken(userId: string, refreshToken: string): Promise<boolean> {
     const tokenHash = helpers.hashToken(refreshToken);
     const token = await this.repository.findByHash(tokenHash);
-    helpers.validateRefreshToken(token, userId);
+    return helpers.isRefreshTokenValid(token, userId);
   }
 
   async revoke(refreshToken: string): Promise<void> {

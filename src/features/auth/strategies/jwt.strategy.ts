@@ -18,10 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  /**
-   * Payload comes from the JWT token
-   * Return user data to attach to request.user
-   */
   validate(payload: {
     sub: string;
     email: string;

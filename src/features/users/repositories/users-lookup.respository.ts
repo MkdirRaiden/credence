@@ -24,7 +24,7 @@ export class UsersLookupRepository {
       take,
       orderBy: { createdAt: 'desc' },
     });
-    return users as unknown as Partial<User>[];
+    return users as Partial<User>[];
   }
 
   @NotFound(constants.USER_NOT_FOUND)
@@ -40,7 +40,7 @@ export class UsersLookupRepository {
       where: { id },
       select,
     });
-    return user as unknown as Partial<User>;
+    return user as Partial<User>;
   }
 
   @NotFound(constants.USER_NOT_FOUND)
@@ -56,7 +56,7 @@ export class UsersLookupRepository {
       where: { email },
       select,
     });
-    return user as unknown as Partial<User>;
+    return user as Partial<User>;
   }
 
   @NotFound(constants.USER_NOT_FOUND)
@@ -72,7 +72,7 @@ export class UsersLookupRepository {
       where: { username },
       select,
     });
-    return user as unknown as Partial<User>;
+    return user as Partial<User>;
   }
 
   @NotFound(constants.USER_NOT_FOUND)
@@ -88,6 +88,6 @@ export class UsersLookupRepository {
       where: { phone },
       select,
     });
-    return user as unknown as Partial<User>;
+    return user as Partial<User>;
   }
 }

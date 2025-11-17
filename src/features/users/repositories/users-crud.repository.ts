@@ -33,6 +33,6 @@ export class UsersCrudRepository {
       },
     });
 
-    return deleted as unknown as DeletedResourceDto;
+    return deleted as DeletedResourceDto;
   }
 }

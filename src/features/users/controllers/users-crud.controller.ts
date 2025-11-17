@@ -2,13 +2,22 @@
 import {
   Controller,
   Post,
-  Put,
   Delete,
   Body,
   Param,
   UseGuards,
-  ForbiddenException,
+  Patch,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
+} from '@nestjs/swagger';
 import {
   CreateUserDto,
   UserResponseDto,
@@ -20,10 +29,10 @@ import * as guards from '@/features/shared/security/guards';
 import { Roles, CurrentUser } from '@/common/decorators';
 import { ParseUuidPipe } from '@/common/pipes';
 import { UsersCrudService } from '@/features/users/services';
+import { UserAccessForbiddenException } from '@/common/exceptions';
 
-/**
- * User management endpoints with role-based access control
- */
+@ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
 export class UsersCrudController {
   constructor(private readonly crudService: UsersCrudService) {}
@@ -31,12 +40,30 @@ export class UsersCrudController {
   @Post()
   @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
+  @ApiCreatedResponse({
+    type: UserResponseDto,
+    description: 'User created',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiConflictResponse({
+    description: 'Email, username, or phone already in use',
+  })
   async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
     return this.crudService.create(dto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(guards.JwtAuthGuard)
+  @ApiOkResponse({
+    type: UserResponseDto,
+    description: 'User updated',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({
+    description: 'You can only access your own resources',
+  })
+  @ApiNotFoundResponse({ description: 'User not found' })
   async update(
     @Param('id', ParseUuidPipe) id: string,
     @Body() dto: UpdateUserDto,
@@ -48,6 +75,15 @@ export class UsersCrudController {
 
   @Delete(':id')
   @UseGuards(guards.JwtAuthGuard)
+  @ApiOkResponse({
+    type: DeletedResourceDto,
+    description: 'User soft deleted',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({
+    description: 'You can only access your own resources',
+  })
+  @ApiNotFoundResponse({ description: 'User not found' })
   async remove(
     @Param('id', ParseUuidPipe) id: string,
     @CurrentUser() currentUser: UserResponseDto,
@@ -60,11 +96,11 @@ export class UsersCrudController {
     resourceUserId: string,
     currentUser: UserResponseDto,
   ): void {
-    if (
-      currentUser.id !== resourceUserId &&
-      currentUser.role !== UserRole.ADMIN
-    ) {
-      throw new ForbiddenException('You can only access your own resources');
+    const isOwner = currentUser.id === resourceUserId;
+    const isAdmin = currentUser.role === UserRole.ADMIN;
+
+    if (!isOwner && !isAdmin) {
+      throw new UserAccessForbiddenException();
     }
   }
 }

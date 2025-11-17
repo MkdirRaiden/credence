@@ -15,7 +15,7 @@ export class UsersAuthRepository {
       where: { email },
       select: constants.AUTH_USER_SELECT,
     });
-    return user as unknown as User;
+    return user as User;
   }
 
   @NotFound(constants.USER_NOT_FOUND)
@@ -24,6 +24,6 @@ export class UsersAuthRepository {
       where: { username },
       select: constants.AUTH_USER_SELECT,
     });
-    return user as unknown as User;
+    return user as User;
   }
 }

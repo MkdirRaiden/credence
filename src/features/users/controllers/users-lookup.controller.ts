@@ -1,6 +1,15 @@
 // src/features/users/controllers/users-lookup.controller.ts
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
+import {
+  ApiTags,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import * as guards from '@/features/shared/security/guards';
 import { Roles } from '@/common/decorators';
 import { ParseUuidPipe } from '@/common/pipes';
@@ -9,9 +18,7 @@ import { UserResponseDto, PaginationQueryDto } from '@/features/users/dtos';
 import { Visibility, GetVisibilityContext } from '@/common/decorators';
 import { FieldSelectorContext } from '@/common/interfaces';
 
-/**
- * User management endpoints with role-based access control
- */
+@ApiTags('users')
 @Controller('users')
 export class UsersLookupController {
   constructor(private readonly lookupService: UsersLookupService) {}
@@ -19,6 +26,11 @@ export class UsersLookupController {
   @Get('id/:id')
   @UseGuards(guards.OptionalJwtAuthGuard)
   @Visibility('public')
+  @ApiOkResponse({
+    type: UserResponseDto,
+    description: 'User found',
+  })
+  @ApiNotFoundResponse({ description: 'User not found' })
   async findById(
     @Param('id', ParseUuidPipe) id: string,
     @GetVisibilityContext() context: FieldSelectorContext,
@@ -28,6 +40,11 @@ export class UsersLookupController {
 
   @Get('username/:username')
   @Visibility('public')
+  @ApiOkResponse({
+    type: UserResponseDto,
+    description: 'User found',
+  })
+  @ApiNotFoundResponse({ description: 'User not found' })
   async findByUsername(
     @Param('username') username: string,
     @GetVisibilityContext() context: FieldSelectorContext,
@@ -39,6 +56,14 @@ export class UsersLookupController {
   @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
   @Visibility('admin')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: UserResponseDto,
+    description: 'User found',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   async findByEmail(
     @Param('email') email: string,
     @GetVisibilityContext() context: FieldSelectorContext,
@@ -50,6 +75,14 @@ export class UsersLookupController {
   @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
   @Visibility('admin')
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    type: UserResponseDto,
+    description: 'User found',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiNotFoundResponse({ description: 'User not found' })
   async findByPhone(
     @Param('phone') phone: string,
     @GetVisibilityContext() context: FieldSelectorContext,
@@ -59,6 +92,23 @@ export class UsersLookupController {
 
   @Get()
   @Visibility('public')
+  @ApiOkResponse({
+    type: UserResponseDto,
+    isArray: true,
+    description: 'List of users',
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    type: Number,
+    description: 'Number of records to skip',
+  })
+  @ApiQuery({
+    name: 'take',
+    required: false,
+    type: Number,
+    description: 'Number of records to take',
+  })
   async findAll(
     @Query() query: PaginationQueryDto,
     @GetVisibilityContext() context: FieldSelectorContext,

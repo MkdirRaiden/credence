@@ -2,3 +2,4 @@
 export * from '@/features/users/repositories/users-auth.repository';
 export * from '@/features/users/repositories/users-crud.repository';
 export * from '@/features/users/repositories/users-lookup.respository';
+export * from '@/features/users/repositories/users-conflict.repository';

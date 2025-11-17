@@ -8,14 +8,25 @@ import {
   Matches,
   IsUrl,
 } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TrimTransform } from '@/common/decorators';
 import { USER_VALIDATION } from '@/features/users/constants';
 
 export class CreateUserDto {
+  @ApiProperty({
+    example: 'user@example.com',
+    description: 'Unique email address of the user',
+  })
   @IsEmail({}, { message: 'Invalid email format' })
   @TrimTransform
   email: string;
 
+  @ApiPropertyOptional({
+    example: 'johndoe',
+    description: 'Unique username (optional)',
+    minLength: USER_VALIDATION.USERNAME_MIN_LENGTH,
+    maxLength: USER_VALIDATION.USERNAME_MAX_LENGTH,
+  })
   @IsOptional()
   @IsString({ message: 'Username must be a string' })
   @MinLength(USER_VALIDATION.USERNAME_MIN_LENGTH, {
@@ -31,6 +42,10 @@ export class CreateUserDto {
   @TrimTransform
   username?: string;
 
+  @ApiPropertyOptional({
+    example: '+14155552671',
+    description: 'Phone number in international format (optional)',
+  })
   @IsOptional()
   @IsString({ message: 'Phone must be a string' })
   @Matches(USER_VALIDATION.PHONE_REGEX, {
@@ -39,6 +54,12 @@ export class CreateUserDto {
   @TrimTransform
   phone?: string;
 
+  @ApiPropertyOptional({
+    example: 'John Doe',
+    description: 'Display name of the user (optional)',
+    minLength: USER_VALIDATION.NAME_MIN_LENGTH,
+    maxLength: USER_VALIDATION.NAME_MAX_LENGTH,
+  })
   @IsOptional()
   @IsString({ message: 'Name must be a string' })
   @MinLength(USER_VALIDATION.NAME_MIN_LENGTH)
@@ -46,6 +67,11 @@ export class CreateUserDto {
   @TrimTransform
   name?: string;
 
+  @ApiPropertyOptional({
+    example: 'https://cdn.example.com/avatars/johndoe.png',
+    description: 'Public avatar URL (optional)',
+    maxLength: USER_VALIDATION.AVATAR_URL_MAX_LENGTH,
+  })
   @IsOptional()
   @IsUrl({}, { message: 'Avatar URL must be a valid URL' })
   avatarUrl?: string;

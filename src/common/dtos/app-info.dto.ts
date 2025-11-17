@@ -8,7 +8,10 @@ export class AppInfoDto {
   @ApiProperty({ example: '0.0.1', description: 'Application version' })
   version: string;
 
-  @ApiProperty({ example: 'development', description: 'Deployment environment' })
+  @ApiProperty({
+    example: 'development',
+    description: 'Deployment environment',
+  })
   environment: string;
 
   @ApiProperty({

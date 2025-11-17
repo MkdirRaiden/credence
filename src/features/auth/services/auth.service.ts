@@ -5,6 +5,7 @@ import {
   RefreshTokenDto,
   RegisterDto,
 } from '@/features/auth/dtos';
+import { InvalidRefreshTokenException } from '@/common/exceptions';
 import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@prisma/client';
@@ -14,9 +15,12 @@ import { LoggerService } from '@/logger/services';
 import * as helpers from '@/features/auth/helpers';
 import { LOG_CONTEXTS, TOKEN_TYPE } from '@/common/constants';
 
-/**
- * Orchestrates authentication flows (register, login, refresh, logout)
- */
+interface RefreshTokenPayload {
+  sub: string;
+  email: string;
+  username?: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -43,50 +47,13 @@ export class AuthService {
     });
 
     this.logger.log(`User registered: ${user.id}`, LOG_CONTEXTS.AUTH);
-    return this.createAuthResponse(user.id, user.email, user);
+    return this.createAuthResponse(user);
   }
 
-  async login(user: Partial<UserResponseDto>): Promise<AuthResponseDto> {
+  async login(user: UserResponseDto): Promise<AuthResponseDto> {
     this.logger.log(`User logged in: ${user.id}`, LOG_CONTEXTS.AUTH);
-    return this.createAuthResponse(
-      user.id!,
-      user.email!,
-      user as UserResponseDto,
-    );
-  }
-
-  async refresh(refreshTokenDto: RefreshTokenDto): Promise<AuthResponseDto> {
-    this.logger.log('Refreshing access token', LOG_CONTEXTS.AUTH);
-
-    const payload = helpers.verifyJwtToken(
-      this.jwtService,
-      refreshTokenDto.refreshToken,
-    );
-
-    await this.refreshTokenService.verify(
-      payload.sub,
-      refreshTokenDto.refreshToken,
-    );
-
-    await this.refreshTokenService.revoke(refreshTokenDto.refreshToken);
-
-    // Fetch current user to get latest role (using lookup service)
-    const user = await this.lookupService.findById(payload.sub, {
-      level: 'self', // Get full user data including role
-    });
-
-    this.logger.log(
-      `Token refreshed for user: ${payload.sub}`,
-      LOG_CONTEXTS.AUTH,
-    );
-
-    return this.createAuthResponse(
-      payload.sub,
-      payload.email,
-      undefined,
-      payload.username,
-      user.role as UserRole,
-    );
+    // at this point user comes from JwtStrategy or CredentialsService and has id/email
+    return this.createAuthResponse(user);
   }
 
   async logout(refreshToken: string): Promise<void> {
@@ -94,23 +61,54 @@ export class AuthService {
     this.logger.log('User logged out', LOG_CONTEXTS.AUTH);
   }
 
+  async refresh(refreshTokenDto: RefreshTokenDto): Promise<AuthResponseDto> {
+    this.logger.log('Refreshing access token', LOG_CONTEXTS.AUTH);
+
+    const payload = this.verifyRefreshTokenJwt(refreshTokenDto.refreshToken);
+
+    const isValidToken = await this.refreshTokenService.isValidToken(
+      payload.sub,
+      refreshTokenDto.refreshToken,
+    );
+    if (!isValidToken) throw new InvalidRefreshTokenException();
+
+    await this.refreshTokenService.revoke(refreshTokenDto.refreshToken);
+
+    const user = await this.lookupService.findById(payload.sub, {
+      level: 'self',
+    });
+
+    this.logger.log(
+      `Token refreshed for user: ${payload.sub}`,
+      LOG_CONTEXTS.AUTH,
+    );
+
+    return this.createAuthResponse(user as UserResponseDto);
+  }
+
+  private verifyRefreshTokenJwt(token: string): RefreshTokenPayload {
+    try {
+      return this.jwtService.verify<RefreshTokenPayload>(token);
+    } catch {
+      throw new InvalidRefreshTokenException();
+    }
+  }
+
   private async createAuthResponse(
-    userId: string,
-    email: string,
-    user?: UserResponseDto,
-    username?: string,
-    role?: UserRole,
+    user: UserResponseDto,
   ): Promise<AuthResponseDto> {
+    const { id, email, username, role = UserRole.USER } = user;
+
     const { accessToken, refreshToken, expiresIn } = helpers.generateTokens(
       this.jwtService,
-      userId,
+      id,
       email,
-      username || user?.username,
-      role || user?.role || UserRole.USER,
+      username,
+      role,
     );
 
     const expiresAt = new Date(Date.now() + expiresIn * 1000);
-    await this.refreshTokenService.create(userId, refreshToken, expiresAt);
+    await this.refreshTokenService.create(id, refreshToken, expiresAt);
 
     return {
       accessToken,

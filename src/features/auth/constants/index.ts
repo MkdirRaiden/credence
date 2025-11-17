@@ -1,5 +1,4 @@
 // src/features/auth/constants/index.ts
-
 export { JWT_EXPIRATION, JWT_REFRESH_EXPIRATION } from '@/config/constants';
 
 export const AUTH_VALIDATION = {

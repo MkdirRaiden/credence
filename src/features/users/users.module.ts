@@ -22,9 +22,11 @@ import { SecurityModule } from '@/features/shared/security/security.module';
     services.UsersAuthService,
     services.UsersCrudService,
     services.UsersLookupService,
+    services.UsersConflictService,
     repositories.UsersAuthRepository,
     repositories.UsersCrudRepository,
     repositories.UsersLookupRepository,
+    repositories.UsersConflictRepository,
     {
       provide: contracts.BaseAuthService,
       useClass: services.UsersAuthService,

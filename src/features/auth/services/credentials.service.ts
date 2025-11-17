@@ -4,10 +4,6 @@ import { BaseAuthService } from '@/features/users/contracts';
 import { verifyPassword } from '@/features/auth/helpers';
 import { UserResponseDto } from '@/features/auth/dtos';
 
-/**
- * Validates user credentials (email/username + password)
- * Used by LocalStrategy for passport authentication
- */
 @Injectable()
 export class CredentialsService {
   constructor(
@@ -17,25 +13,17 @@ export class CredentialsService {
   async validate(
     emailOrUsername: string,
     password: string,
-  ): Promise<Partial<UserResponseDto> | null> {
-    try {
-      const user = emailOrUsername.includes('@')
-        ? await this.authService.findByEmailForAuth(emailOrUsername)
-        : await this.authService.findByUsernameForAuth(emailOrUsername);
+  ): Promise<UserResponseDto | null> {
+    const user = emailOrUsername.includes('@')
+      ? await this.authService.findByEmailForAuth(emailOrUsername)
+      : await this.authService.findByUsernameForAuth(emailOrUsername);
 
-      if (!user?.passwordHash) {
-        return null;
-      }
+    if (!user?.passwordHash) return null;
 
-      const isPasswordValid = await verifyPassword(password, user.passwordHash);
-      if (!isPasswordValid) {
-        return null;
-      }
+    const isPasswordValid = await verifyPassword(password, user.passwordHash);
+    if (!isPasswordValid) return null;
 
-      const { passwordHash: _passwordHash, ...result } = user;
-      return result as Partial<UserResponseDto>;
-    } catch {
-      return null;
-    }
+    const { passwordHash: _passwordHash, ...result } = user;
+    return result as UserResponseDto;
   }
 }

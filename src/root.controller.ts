@@ -11,9 +11,6 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 export class RootController {
   constructor(private readonly rootService: RootService) {}
 
-  /**
-   * Returns application metadata and configuration.
-   */
   @Get()
   @HttpCode(200)
   @ApiOkResponse({

@@ -7,7 +7,7 @@ export abstract class BaseTokenService {
     expiresAt: Date,
   ): Promise<void>;
 
-  abstract verify(userId: string, refreshToken: string): Promise<void>;
+  abstract isValidToken(userId: string, refreshToken: string): Promise<boolean>;
 
   abstract revoke(refreshToken: string): Promise<void>;
 }

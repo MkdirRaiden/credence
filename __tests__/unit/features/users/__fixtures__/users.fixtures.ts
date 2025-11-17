@@ -1,8 +1,6 @@
 // __tests__/unit/features/users/__fixtures__/users.fixtures.ts
-import { User } from '@prisma/client';
-import { CreateUserDto } from '@/features/users/dtos/create-user.dto';
-import { UpdateUserDto } from '@/features/users/dtos/update-user.dto';
-import { UserResponseDto } from '@/common/dtos/user-response.dto';
+import { User, UserRole, AuthProvider } from '@prisma/client';
+import { CreateUserDto, UpdateUserDto, UserResponseDto } from '@/features/users/dtos';
 import { FieldSelectorContext } from '@/common/interfaces';
 
 export const mockUser: User = {
@@ -15,8 +13,8 @@ export const mockUser: User = {
   passwordHash: 'hashed_password',
   emailVerified: true,
   phoneVerified: false,
-  role: 'USER',
-  authProvider: 'LOCAL',
+  role: UserRole.USER,
+  authProvider: AuthProvider.LOCAL,
   lastLoginAt: new Date('2024-01-01T12:00:00.000Z'),
   referredById: '660e8400-e29b-41d4-a716-446655440000',
   deletedAt: null,
@@ -28,8 +26,7 @@ export const mockAdminUser: User = {
   ...mockUser,
   id: '770e8400-e29b-41d4-a716-446655440000',
   email: 'admin@example.com',
-  role: 'ADMIN',
-  authProvider: 'LOCAL',
+  role: UserRole.ADMIN,
   lastLoginAt: new Date('2024-01-02T12:00:00.000Z'),
 };
 
@@ -59,7 +56,7 @@ export const expectedUserResponse: Partial<UserResponseDto> = {
   avatarUrl: 'https://example.com/avatar.jpg',
   emailVerified: true,
   phoneVerified: false,
-  role: 'USER',
+  role: UserRole.USER,
   referredById: '660e8400-e29b-41d4-a716-446655440000',
   createdAt: new Date('2024-01-01T00:00:00.000Z'),
   updatedAt: new Date('2024-01-02T00:00:00.000Z'),

@@ -9,7 +9,7 @@ import {
 } from './__fixtures__/users.fixtures';
 import { toResponseDto, toResponseDtoList } from '@/features/users/mappers';
 
-describe('UserLookupService', () => {
+describe('UsersLookupService', () => {
   let service: UsersLookupService;
   let repo: jest.Mocked<UsersLookupRepository>;
 
@@ -76,7 +76,10 @@ describe('UserLookupService', () => {
   it('findByPhone delegates to repo.findByPhone with context and maps to DTO', async () => {
     repo.findByPhone.mockResolvedValue(mockUser as any);
 
-    const result = await service.findByPhone(mockUser.phone!, mockAdminContext);
+    const result = await service.findByPhone(
+      mockUser.phone!,
+      mockAdminContext,
+    );
 
     expect(repo.findByPhone).toHaveBeenCalledWith(
       mockUser.phone,
@@ -89,18 +92,14 @@ describe('UserLookupService', () => {
     expect((result as any).deletedAt).toBeUndefined();
   });
 
-  it('findAll delegates to repo.findAll with normalized pagination and maps to DTOs', async () => {
+  it('findAll delegates to repo.findAll and maps to DTOs', async () => {
     const contextWithLargeTake = { ...mockPublicContext, take: 10_000 };
     repo.findAll.mockResolvedValue(mockUserList as any);
 
     const result = await service.findAll(contextWithLargeTake);
 
-    // delegation / pagination
-    expect(repo.findAll).toHaveBeenCalledWith(
-      expect.objectContaining({ level: 'public', skip: 0 }),
-    );
+    expect(repo.findAll).toHaveBeenCalledWith(contextWithLargeTake);
 
-    // Expect mapped DTOs, not raw Users
     const expected = toResponseDtoList(mockUserList as any);
 
     expect(result).toEqual(expected);

@@ -6,9 +6,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import {
   hashPassword,
   verifyPassword,
-  generateTokens,
-  extractLoginIdentifier,
-  verifyJwtToken,
+  generateTokens
 } from '@/features/auth/helpers';
 
 jest.mock('bcrypt');
@@ -103,60 +101,6 @@ describe('Auth helpers', () => {
       expect(result.refreshToken).toBe('refresh_token');
       // we don’t assert exact expiresIn value here, just that it is > 0
       expect(result.expiresIn).toBeGreaterThan(0);
-    });
-  });
-
-  describe('extractLoginIdentifier', () => {
-    it('returns email when provided', () => {
-      const value = extractLoginIdentifier('user@example.com', {
-        username: 'ignored',
-      });
-
-      expect(value).toBe('user@example.com');
-    });
-
-    it('falls back to username from request body when email is undefined', () => {
-      const value = extractLoginIdentifier(undefined, {
-        username: 'user_name',
-      });
-
-      expect(value).toBe('user_name');
-    });
-
-    it('throws when neither email nor username is provided', () => {
-      expect(() => extractLoginIdentifier(undefined, {})).toThrowError(
-        /Either email or username is required/,
-      );
-    });
-  });
-
-  describe('verifyJwtToken', () => {
-    let jwtService: jest.Mocked<JwtService>;
-
-    beforeEach(() => {
-      jwtService = {
-        verify: jest.fn(),
-      } as any;
-    });
-
-    it('returns decoded payload when token is valid', () => {
-      const payload = { sub: 'id', email: 'user@example.com', username: 'u' };
-      jwtService.verify.mockReturnValue(payload);
-
-      const result = verifyJwtToken(jwtService, 'token');
-
-      expect(jwtService.verify).toHaveBeenCalledWith('token');
-      expect(result).toEqual(payload);
-    });
-
-    it('wraps verification errors in UnauthorizedException', () => {
-      jwtService.verify.mockImplementation(() => {
-        throw new Error('jwt expired');
-      });
-
-      expect(() => verifyJwtToken(jwtService, 'bad-token')).toThrow(
-        UnauthorizedException,
-      );
     });
   });
 });

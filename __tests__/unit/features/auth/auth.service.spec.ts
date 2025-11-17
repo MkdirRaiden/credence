@@ -3,7 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@prisma/client';
 
 import { AuthService } from '@/features/auth/services';
-import { BaseCrudService, BaseLookupService } from '@/features/users/contracts';
+import {
+  BaseCrudService,
+  BaseLookupService,
+} from '@/features/users/contracts';
 import { BaseTokenService } from '@/features/shared/tokens/contracts';
 import { LoggerService } from '@/logger/services';
 import * as helpers from '@/features/auth/helpers';
@@ -20,7 +23,6 @@ jest.mock('@/features/auth/helpers', () => ({
   verifyPassword: jest.fn(),
   generateTokens: jest.fn(),
   extractLoginIdentifier: jest.fn(),
-  verifyJwtToken: jest.fn(),
 }));
 
 const mockedHelpers = helpers as jest.Mocked<typeof helpers>;
@@ -59,13 +61,14 @@ describe('AuthService', () => {
 
     tokenService = {
       create: jest.fn(),
-      verify: jest.fn(),
+      isValidToken: jest.fn(),
       revoke: jest.fn(),
     } as any;
 
     jwtService = {
       sign: jest.fn(),
       decode: jest.fn(),
+      verify: jest.fn(),
     } as any;
 
     logger = {
@@ -86,7 +89,7 @@ describe('AuthService', () => {
   });
 
   describe('register', () => {
-    it('hashes password, creates user via crudService and returns AuthResponseDto', async () => {
+    it('hashes password, creates user and returns AuthResponseDto', async () => {
       const registerDto: RegisterDto = {
         email: 'user@example.com',
         password: 'Plain123!',
@@ -129,8 +132,6 @@ describe('AuthService', () => {
         passwordHash: 'hashed_pw',
       });
       expect(authSpy).toHaveBeenCalledWith(
-        user.id,
-        user.email,
         expect.objectContaining({ id: user.id }),
       );
       expect(result.accessToken).toBe('access');
@@ -156,7 +157,7 @@ describe('AuthService', () => {
         `User logged in: ${user.id}`,
         'Auth',
       );
-      expect(authSpy).toHaveBeenCalledWith(user.id, user.email, user);
+      expect(authSpy).toHaveBeenCalledWith(user);
       expect(result.accessToken).toBe('access');
     });
   });
@@ -167,13 +168,14 @@ describe('AuthService', () => {
         refreshToken: 'refresh_token',
       };
 
-      mockedHelpers.verifyJwtToken.mockReturnValue({
+      // Mock internal JWT verification used by refresh
+      (jwtService.verify as jest.Mock).mockReturnValue({
         sub: user.id,
         email: user.email,
         username: user.username,
-      } as any);
+      });
 
-      tokenService.verify.mockResolvedValue(undefined);
+      tokenService.isValidToken.mockResolvedValue(true);
       tokenService.revoke.mockResolvedValue(undefined);
       lookupService.findById.mockResolvedValue({
         ...user,
@@ -196,11 +198,8 @@ describe('AuthService', () => {
         'Refreshing access token',
         'Auth',
       );
-      expect(mockedHelpers.verifyJwtToken).toHaveBeenCalledWith(
-        jwtService,
-        refreshDto.refreshToken,
-      );
-      expect(tokenService.verify).toHaveBeenCalledWith(
+      expect(jwtService.verify).toHaveBeenCalledWith(refreshDto.refreshToken);
+      expect(tokenService.isValidToken).toHaveBeenCalledWith(
         user.id,
         refreshDto.refreshToken,
       );
@@ -225,11 +224,7 @@ describe('AuthService', () => {
         expiresIn: 900,
       });
 
-      const result = await (service as any).createAuthResponse(
-        user.id,
-        user.email,
-        user,
-      );
+      const result = await (service as any).createAuthResponse(user);
 
       expect(mockedHelpers.generateTokens).toHaveBeenCalledWith(
         jwtService,

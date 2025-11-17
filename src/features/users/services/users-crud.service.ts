@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@/logger/services';
 import { UsersCrudRepository } from '@/features/users/repositories';
-import { UsersConflictService } from '@/features/users/services';
+import { UsersConflictService } from '@/features/users/services/internals';
 import { CreateUserDto, UpdateUserDto } from '@/features/users/dtos';
 import * as UsersMapper from '@/features/users/mappers';
 import { BaseCrudService } from '@/features/users/contracts';

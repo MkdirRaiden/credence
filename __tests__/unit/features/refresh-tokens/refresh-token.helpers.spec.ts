@@ -1,17 +1,9 @@
 // __tests__/unit/features/refresh-tokens/refresh-token.helpers.spec.ts
-import { UnauthorizedException } from '@nestjs/common';
-
 import {
   hashToken,
-  validateRefreshToken,
+  isRefreshTokenValid,
+  type RefreshTokenRecord,
 } from '@/features/shared/tokens/helpers';
-
-type RefreshTokenRecord = {
-  tokenHash: string;
-  userId: string;
-  expiresAt: Date;
-  isRevoked: boolean;
-};
 
 describe('Refresh token helpers', () => {
   describe('hashToken', () => {
@@ -29,7 +21,7 @@ describe('Refresh token helpers', () => {
     });
   });
 
-  describe('validateRefreshToken', () => {
+  describe('isRefreshTokenValid', () => {
     const baseToken: RefreshTokenRecord = {
       tokenHash: 'hash',
       userId: 'user-id',
@@ -37,43 +29,43 @@ describe('Refresh token helpers', () => {
       isRevoked: false,
     };
 
-    it('does not throw for valid token', () => {
-      expect(() =>
-        validateRefreshToken(baseToken as any, 'user-id'),
-      ).not.toThrow();
+    it('returns true for valid token', () => {
+      const result = isRefreshTokenValid(baseToken, 'user-id');
+
+      expect(result).toBe(true);
     });
 
-    it('throws when token is null', () => {
-      expect(() => validateRefreshToken(null as any, 'user-id')).toThrow(
-        UnauthorizedException,
+    it('returns false when token is null', () => {
+      const result = isRefreshTokenValid(null, 'user-id');
+
+      expect(result).toBe(false);
+    });
+
+    it('returns false when userId does not match', () => {
+      const result = isRefreshTokenValid(
+        { ...baseToken, userId: 'other' },
+        'user-id',
       );
+
+      expect(result).toBe(false);
     });
 
-    it('throws when userId does not match', () => {
-      expect(() =>
-        validateRefreshToken(
-          { ...baseToken, userId: 'other' } as any,
-          'user-id',
-        ),
-      ).toThrow(UnauthorizedException);
+    it('returns false when token is revoked', () => {
+      const result = isRefreshTokenValid(
+        { ...baseToken, isRevoked: true },
+        'user-id',
+      );
+
+      expect(result).toBe(false);
     });
 
-    it('throws when token is revoked', () => {
-      expect(() =>
-        validateRefreshToken(
-          { ...baseToken, isRevoked: true } as any,
-          'user-id',
-        ),
-      ).toThrow(UnauthorizedException);
-    });
+    it('returns false when token is expired', () => {
+      const result = isRefreshTokenValid(
+        { ...baseToken, expiresAt: new Date(Date.now() - 1000) },
+        'user-id',
+      );
 
-    it('throws when token is expired', () => {
-      expect(() =>
-        validateRefreshToken(
-          { ...baseToken, expiresAt: new Date(Date.now() - 1000) } as any,
-          'user-id',
-        ),
-      ).toThrow(UnauthorizedException);
+      expect(result).toBe(false);
     });
   });
 });

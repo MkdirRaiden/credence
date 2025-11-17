@@ -1,5 +1,5 @@
-// __tests__/integration/features/auth/auth-module.integration.spec.ts
-import { TestContext } from '../../../common/test-context';
+// __tests__/integration/features/auth.integration.spec.ts
+import { TestContext } from '../../common/test-context';
 import { AuthModule } from '@/features/auth/auth.module';
 import { UsersModule } from '@/features/users/users.module';
 import { RefreshTokenModule } from '@/features/shared/tokens/token.module';
@@ -26,7 +26,6 @@ describe('Auth + Users + RefreshTokens (Integration)', () => {
   });
 
   beforeEach(async () => {
-    // Clean only relevant rows to keep test DB tidy
     await prisma.refreshToken.deleteMany({});
     await prisma.user.deleteMany({
       where: { email: { contains: '@auth-int.test' } },
@@ -85,10 +84,13 @@ describe('Auth + Users + RefreshTokens (Integration)', () => {
 
     expect(refreshed.accessToken).toBeDefined();
     expect(refreshed.refreshToken).toBeDefined();
-    // refresh response does not include user object by design
-    expect(refreshed.user).toBeUndefined();
 
-    // Verify DB role is ADMIN
+    // refresh now returns a user object
+    expect(refreshed.user).toBeDefined();
+    expect(refreshed.user?.email).toBe('admin@auth-int.test');
+    expect(refreshed.user?.role).toBe('ADMIN');
+
+    // Verify DB role is still ADMIN
     const dbUser = await prisma.user.findFirstOrThrow({
       where: { email: 'admin@auth-int.test' },
     });

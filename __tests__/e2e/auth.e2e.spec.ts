@@ -11,6 +11,7 @@ describe('Auth flows (E2E)', () => {
   let prisma: PrismaService;
 
   const testEmail = 'e2e.user@example.com';
+  const testPassword = 'Plain123!';
 
   beforeAll(async () => {
     app = await createTestApp();
@@ -40,32 +41,41 @@ describe('Auth flows (E2E)', () => {
       .post('/api/v1/auth/register')
       .send({
         email: testEmail,
-        password: 'Plain123!',
+        password: testPassword,
         username: 'e2e_user',
         name: 'E2E User',
       })
       .expect(201);
 
     const body = res.body.data ?? res.body;
+
     expect(body).toHaveProperty('accessToken');
     expect(body).toHaveProperty('refreshToken');
     expect(body).toHaveProperty('expiresIn');
     expect(body).toHaveProperty('user');
+
+    expect(body.user).toBeDefined();
     expect(body.user.email).toBe(testEmail);
   });
 
-  it('logs in with email/password and returns new tokens', async () => {
+  it('logs in with email/password and returns new tokens (and user)', async () => {
     const res = await request(server)
       .post('/api/v1/auth/login')
       .send({
         email: testEmail,
-        password: 'Plain123!',
+        password: testPassword,
       })
-      .expect(201);
+      .expect(200); // login returns 200 OK
 
     const body = res.body.data ?? res.body;
+
     expect(body.accessToken).toBeDefined();
     expect(body.refreshToken).toBeDefined();
+    expect(body.expiresIn).toBeDefined();
+
+    if (body.user) {
+      expect(body.user.email).toBe(testEmail);
+    }
   });
 
   it('uses access token from login to access /auth/me', async () => {
@@ -74,9 +84,9 @@ describe('Auth flows (E2E)', () => {
       .post('/api/v1/auth/login')
       .send({
         email: testEmail,
-        password: 'Plain123!',
+        password: testPassword,
       })
-      .expect(201);
+      .expect(200); // login returns 200 OK
 
     const loginBody = loginRes.body.data ?? loginRes.body;
     const { accessToken } = loginBody;

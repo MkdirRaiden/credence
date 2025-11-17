@@ -1,5 +1,4 @@
 // __tests__/unit/features/users/users-crud.controller.spec.ts
-import { ForbiddenException } from '@nestjs/common';
 import { UsersCrudController } from '@/features/users/controllers/users-crud.controller';
 import { UsersCrudService } from '@/features/users/services';
 import {
@@ -9,6 +8,8 @@ import {
   mockAdminUser,
   expectedUserResponse,
 } from './__fixtures__/users.fixtures';
+import { UserRole } from '@prisma/client';
+import { UserAccessForbiddenException } from '@/common/exceptions';
 
 describe('UsersCrudController', () => {
   let controller: UsersCrudController;
@@ -39,7 +40,7 @@ describe('UsersCrudController', () => {
     const result = await controller.update(mockUser.id, fullUpdateUserDto, {
       ...expectedUserResponse,
       id: mockUser.id,
-      role: 'USER',
+      role: UserRole.USER,
     } as any);
 
     expect(crudService.update).toHaveBeenCalledWith(
@@ -55,7 +56,7 @@ describe('UsersCrudController', () => {
     const result = await controller.update(mockUser.id, fullUpdateUserDto, {
       ...expectedUserResponse,
       id: mockAdminUser.id,
-      role: 'ADMIN',
+      role: UserRole.ADMIN,
     } as any);
 
     expect(crudService.update).toHaveBeenCalledWith(
@@ -65,14 +66,14 @@ describe('UsersCrudController', () => {
     expect(result).toEqual(expectedUserResponse);
   });
 
-  it('update throws ForbiddenException when non-owner non-admin', async () => {
+  it('update throws UserAccessForbiddenException when non-owner non-admin', async () => {
     await expect(
       controller.update(mockUser.id, fullUpdateUserDto, {
         ...expectedUserResponse,
         id: 'someone-else',
-        role: 'USER',
+        role: UserRole.USER,
       } as any),
-    ).rejects.toBeInstanceOf(ForbiddenException);
+    ).rejects.toBeInstanceOf(UserAccessForbiddenException);
 
     expect(crudService.update).not.toHaveBeenCalled();
   });
@@ -84,7 +85,7 @@ describe('UsersCrudController', () => {
     const result = await controller.remove(mockUser.id, {
       ...expectedUserResponse,
       id: mockUser.id,
-      role: 'USER',
+      role: UserRole.USER,
     } as any);
 
     expect(crudService.remove).toHaveBeenCalledWith(mockUser.id);

@@ -4,13 +4,12 @@ import { BaseAuthService } from '@/features/users/contracts';
 import * as authHelpers from '@/features/auth/helpers';
 import { UserResponseDto } from '@/features/auth/dtos';
 
-// Mock helpers module once
+// Mock helpers module once – only what exists in helpers/index.ts
 jest.mock('@/features/auth/helpers', () => ({
   hashPassword: jest.fn(),
   verifyPassword: jest.fn(),
   generateTokens: jest.fn(),
   extractLoginIdentifier: jest.fn(),
-  verifyJwtToken: jest.fn(),
 }));
 
 const mockedHelpers = authHelpers as jest.Mocked<typeof authHelpers>;
@@ -38,7 +37,6 @@ describe('CredentialsService', () => {
 
   it('validates user by email and returns user without passwordHash on success', async () => {
     mockedHelpers.verifyPassword.mockResolvedValue(true);
-
     authService.findByEmailForAuth.mockResolvedValue(userWithHash);
 
     const result = await service.validate('user@example.com', 'plain_pw');
@@ -64,7 +62,6 @@ describe('CredentialsService', () => {
 
   it('validates user by username when identifier has no @', async () => {
     mockedHelpers.verifyPassword.mockResolvedValue(true);
-
     authService.findByUsernameForAuth.mockResolvedValue(userWithHash);
 
     const result = await service.validate('user', 'plain_pw');
@@ -87,7 +84,6 @@ describe('CredentialsService', () => {
 
   it('returns null when password is invalid', async () => {
     mockedHelpers.verifyPassword.mockResolvedValue(false);
-
     authService.findByEmailForAuth.mockResolvedValue(userWithHash);
 
     const result = await service.validate('user@example.com', 'wrong_pw');
@@ -95,11 +91,11 @@ describe('CredentialsService', () => {
     expect(result).toBeNull();
   });
 
-  it('returns null when authService throws', async () => {
+  it('propagates when authService throws', async () => {
     authService.findByEmailForAuth.mockRejectedValue(new Error('DB error'));
 
-    const result = await service.validate('user@example.com', 'plain_pw');
-
-    expect(result).toBeNull();
+    await expect(
+      service.validate('user@example.com', 'plain_pw'),
+    ).rejects.toThrow('DB error');
   });
 });

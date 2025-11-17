@@ -8,7 +8,7 @@ describe('BootstrapModule (Integration)', () => {
 
   beforeAll(async () => {
     await context.setup({
-      imports: [BootstrapModule], // ← Add to metadata
+      imports: [BootstrapModule],
     });
   });
 

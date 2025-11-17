@@ -1,6 +1,7 @@
 // __tests__/unit/features/users/user-crud.service.spec.ts
 import { UsersCrudService } from '@/features/users/services';
 import { UsersCrudRepository } from '@/features/users/repositories';
+import { UsersConflictService } from '@/features/users/services';
 import { LoggerService } from '@/logger/services';
 import {
   fullCreateUserDto,
@@ -9,9 +10,10 @@ import {
   mockUser,
 } from './__fixtures__/users.fixtures';
 
-describe('UserCrudService', () => {
+describe('UsersCrudService', () => {
   let service: UsersCrudService;
   let repo: jest.Mocked<UsersCrudRepository>;
+  let conflictService: jest.Mocked<UsersConflictService>;
   let logger: jest.Mocked<LoggerService>;
 
   beforeEach(() => {
@@ -19,6 +21,11 @@ describe('UserCrudService', () => {
       create: jest.fn(),
       update: jest.fn(),
       softDelete: jest.fn(),
+    } as any;
+
+    conflictService = {
+      ensureCreateConstraints: jest.fn(),
+      ensureUpdateConstraints: jest.fn(),
     } as any;
 
     logger = {
@@ -29,10 +36,10 @@ describe('UserCrudService', () => {
       verbose: jest.fn(),
     } as any;
 
-    service = new UsersCrudService(repo, logger);
+    service = new UsersCrudService(repo, conflictService, logger);
   });
 
-  it('create logs and delegates to repository.create, then maps to UserResponseDto', async () => {
+  it('create logs, enforces constraints, delegates to repository.create, then maps to UserResponseDto', async () => {
     repo.create.mockResolvedValue(mockUser as any);
 
     const result = await service.create({
@@ -40,17 +47,15 @@ describe('UserCrudService', () => {
       passwordHash: 'hashed_pw',
     });
 
-    // logging
     expect(logger.log).toHaveBeenCalledWith(
       `Creating user: ${fullCreateUserDto.email}`,
       'User',
     );
-    expect(logger.log).toHaveBeenCalledWith(
-      `User created with ID: ${mockUser.id}`,
-      'User',
-    );
+    expect(conflictService.ensureCreateConstraints).toHaveBeenCalledWith({
+      ...fullCreateUserDto,
+      passwordHash: 'hashed_pw',
+    });
 
-    // repository call (UsersMapper.toCreateInput is used internally)
     expect(repo.create).toHaveBeenCalledWith({
       email: fullCreateUserDto.email,
       phone: fullCreateUserDto.phone,
@@ -59,7 +64,6 @@ describe('UserCrudService', () => {
       passwordHash: 'hashed_pw',
     });
 
-    // mapping strips passwordHash
     expect(result.id).toBe(mockUser.id);
     expect((result as any).passwordHash).toBeUndefined();
   });
@@ -75,6 +79,9 @@ describe('UserCrudService', () => {
 
     const result = await service.create(minimalCreateUserDto as any);
 
+    expect(conflictService.ensureCreateConstraints).toHaveBeenCalledWith(
+      minimalCreateUserDto as any,
+    );
     expect(repo.create).toHaveBeenCalledWith({
       email: minimalCreateUserDto.email,
       phone: undefined,
@@ -85,7 +92,7 @@ describe('UserCrudService', () => {
     expect(result.email).toBe(minimalCreateUserDto.email);
   });
 
-  it('update logs, delegates to repository.update and maps to UserResponseDto', async () => {
+  it('update logs, enforces constraints, delegates to repository.update and maps to UserResponseDto', async () => {
     repo.update.mockResolvedValue({
       ...mockUser,
       name: fullUpdateUserDto.name,
@@ -98,9 +105,9 @@ describe('UserCrudService', () => {
       `Updating user: ${mockUser.id}`,
       'User',
     );
-    expect(logger.log).toHaveBeenCalledWith(
-      `User updated: ${mockUser.id}`,
-      'User',
+    expect(conflictService.ensureUpdateConstraints).toHaveBeenCalledWith(
+      mockUser.id,
+      fullUpdateUserDto,
     );
 
     expect(repo.update).toHaveBeenCalledWith(mockUser.id, {

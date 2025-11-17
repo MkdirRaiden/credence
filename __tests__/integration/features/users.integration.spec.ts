@@ -1,9 +1,9 @@
-// __tests__/integration/features/users/users-module.integration.spec.ts
+// __tests__/integration/features/users.integration.spec.ts
 import { UserRole } from '@prisma/client';
 import { PrismaService } from '@/database/services';
 import { UsersModule } from '@/features/users/users.module';
 import { UsersLookupService } from '@/features/users/services';
-import { TestContext } from '../../../common/test-context';
+import { TestContext } from '../../common/test-context';
 
 describe('UsersModule (Integration)', () => {
   const context = new TestContext();
@@ -12,12 +12,10 @@ describe('UsersModule (Integration)', () => {
   let lookupService: UsersLookupService;
 
   beforeAll(async () => {
-    // Boot a real module with Config + Logger + Database + Users
     await context.setup({
       imports: [UsersModule],
     });
 
-    // Prisma is set during TestContext.setup; cast to satisfy TS
     prisma = context.prisma as PrismaService;
     lookupService = context.getService<UsersLookupService>(UsersLookupService);
   });
@@ -27,12 +25,10 @@ describe('UsersModule (Integration)', () => {
   });
 
   beforeEach(async () => {
-    // Clean users table between tests
     await prisma.user.deleteMany({});
   });
 
   it('findById respects public vs self vs admin visibility', async () => {
-    // Seed normal user + admin
     const user = await prisma.user.create({
       data: {
         email: 'user.integration@example.com',
@@ -53,7 +49,6 @@ describe('UsersModule (Integration)', () => {
       },
     });
 
-    // public context: should not see email/phone/role per USER_FIELD_VISIBILITY_CONFIG
     const publicContext = {
       level: 'public' as const,
       skip: 0,
@@ -68,7 +63,6 @@ describe('UsersModule (Integration)', () => {
     expect((publicResult as any).phone).toBeUndefined();
     expect((publicResult as any).role).toBeUndefined();
 
-    // self context: same user as requester; should see email/phone/role
     const selfContext = {
       level: 'self' as const,
       requesterId: user.id,
@@ -81,10 +75,8 @@ describe('UsersModule (Integration)', () => {
     expect(selfResult.id).toBe(user.id);
     expect(selfResult.email).toBe('user.integration@example.com');
     expect(selfResult.role).toBe('USER');
-    // passwordHash must never leak
     expect((selfResult as any).passwordHash).toBeUndefined();
 
-    // admin context: admin requester; should also see email/phone/role
     const adminContext = {
       level: 'admin' as const,
       requesterId: admin.id,
@@ -101,7 +93,6 @@ describe('UsersModule (Integration)', () => {
   });
 
   it('findAll applies pagination and returns DTOs without sensitive fields', async () => {
-    // Seed 15 users
     await prisma.user.createMany({
       data: Array.from({ length: 15 }).map((_, i) => ({
         email: `u${i}.integration@example.com`,
@@ -120,11 +111,8 @@ describe('UsersModule (Integration)', () => {
 
     const results = await lookupService.findAll(contextWithPagination);
 
-    // Should respect pagination
     expect(results).toHaveLength(5);
     expect(results[0].username).toBe('user_5');
-
-    // Should never include passwordHash or deletedAt
     expect((results[0] as any).passwordHash).toBeUndefined();
     expect((results[0] as any).deletedAt).toBeUndefined();
   });

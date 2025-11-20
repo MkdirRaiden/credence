@@ -15,25 +15,19 @@ export class UsersConflictService {
   async ensureCreateConstraints(dto: CreateUserDto): Promise<void> {
     if (dto.email) {
       const emailTaken = await this.conflictRepo.isEmailTaken(dto.email);
-      if (emailTaken) {
-        throw new EmailAlreadyInUseException(dto.email);
-      }
+      if (emailTaken) throw new EmailAlreadyInUseException(dto.email);
     }
 
     if (dto.username) {
       const usernameTaken = await this.conflictRepo.isUsernameTaken(
         dto.username,
       );
-      if (usernameTaken) {
-        throw new UsernameAlreadyInUseException(dto.username);
-      }
+      if (usernameTaken) throw new UsernameAlreadyInUseException(dto.username);
     }
 
     if (dto.phone) {
       const phoneTaken = await this.conflictRepo.isPhoneTaken(dto.phone);
-      if (phoneTaken) {
-        throw new PhoneAlreadyInUseException(dto.phone);
-      }
+      if (phoneTaken) throw new PhoneAlreadyInUseException(dto.phone);
     }
   }
 
@@ -41,13 +35,9 @@ export class UsersConflictService {
     _userId: string,
     dto: UpdateUserDto,
   ): Promise<void> {
-    if (!dto.username) {
-      return;
-    }
+    if (!dto.username) return;
 
     const usernameTaken = await this.conflictRepo.isUsernameTaken(dto.username);
-    if (usernameTaken) {
-      throw new UsernameAlreadyInUseException(dto.username);
-    }
+    if (usernameTaken) throw new UsernameAlreadyInUseException(dto.username);
   }
 }

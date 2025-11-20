@@ -1,6 +1,10 @@
 // __tests__/unit/features/users/__fixtures__/users.fixtures.ts
 import { User, UserRole, AuthProvider } from '@prisma/client';
-import { CreateUserDto, UpdateUserDto, UserResponseDto } from '@/features/users/dtos';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserResponseDto,
+} from '@/features/users/dtos';
 import { FieldSelectorContext } from '@/common/interfaces';
 
 export const mockUser: User = {

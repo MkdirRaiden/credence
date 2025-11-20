@@ -37,6 +37,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @HttpCode(201)
   @ApiCreatedResponse({ type: AuthResponseDto, description: 'User registered' })
   @ApiConflictResponse({
     description: 'Email or username already in use',
@@ -79,7 +80,7 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  @HttpCode(200)
+  @HttpCode(204)
   @ApiBearerAuth()
   @ApiBody({ type: RefreshTokenDto })
   @ApiOkResponse({ description: 'User logged out' })
@@ -89,6 +90,7 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserResponseDto })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })

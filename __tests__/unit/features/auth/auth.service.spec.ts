@@ -3,10 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@prisma/client';
 
 import { AuthService } from '@/features/auth/services';
-import {
-  BaseCrudService,
-  BaseLookupService,
-} from '@/features/users/contracts';
+import { BaseCrudService, BaseLookupService } from '@/features/users/contracts';
 import { BaseTokenService } from '@/features/shared/tokens/contracts';
 import { LoggerService } from '@/logger/services';
 import * as helpers from '@/features/auth/helpers';

@@ -6,7 +6,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import {
   hashPassword,
   verifyPassword,
-  generateTokens
+  generateTokens,
 } from '@/features/auth/helpers';
 
 jest.mock('bcrypt');

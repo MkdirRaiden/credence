@@ -76,10 +76,7 @@ describe('UsersLookupService', () => {
   it('findByPhone delegates to repo.findByPhone with context and maps to DTO', async () => {
     repo.findByPhone.mockResolvedValue(mockUser as any);
 
-    const result = await service.findByPhone(
-      mockUser.phone!,
-      mockAdminContext,
-    );
+    const result = await service.findByPhone(mockUser.phone!, mockAdminContext);
 
     expect(repo.findByPhone).toHaveBeenCalledWith(
       mockUser.phone,

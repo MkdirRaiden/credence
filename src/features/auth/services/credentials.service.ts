@@ -3,6 +3,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { BaseAuthService } from '@/features/users/contracts';
 import { verifyPassword } from '@/features/auth/helpers';
 import { UserResponseDto } from '@/features/auth/dtos';
+import { filterUndefined } from '@/common/utils'
 
 @Injectable()
 export class CredentialsService {
@@ -24,6 +25,6 @@ export class CredentialsService {
     if (!isPasswordValid) return null;
 
     const { passwordHash: _passwordHash, ...result } = user;
-    return result as UserResponseDto;
+    return filterUndefined(result) as UserResponseDto;
   }
 }

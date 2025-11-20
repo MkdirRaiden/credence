@@ -19,15 +19,16 @@ export class UsersAuthService extends BaseAuthService {
   }
 
   async findByEmailForAuth(email: string): Promise<User> {
-    this.logger.log(`Finding user for auth: ${email}`, LOG_CONTEXTS.USER);
+    this.log(email);
     return await this.repository.findByEmailForAuth(email);
   }
 
   async findByUsernameForAuth(username: string): Promise<User> {
-    this.logger.log(
-      `Finding user for auth by username: ${username}`,
-      LOG_CONTEXTS.USER,
-    );
+    this.log(username);
     return await this.repository.findByUsernameForAuth(username);
+  }
+
+  private log(param: string): void {
+    this.logger.log(`Finding user for auth: ${param}`, LOG_CONTEXTS.USER);
   }
 }

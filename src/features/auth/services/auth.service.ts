@@ -14,6 +14,7 @@ import { BaseTokenService } from '@/features/shared/tokens/contracts';
 import { LoggerService } from '@/logger/services';
 import * as helpers from '@/features/auth/helpers';
 import { LOG_CONTEXTS, TOKEN_TYPE } from '@/common/constants';
+import { filterUndefined } from '@/common/utils';
 
 interface RefreshTokenPayload {
   sub: string;
@@ -113,7 +114,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
-      user,
+      user: filterUndefined(user) as UserResponseDto,
       expiresIn,
       tokenType: TOKEN_TYPE,
     };

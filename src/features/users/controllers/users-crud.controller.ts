@@ -7,6 +7,7 @@ import {
   Param,
   UseGuards,
   Patch,
+  HttpCode,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -38,6 +39,7 @@ export class UsersCrudController {
   constructor(private readonly crudService: UsersCrudService) {}
 
   @Post()
+  @HttpCode(201)
   @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
   @ApiCreatedResponse({
@@ -54,6 +56,7 @@ export class UsersCrudController {
   }
 
   @Patch(':id')
+  @HttpCode(200)
   @UseGuards(guards.JwtAuthGuard)
   @ApiOkResponse({
     type: UserResponseDto,
@@ -74,6 +77,7 @@ export class UsersCrudController {
   }
 
   @Delete(':id')
+  @HttpCode(200)
   @UseGuards(guards.JwtAuthGuard)
   @ApiOkResponse({
     type: DeletedResourceDto,
@@ -99,8 +103,6 @@ export class UsersCrudController {
     const isOwner = currentUser.id === resourceUserId;
     const isAdmin = currentUser.role === UserRole.ADMIN;
 
-    if (!isOwner && !isAdmin) {
-      throw new UserAccessForbiddenException();
-    }
+    if (!isOwner && !isAdmin) throw new UserAccessForbiddenException();
   }
 }

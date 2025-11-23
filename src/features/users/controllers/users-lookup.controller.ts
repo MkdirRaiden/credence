@@ -1,5 +1,5 @@
 // src/features/users/controllers/users-lookup.controller.ts
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards, HttpCode, } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import {
   ApiTags,
@@ -24,6 +24,7 @@ export class UsersLookupController {
   constructor(private readonly lookupService: UsersLookupService) {}
 
   @Get('id/:id')
+  @HttpCode(200)
   @UseGuards(guards.OptionalJwtAuthGuard)
   @Visibility('public')
   @ApiOkResponse({
@@ -39,6 +40,7 @@ export class UsersLookupController {
   }
 
   @Get('username/:username')
+  @HttpCode(200)
   @Visibility('public')
   @ApiOkResponse({
     type: UserResponseDto,
@@ -53,6 +55,7 @@ export class UsersLookupController {
   }
 
   @Get('email/:email')
+  @HttpCode(200)
   @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
   @Visibility('admin')
@@ -72,6 +75,7 @@ export class UsersLookupController {
   }
 
   @Get('phone/:phone')
+  @HttpCode(200)
   @UseGuards(guards.JwtAuthGuard, guards.RolesGuard)
   @Roles(UserRole.ADMIN)
   @Visibility('admin')
@@ -91,6 +95,7 @@ export class UsersLookupController {
   }
 
   @Get()
+  @HttpCode(200)
   @Visibility('public')
   @ApiOkResponse({
     type: UserResponseDto,

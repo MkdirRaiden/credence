@@ -1,7 +1,7 @@
 // __tests__/unit/features/users/user-crud.service.spec.ts
 import { UsersCrudService } from '@/features/users/services';
 import { UsersCrudRepository } from '@/features/users/repositories';
-import { UsersConflictService } from '@/features/users/services';
+import { UsersConflictService } from '@/features/users/services/internals';
 import { LoggerService } from '@/logger/services';
 import {
   fullCreateUserDto,

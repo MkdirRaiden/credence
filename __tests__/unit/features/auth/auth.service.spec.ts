@@ -37,12 +37,9 @@ describe('AuthService', () => {
     email: 'user@example.com',
     username: 'user',
     name: 'User',
-    avatarUrl: null as any,
-    phone: null as any,
     emailVerified: false,
     phoneVerified: false,
     role: UserRole.USER,
-    referredById: null as any,
     createdAt: new Date('2024-01-01T00:00:00.000Z'),
     updatedAt: new Date('2024-01-01T00:00:00.000Z'),
   };

@@ -21,7 +21,7 @@ export class UsersCrudService extends BaseCrudService {
 
   async create(
     dto: CreateUserDto & { passwordHash?: string },
-  ): Promise<UserResponseDto> {
+  ): Promise<Partial<UserResponseDto>> {
     this.logger.log(`Creating user: ${dto.email}`, LOG_CONTEXTS.USER);
 
     await this.conflictService.ensureCreateConstraints(dto);
@@ -30,10 +30,10 @@ export class UsersCrudService extends BaseCrudService {
     const user = await this.repository.create(createInput);
 
     this.logger.log(`User created with ID: ${user.id}`, LOG_CONTEXTS.USER);
-    return UsersMapper.toResponseDto(user) as UserResponseDto;
+    return UsersMapper.toResponseDto(user);
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<UserResponseDto> {
+  async update(id: string, dto: UpdateUserDto): Promise<Partial<UserResponseDto>> {
     this.logger.log(`Updating user: ${id}`, LOG_CONTEXTS.USER);
 
     await this.conflictService.ensureUpdateConstraints(id, dto);
@@ -42,7 +42,7 @@ export class UsersCrudService extends BaseCrudService {
     const user = await this.repository.update(id, updateInput);
 
     this.logger.log(`User updated: ${id}`, LOG_CONTEXTS.USER);
-    return UsersMapper.toResponseDto(user) as UserResponseDto;
+    return UsersMapper.toResponseDto(user);
   }
 
   async remove(id: string): Promise<DeletedResourceDto> {

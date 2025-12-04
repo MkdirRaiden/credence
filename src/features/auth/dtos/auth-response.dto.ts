@@ -33,5 +33,5 @@ export class AuthResponseDto {
     required: false,
     description: 'Authenticated user profile',
   })
-  user?: UserResponseDto;
+  user?: Partial<UserResponseDto>;
 }

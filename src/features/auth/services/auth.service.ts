@@ -1,10 +1,5 @@
 // src/features/auth/auth.service.ts
-import {
-  UserResponseDto,
-  AuthResponseDto,
-  RefreshTokenDto,
-  RegisterDto,
-} from '@/features/auth/dtos';
+import * as authDtos from '@/features/auth/dtos';
 import { InvalidRefreshTokenException } from '@/common/exceptions';
 import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -35,7 +30,7 @@ export class AuthService {
     private readonly logger: LoggerService,
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
+  async register(registerDto: authDtos.RegisterDto): Promise<authDtos.AuthResponseDto> {
     this.logger.log(
       `Registering user: ${registerDto.email}`,
       LOG_CONTEXTS.AUTH,
@@ -48,10 +43,10 @@ export class AuthService {
     });
 
     this.logger.log(`User registered: ${user.id}`, LOG_CONTEXTS.AUTH);
-    return this.createAuthResponse(user);
+    return this.createAuthResponse(user as authDtos.UserResponseDto);
   }
 
-  async login(user: UserResponseDto): Promise<AuthResponseDto> {
+  async login(user: authDtos.UserResponseDto): Promise<authDtos.AuthResponseDto> {
     this.logger.log(`User logged in: ${user.id}`, LOG_CONTEXTS.AUTH);
     // at this point user comes from JwtStrategy or CredentialsService and has id/email
     return this.createAuthResponse(user);
@@ -62,7 +57,7 @@ export class AuthService {
     this.logger.log('User logged out', LOG_CONTEXTS.AUTH);
   }
 
-  async refresh(refreshTokenDto: RefreshTokenDto): Promise<AuthResponseDto> {
+  async refresh(refreshTokenDto: authDtos.RefreshTokenDto): Promise<authDtos.AuthResponseDto> {
     this.logger.log('Refreshing access token', LOG_CONTEXTS.AUTH);
 
     const payload = this.verifyRefreshTokenJwt(refreshTokenDto.refreshToken);
@@ -84,7 +79,7 @@ export class AuthService {
       LOG_CONTEXTS.AUTH,
     );
 
-    return this.createAuthResponse(user as UserResponseDto);
+    return this.createAuthResponse(user as authDtos.UserResponseDto);
   }
 
   private verifyRefreshTokenJwt(token: string): RefreshTokenPayload {
@@ -96,8 +91,8 @@ export class AuthService {
   }
 
   private async createAuthResponse(
-    user: UserResponseDto,
-  ): Promise<AuthResponseDto> {
+    user: authDtos.UserResponseDto,
+  ): Promise<authDtos.AuthResponseDto> {
     const { id, email, username, role = UserRole.USER } = user;
 
     const { accessToken, refreshToken, expiresIn } = helpers.generateTokens(
@@ -114,7 +109,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
-      user: filterUndefined(user) as UserResponseDto,
+      user: filterUndefined(user),
       expiresIn,
       tokenType: TOKEN_TYPE,
     };

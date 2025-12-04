@@ -10,6 +10,7 @@ import * as guards from '@/features/shared/security/guards';
     guards.LocalAuthGuard,
     guards.JwtAuthGuard,
     guards.RolesGuard,
+    guards.OwnershipGuard,
     guards.OptionalJwtAuthGuard,
   ],
 
@@ -17,6 +18,7 @@ import * as guards from '@/features/shared/security/guards';
     guards.LocalAuthGuard,
     guards.JwtAuthGuard,
     guards.RolesGuard,
+    guards.OwnershipGuard,
     guards.OptionalJwtAuthGuard,
   ],
 })

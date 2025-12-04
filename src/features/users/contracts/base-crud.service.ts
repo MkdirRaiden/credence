@@ -9,5 +9,5 @@ import { CreateUserDto, UserResponseDto } from '@/features/users/dtos';
 export abstract class BaseCrudService {
   abstract create(
     dto: CreateUserDto & { passwordHash?: string },
-  ): Promise<UserResponseDto>;
+  ): Promise<Partial<UserResponseDto>>;
 }

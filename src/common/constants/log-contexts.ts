@@ -1,35 +1,31 @@
+import { REQUEST } from "@nestjs/core";
+
 // src/common/constants/log-constants.ts
 export const LOG_CONTEXTS = {
   // Core system
   APP: 'App',
   BOOTSTRAP: 'Bootstrap',
   CONFIG: 'Config',
-  RETRY: 'Retry',
-  SHUTDOWN: 'Shutdown',
+  HEALTH: 'Health',
 
   // Infrastructure
   DATABASE: 'Database',
   PRISMA: 'Prisma',
-  CACHE: 'Cache',
-  QUEUE: 'Queue',
 
-  // Features
+  // Features  
   AUTH: 'Auth',
   USER: 'User',
   REFRESH_TOKEN: 'RefreshToken',
-  REFERRAL: 'Referral',
-  CREDIT: 'Credit',
-  OTP: 'OTP',
 
-  // Monitoring
-  HEALTH: 'Health',
-  METRICS: 'Metrics',
-
-  // HTTP
-  REQUEST: 'Request',
-  RESPONSE: 'Response',
-  MIDDLEWARE: 'Middleware',
+  // HTTP/Middleware
   GUARD: 'Guard',
   INTERCEPTOR: 'Interceptor',
   FILTER: 'Filter',
+  REQUEST: 'Request',
+
+  // Others
+  RETRY: 'Retry',
+  SHUTDOWN: 'Shutdown',
+
 } as const;
+

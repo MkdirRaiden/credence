@@ -2,24 +2,10 @@
 
 export const SENSITIVE_FIELDS = [
   'password',
-  'passwordHash',
-  'newPassword',
-  'oldPassword',
-  'confirmPassword',
-  'token',
-  'accessToken',
-  'refreshToken',
-  'idToken',
-  'secret',
-  'apiKey',
-  'apiSecret',
-  'authorization',
-  'cookie',
-  'sessionId',
-  'creditCard',
-  'cardNumber',
-  'cvv',
-  'ssn',
-  'otp',
-  'code',
+  'passwordHash',    
+  'refreshToken',    
+  'accessToken',      
+  'tokenHash', 
+  'token'      
 ] as const;
+

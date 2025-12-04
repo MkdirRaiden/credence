@@ -3,7 +3,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import { BaseAuthService } from '@/features/users/contracts';
 import { verifyPassword } from '@/features/auth/helpers';
 import { UserResponseDto } from '@/features/auth/dtos';
-import { filterUndefined } from '@/common/utils'
 
 @Injectable()
 export class CredentialsService {
@@ -14,7 +13,7 @@ export class CredentialsService {
   async validate(
     emailOrUsername: string,
     password: string,
-  ): Promise<UserResponseDto | null> {
+  ): Promise<Partial<UserResponseDto> | null> {
     const user = emailOrUsername.includes('@')
       ? await this.authService.findByEmailForAuth(emailOrUsername)
       : await this.authService.findByUsernameForAuth(emailOrUsername);
@@ -25,6 +24,6 @@ export class CredentialsService {
     if (!isPasswordValid) return null;
 
     const { passwordHash: _passwordHash, ...result } = user;
-    return filterUndefined(result) as UserResponseDto;
+    return result as Partial<UserResponseDto>;
   }
 }

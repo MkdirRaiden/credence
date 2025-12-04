@@ -1,23 +1,19 @@
 // src/health/health.controller.ts
-import {
-  ApiOkResponse,
-  ApiTags,
-  ApiServiceUnavailableResponse,
-} from '@nestjs/swagger';
 import { Controller, Get, HttpCode } from '@nestjs/common';
+import * as swagger from '@nestjs/swagger';
 import { HealthService } from '@/health/services';
 import { LivenessDto, ReadinessDto } from '@/health/dtos';
 import { SkipThrottle } from '@nestjs/throttler';
 
+@swagger.ApiTags('health')
 @Controller('health')
 @SkipThrottle()
-@ApiTags('health')
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
   @Get('live')
   @HttpCode(200)
-  @ApiOkResponse({
+  @swagger.ApiOkResponse({
     type: LivenessDto,
     description: 'Liveness status of the service',
   })
@@ -27,11 +23,11 @@ export class HealthController {
 
   @Get('ready')
   @HttpCode(200)
-  @ApiOkResponse({
+  @swagger.ApiOkResponse({
     type: ReadinessDto,
     description: 'Readiness status of the service and its dependencies',
   })
-  @ApiServiceUnavailableResponse({
+  @swagger.ApiServiceUnavailableResponse({
     description: 'One or more dependencies are unhealthy',
   })
   async ready(): Promise<ReadinessDto> {

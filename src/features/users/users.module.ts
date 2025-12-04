@@ -4,7 +4,7 @@ import * as controllers from '@/features/users/controllers';
 import * as repositories from '@/features/users/repositories';
 import * as services from '@/features/users/services';
 import * as contracts from '@/features/users/contracts';
-import { UsersConflictService } from '@/features/users/services/internals';
+import * as internalServices from '@/features/users/services/internals';
 import { SecurityModule } from '@/features/shared/security/security.module';
 
 /**
@@ -20,7 +20,7 @@ import { SecurityModule } from '@/features/shared/security/security.module';
   ],
 
   providers: [
-    UsersConflictService,
+    internalServices.UsersConflictService,
     services.UsersAuthService,
     services.UsersCrudService,
     services.UsersLookupService,

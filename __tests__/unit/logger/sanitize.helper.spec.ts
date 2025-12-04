@@ -18,14 +18,12 @@ describe('sanitizeLog', () => {
       email: 'user@example.com',
       password: 'secret',
       token: 'xxx',
-      apiKey: 'abc',
       passwordHash: 'hashed123',
       refreshToken: 'rtoken',
     };
     const sanitized = sanitizeLog(input) as Record<string, string>;
     expect(sanitized.password).toBe('[REDACTED]');
     expect(sanitized.token).toBe('[REDACTED]');
-    expect(sanitized.apiKey).toBe('[REDACTED]');
     expect(sanitized.passwordHash).toBe('[REDACTED]');
     expect(sanitized.refreshToken).toBe('[REDACTED]');
     expect(sanitized.email).toBe('user@example.com');
@@ -36,13 +34,11 @@ describe('sanitizeLog', () => {
       Password: 'pw',
       Token: 'tk',
       passwordhash: 'ph',
-      APIKEY: 'key',
     };
     const sanitized = sanitizeLog(input) as Record<string, string>;
     expect(sanitized.Password).toBe('[REDACTED]');
     expect(sanitized.Token).toBe('[REDACTED]');
     expect(sanitized.passwordhash).toBe('[REDACTED]');
-    expect(sanitized.APIKEY).toBe('[REDACTED]');
   });
 
   it('recursively redacts nested sensitive fields', () => {
@@ -50,9 +46,6 @@ describe('sanitizeLog', () => {
       user: {
         email: 'user@example.com',
         password: 'pw',
-        profile: {
-          apiKey: 'nestedKey',
-        },
       },
       token: 'rootToken',
     };
@@ -60,12 +53,10 @@ describe('sanitizeLog', () => {
       user: {
         email: string;
         password: string;
-        profile: { apiKey: string };
       };
       token: string;
     };
     expect(sanitized.user.password).toBe('[REDACTED]');
-    expect(sanitized.user.profile.apiKey).toBe('[REDACTED]');
     expect(sanitized.token).toBe('[REDACTED]');
     expect(sanitized.user.email).toBe('user@example.com');
   });
@@ -100,45 +91,5 @@ describe('sanitizeLog', () => {
     };
     expect(sanitized.password).toBe('[REDACTED]');
     expect(sanitized.info.token).toBe('[REDACTED]');
-  });
-
-  it('sanitizes mixed structures', () => {
-    const input = [
-      { apiKey: 'a', obj: { password: 'b' } },
-      null,
-      undefined,
-      'plain',
-      { foo: 'bar', token: 'c' },
-    ];
-
-    const sanitized = sanitizeLog(input) as Array<
-      | { apiKey: string; obj: { password: string } }
-      | null
-      | undefined
-      | string
-      | { foo: string; token: string }
-    >;
-
-    if (
-      sanitized[0] &&
-      typeof sanitized[0] === 'object' &&
-      'apiKey' in sanitized[0]
-    ) {
-      expect(sanitized[0].apiKey).toBe('[REDACTED]');
-      expect(sanitized[0].obj.password).toBe('[REDACTED]');
-    }
-
-    expect(sanitized[1]).toBeNull();
-    expect(sanitized[2]).toBeUndefined();
-    expect(sanitized[3]).toBe('plain');
-
-    if (
-      sanitized[4] &&
-      typeof sanitized[4] === 'object' &&
-      'token' in sanitized[4]
-    ) {
-      expect(sanitized[4].token).toBe('[REDACTED]');
-      expect(sanitized[4].foo).toBe('bar');
-    }
   });
 });

@@ -2,7 +2,7 @@
 
 Professional, scalable NestJS & Prisma backend application for credit ledger and referral system.
 
-Author: Ahmed 1996raiden27@gmail.com
+Author: Ahmed muktadir1996ahmed@gmail.com
 
 ## Features
 

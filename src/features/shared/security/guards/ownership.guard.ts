@@ -1,5 +1,10 @@
 // src/features/shared/security/guards/ownership.guard.ts
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserResponseDto } from '@/common/dtos';
 import { UserAccessForbiddenException } from '@/common/exceptions';
@@ -16,7 +21,7 @@ export class OwnershipGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    
+
     if (requiredRoles?.includes(UserRole.ADMIN)) {
       return true;
     }

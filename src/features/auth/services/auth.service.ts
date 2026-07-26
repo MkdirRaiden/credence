@@ -30,7 +30,9 @@ export class AuthService {
     private readonly logger: LoggerService,
   ) {}
 
-  async register(registerDto: authDtos.RegisterDto): Promise<authDtos.AuthResponseDto> {
+  async register(
+    registerDto: authDtos.RegisterDto,
+  ): Promise<authDtos.AuthResponseDto> {
     this.logger.log(
       `Registering user: ${registerDto.email}`,
       LOG_CONTEXTS.AUTH,
@@ -46,7 +48,9 @@ export class AuthService {
     return this.createAuthResponse(user as authDtos.UserResponseDto);
   }
 
-  async login(user: authDtos.UserResponseDto): Promise<authDtos.AuthResponseDto> {
+  async login(
+    user: authDtos.UserResponseDto,
+  ): Promise<authDtos.AuthResponseDto> {
     this.logger.log(`User logged in: ${user.id}`, LOG_CONTEXTS.AUTH);
     // at this point user comes from JwtStrategy or CredentialsService and has id/email
     return this.createAuthResponse(user);
@@ -57,7 +61,9 @@ export class AuthService {
     this.logger.log('User logged out', LOG_CONTEXTS.AUTH);
   }
 
-  async refresh(refreshTokenDto: authDtos.RefreshTokenDto): Promise<authDtos.AuthResponseDto> {
+  async refresh(
+    refreshTokenDto: authDtos.RefreshTokenDto,
+  ): Promise<authDtos.AuthResponseDto> {
     this.logger.log('Refreshing access token', LOG_CONTEXTS.AUTH);
 
     const payload = this.verifyRefreshTokenJwt(refreshTokenDto.refreshToken);

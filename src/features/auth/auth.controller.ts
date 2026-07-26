@@ -21,11 +21,16 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(201)
-  @swagger.ApiCreatedResponse({ type: authDtos.AuthResponseDto, description: 'User registered' })
+  @swagger.ApiCreatedResponse({
+    type: authDtos.AuthResponseDto,
+    description: 'User registered',
+  })
   @swagger.ApiConflictResponse({
     description: 'Email or username already in use',
   })
-  async register(@Body() registerDto: authDtos.RegisterDto): Promise<authDtos.AuthResponseDto> {
+  async register(
+    @Body() registerDto: authDtos.RegisterDto,
+  ): Promise<authDtos.AuthResponseDto> {
     return this.authService.register(registerDto);
   }
 
@@ -33,7 +38,10 @@ export class AuthController {
   @UseGuards(guards.LocalAuthGuard)
   @HttpCode(200)
   @swagger.ApiBody({ type: authDtos.LoginDto })
-  @swagger.ApiOkResponse({ type: authDtos.AuthResponseDto, description: 'User logged in' })
+  @swagger.ApiOkResponse({
+    type: authDtos.AuthResponseDto,
+    description: 'User logged in',
+  })
   @swagger.ApiUnauthorizedResponse({
     description: 'Invalid email, username, or password',
   })
@@ -67,7 +75,9 @@ export class AuthController {
   @swagger.ApiBearerAuth()
   @swagger.ApiBody({ type: authDtos.RefreshTokenDto })
   @swagger.ApiOkResponse({ description: 'User logged out' })
-  async logout(@Body() refreshTokenDto: authDtos.RefreshTokenDto): Promise<void> {
+  async logout(
+    @Body() refreshTokenDto: authDtos.RefreshTokenDto,
+  ): Promise<void> {
     return this.authService.logout(refreshTokenDto.refreshToken);
   }
 

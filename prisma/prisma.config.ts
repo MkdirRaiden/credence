@@ -1,4 +1,3 @@
-// prisma/prisma.config.ts
 import path from 'node:path';
 import type { PrismaConfig } from 'prisma';
 

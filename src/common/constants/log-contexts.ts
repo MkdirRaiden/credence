@@ -1,4 +1,4 @@
-import { REQUEST } from "@nestjs/core";
+import { REQUEST } from '@nestjs/core';
 
 // src/common/constants/log-constants.ts
 export const LOG_CONTEXTS = {
@@ -12,7 +12,7 @@ export const LOG_CONTEXTS = {
   DATABASE: 'Database',
   PRISMA: 'Prisma',
 
-  // Features  
+  // Features
   AUTH: 'Auth',
   USER: 'User',
   REFRESH_TOKEN: 'RefreshToken',
@@ -26,6 +26,4 @@ export const LOG_CONTEXTS = {
   // Others
   RETRY: 'Retry',
   SHUTDOWN: 'Shutdown',
-
 } as const;
-

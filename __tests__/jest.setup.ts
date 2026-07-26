@@ -1,4 +1,3 @@
-// __tests__/jest.setup.ts
 import { config } from 'dotenv';
 
 // Load test env

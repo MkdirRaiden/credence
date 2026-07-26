@@ -24,7 +24,7 @@ export class UsersLookupRepository {
       take,
       orderBy: { createdAt: 'desc' },
     });
-    return users as Partial<User>[];
+    return users;
   }
 
   @NotFound(constants.USER_NOT_FOUND)

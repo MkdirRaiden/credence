@@ -2,10 +2,9 @@
 
 export const SENSITIVE_FIELDS = [
   'password',
-  'passwordHash',    
-  'refreshToken',    
-  'accessToken',      
-  'tokenHash', 
-  'token'      
+  'passwordHash',
+  'refreshToken',
+  'accessToken',
+  'tokenHash',
+  'token',
 ] as const;
-

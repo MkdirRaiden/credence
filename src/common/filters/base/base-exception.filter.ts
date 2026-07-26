@@ -5,9 +5,9 @@ import { LoggerService } from '@/logger/services/logger.service';
 import { buildResponse } from '@/common/utils';
 import { LOG_CONTEXTS } from '@/common/constants';
 
-export abstract class BaseExceptionFilter<T = unknown>
-  implements ExceptionFilter
-{
+export abstract class BaseExceptionFilter<
+  T = unknown,
+> implements ExceptionFilter {
   constructor(protected readonly logger: LoggerService) {}
 
   abstract catch(exception: T, host: ArgumentsHost): void;

@@ -4,18 +4,30 @@
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
     "strictPropertyInitialization": false,
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "module": "CommonJS",
-    "target": "ES2022",
-    "moduleResolution": "Node",
+
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "rootDir": "."
+
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES2022",
+
+    "rootDir": ".",
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    "types": ["node", "jest"]
   },
-  "include": ["src", "__tests__"]
+
+  "include": [
+    "src",
+    "__tests__",
+    "prisma/**/*.ts",
+    "jest.config.ts"
+  ]
 }

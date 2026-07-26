@@ -33,7 +33,10 @@ export class UsersCrudService extends BaseCrudService {
     return UsersMapper.toResponseDto(user);
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<Partial<UserResponseDto>> {
+  async update(
+    id: string,
+    dto: UpdateUserDto,
+  ): Promise<Partial<UserResponseDto>> {
     this.logger.log(`Updating user: ${id}`, LOG_CONTEXTS.USER);
 
     await this.conflictService.ensureUpdateConstraints(id, dto);

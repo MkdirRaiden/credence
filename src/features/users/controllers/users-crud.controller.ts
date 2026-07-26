@@ -44,7 +44,7 @@ export class UsersCrudController {
 
   @Patch(':id')
   @HttpCode(200)
-  @UseGuards(guards.JwtAuthGuard, guards.OwnershipGuard) 
+  @UseGuards(guards.JwtAuthGuard, guards.OwnershipGuard)
   @swagger.ApiOkResponse({
     type: userDtos.UserResponseDto,
     description: 'User updated',
@@ -53,7 +53,7 @@ export class UsersCrudController {
     @Param('id', ParseUuidPipe) id: string,
     @Body() dto: userDtos.UpdateUserDto,
   ): Promise<Partial<userDtos.UserResponseDto>> {
-    return this.crudService.update(id, dto); 
+    return this.crudService.update(id, dto);
   }
 
   @Delete(':id')
@@ -66,7 +66,6 @@ export class UsersCrudController {
   async remove(
     @Param('id', ParseUuidPipe) id: string,
   ): Promise<userDtos.DeletedResourceDto> {
-    return this.crudService.remove(id); 
+    return this.crudService.remove(id);
   }
-
 }

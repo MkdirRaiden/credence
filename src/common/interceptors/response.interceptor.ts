@@ -16,9 +16,10 @@ import { StandardResponse } from '@/common/interfaces';
  * Wraps successful responses in StandardResponse envelope with API version.
  */
 @Injectable()
-export class ResponseInterceptor<T>
-  implements NestInterceptor<T, StandardResponse<T> | T>
-{
+export class ResponseInterceptor<T> implements NestInterceptor<
+  T,
+  StandardResponse<T> | T
+> {
   intercept(
     context: ExecutionContext,
     next: CallHandler<T>,

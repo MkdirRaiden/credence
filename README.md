@@ -26,6 +26,7 @@ Credence is built using a modular NestJS framework, emphasizing clean architectu
 The application uses environment variables for configuration, securely managed with validation on startup. Key variables include:
 
 - `DATABASE_URL`: PostgreSQL connection string.
+- `SHADOW_DATABASE_URL`: PostgreSQL connection string.
 - `JWT_SECRET`: Secret key for signing JWTs.
 - `JWT_REFRESH_SECRET`: Secret key for refresh tokens.
 - `NODE_ENV`: Application environment (development, test, production).
@@ -40,7 +41,7 @@ The application uses environment variables for configuration, securely managed w
 ### Installation
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Running
@@ -48,14 +49,14 @@ npm install
 Development:
 
 ```bash
-npm run start:dev
+pnpm run start:dev
 ```
 
 Production:
 
 ```bash
-npm run build
-npm run start:prod
+pnpm run build
+pnpm run start:prod
 ```
 
 ### Testing
@@ -63,19 +64,19 @@ npm run start:prod
 Unit tests:
 
 ```bash
-npm run test:unit
+pnpm run test:unit
 ```
 
 Integration tests:
 
 ```bash
-npm run test:integration
+pnpm run test:integration
 ```
 
 E2E tests:
 
 ```bash
-npm run test:e2e
+pnpm run test:e2e
 ```
 
 ## Project Structure

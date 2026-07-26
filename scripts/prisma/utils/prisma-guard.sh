@@ -27,8 +27,8 @@ if (( PRISMA_GUARD_LOADED == 0 )); then
   fi
 
   # Load & validate environment (idempotent)
-  source "$REPO_ROOT/scripts/env/env-load.sh" "$ENVIRONMENT"
-  source "$REPO_ROOT/scripts/env/env-validate.sh" "$ENVIRONMENT" "${REQUIRED_ENV_VARS[@]}"
+  source "$REPO_ROOT/scripts/var/env-load.sh" "$ENVIRONMENT"
+  source "$REPO_ROOT/scripts/var/env-validate.sh" "$ENVIRONMENT" "${REQUIRED_ENV_VARS[@]}"
 
   # ──────────────────────────────────────────────
   # Prisma schema paths

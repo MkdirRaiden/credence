@@ -15,7 +15,7 @@ source "$DIR/../../bootstrap.sh"
 # ──────────────────────────────────────────────
 # 2 Load environment safely
 # ──────────────────────────────────────────────
-source "$REPO_ROOT/scripts/env/env-load.sh" "$ENVIRONMENT"
+source "$REPO_ROOT/scripts/var/env-load.sh" "$ENVIRONMENT"
 
 # ──────────────────────────────────────────────
 # 3 Load Prisma schema paths
